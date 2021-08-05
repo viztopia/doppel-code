@@ -40,6 +40,13 @@ function draw() {
 		text("please clean all recording files first except record.mp4 before START", width / 2 - 200, height / 2);
 		sendOscTD("/fileIdx", 0);
 	} else {
+
+		recordedSeconds = floor((Date.now() - startTime) / 1000);
+		text("recording stared for " + recordedSeconds + " seconds, " + recordedSeconds * recordingFPS + " frames", width / 2 - 150, height / 2 -50);
+
+		text("plateau classification is: " + (plateauOn ? "On, auto control TD" : "Off, manual control TD"), width / 2 - 150, height / 2 -25);
+
+
 		let delayFrameIdx = floor(map(mouseX, 0, width, TDCacheFrames, 0));
 		let cueFileIdx;
 		let cuePoint;
@@ -65,10 +72,6 @@ function draw() {
 		text("showing delayed frame:" + delayFrameIdx, width / 2 - 100, height / 2);
 		text("showing file:" + cueFileIdx + " cuePoint: " + cuePoint, width / 2 - 100, height / 2 + 25);
 
-		recordedSeconds = floor((Date.now() - startTime) / 1000);
-		text("recording stared for " + recordedSeconds + " seconds, " + recordedSeconds * recordingFPS + " frames", width / 2 - 150, height / 2 + 50);
-
-		text("plateau classification is: " + (plateauOn ? "On" : "Off"), width / 2 - 150, height / 2 + 100);
 
 	}
 }
