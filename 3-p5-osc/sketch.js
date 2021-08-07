@@ -17,7 +17,8 @@ let recordedSeconds;
 
 //-------------------clasification plateau stuff----------------
 let plateauOn = false;
-
+let plateaus = [];
+let currentClass;
 
 function setup() {
 	createCanvas(500, 500);
@@ -42,41 +43,65 @@ function draw() {
 	} else {
 
 		recordedSeconds = floor((Date.now() - startTime) / 1000);
-		text("recording stared for " + recordedSeconds + " seconds, " + recordedSeconds * recordingFPS + " frames", width / 2 - 150, height / 2 -50);
+		text("recording stared for " + recordedSeconds + " seconds, " + recordedSeconds * recordingFPS + " frames", width / 2 - 150, height / 2 - 50);
 
-		text("plateau classification is: " + (plateauOn ? "On, auto control TD" : "Off, manual control TD"), width / 2 - 150, height / 2 -25);
+		text("plateau classification is: " + (plateauOn ? "On, auto controlling TD" : "Off, manual controlling TD"), width / 2 - 150, height / 2 - 25);
+
+		if (plateauOn) {
+			// let delayFrameIdx = getDelayFrameFirstMatch(plateaus);
+			let delayFrameIdx = getDelayFrameRandom(plateaus);
+
+			// console.log(delayFrameIdx);
+			if (delayFrameIdx) {
+				if (delayFrameIdx < 600) {
+					sendOscTD("/mode", 1); //mode 1: load frame from memory
+					sendOscTD("/frameIdx", delayFrameIdx);
+					text("showing delayed frame:" + delayFrameIdx, width / 2 - 150, height / 2);
+				} else {
+					text("the match is beyond 20 seconds.", width / 2 - 150, height / 2);
+				}
+			} else {
+				text("no delay frames from plateau yet", width / 2 - 150, height / 2);
+			}
 
 
-		let delayFrameIdx = floor(map(mouseX, 0, width, TDCacheFrames, 0));
-		let cueFileIdx;
-		let cuePoint;
-		if (delayFrameIdx > 1200) {
-			
-			sendOscTD("/mode", 0); //mode 0: load frame from recordings
-			cueFileIdx = 2;
-			cuePoint = 1 - (delayFrameIdx - 1200) / framesPerClip;
-			sendOscTD("/fileIdx", cueFileIdx);
-			sendOscTD("/cuePoint", cuePoint);
-		} else if (delayFrameIdx > 600) {
-			sendOscTD("/mode", 0);
-			cueFileIdx = 3;
-			cuePoint = 1 - (delayFrameIdx - 600) / framesPerClip;
-			sendOscTD("/fileIdx", cueFileIdx);
-			sendOscTD("/cuePoint", cuePoint);
+
 		} else {
-			sendOscTD("/mode", 1); //mode 1: load frame from memory
-			cueFileIdx = -99;
-			cuePoint = 1 - delayFrameIdx / framesPerClip;
+			let delayFrameIdx = floor(map(mouseX, 0, width, TDCacheFrames, 0));
+			let cueFileIdx;
+			let cuePoint;
+			if (delayFrameIdx > 1200) {
+
+				sendOscTD("/mode", 0); //mode 0: load frame from recordings
+				cueFileIdx = 2;
+				cuePoint = 1 - (delayFrameIdx - 1200) / framesPerClip;
+				sendOscTD("/fileIdx", cueFileIdx);
+				sendOscTD("/cuePoint", cuePoint);
+			} else if (delayFrameIdx > 600) {
+				sendOscTD("/mode", 0);
+				cueFileIdx = 3;
+				cuePoint = 1 - (delayFrameIdx - 600) / framesPerClip;
+				sendOscTD("/fileIdx", cueFileIdx);
+				sendOscTD("/cuePoint", cuePoint);
+			} else {
+				sendOscTD("/mode", 1); //mode 1: load frame from memory
+				cueFileIdx = -99;
+				cuePoint = 1 - delayFrameIdx / framesPerClip;
+			}
+			sendOscTD("/frameIdx", delayFrameIdx);
+			text("showing delayed frame:" + delayFrameIdx, width / 2 - 150, height / 2);
+			text("showing file:" + cueFileIdx + " cuePoint: " + cuePoint, width / 2 - 150, height / 2 + 25);
 		}
-		sendOscTD("/frameIdx", delayFrameIdx);
-		text("showing delayed frame:" + delayFrameIdx, width / 2 - 100, height / 2);
-		text("showing file:" + cueFileIdx + " cuePoint: " + cuePoint, width / 2 - 100, height / 2 + 25);
+
 
 
 	}
 }
 
 function startPerformance() {
+	//---clear plateau
+	plateaus = [];
+
 	//---record start time---
 	startTime = Date.now();
 
@@ -117,9 +142,9 @@ function toggleOBSRecording() {
 	isRecording = !isRecording;
 }
 
-function mouseClicked(){
+function mouseClicked() {
 	sendOscTD("/cuePulse", 1);
-	setTimeout(()=>{sendOscTD("/cuePulse", 0)}, 20);
+	setTimeout(() => { sendOscTD("/cuePulse", 0) }, 20);
 }
 //-------------------------p5 OSC & Socket Setup--------------------------------------
 
@@ -165,14 +190,16 @@ function setupOsc(oscPortIn, oscPortOut, oscPortIn2, oscPortOut2) {
 	});
 
 	//---socket msg from classification sketch
-	socket.on('plateauOn1', function(msg){
-		console.log("plateau classification is: " + (msg?"On":"Off"));
+	socket.on('plateauOn', function (msg) {
+		console.log("plateau classification is: " + (msg ? "On" : "Off"));
 		plateauOn = msg;
 	});
 
-	socket.on('plateauJumpTo', function(msg){
-
-	})
+	socket.on('plateauNew', function (c) {
+		console.log("got new plateau class: ");
+		console.log(c);
+		plateaus.push({ className: c, time: Date.now() - startTime });
+	});
 }
 
 function sendOsc(address, value) {
@@ -193,3 +220,31 @@ function receiveOsc(address, value) {
 }
 
 
+//------------methods to get delay frame in TD
+function getDelayFrameFirstMatch(_plateaus) {
+	if (_plateaus.length > 0) {
+		const currentClass = _plateaus[_plateaus.length - 1].className;
+		// console.log(currentClass);
+		const foundPlateau = _plateaus.find(({ className }) => className === currentClass);
+
+		//converting from seconds to frames
+		const delayFrame = floor(foundPlateau.time / 1000 * camFPS);
+		return delayFrame;
+	} else {
+		return undefined;
+	}
+}
+
+function getDelayFrameRandom(_plateaus) {
+	if (_plateaus.length > 0) {
+		const currentClass = _plateaus[_plateaus.length - 1].className;
+		// console.log(currentClass);
+		const foundPlateau = chance.pickone(_plateaus.filter(({ className }) => className === currentClass));
+
+		//converting from seconds to frames
+		const delayFrame = floor(foundPlateau.time / 1000 * camFPS);
+		return delayFrame;
+	} else {
+		return undefined;
+	}
+}

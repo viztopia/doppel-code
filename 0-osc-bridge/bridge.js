@@ -9,9 +9,15 @@ let isConnected1 = false;
 let oscServer2, oscClient2;
 let isConnected2 = false;
 
+let plateauStatus = false;
+
 
 io.sockets.on('connection', function (socket) {
 	console.log('connection: ' + socket.id);
+	setTimeout(() => {
+		console.log("broadcasting on/off");
+		socket.emit("plateauOn", plateauStatus);
+	}, 1000);
 
 	//---OBS---
 	socket.on("config1", function (obj) {
@@ -60,10 +66,16 @@ io.sockets.on('connection', function (socket) {
 	});
 
 	//-----------------broadcast classification plateau stuff-----------------
-	//broadcast plateauOn status
-	socket.on('plateauOn', function(msg){
-		socket.broadcast.emit("plateauOn1", msg);
+	//broadcast plateau stuff
+	socket.on('plateauOn', function (msg) {
+		socket.broadcast.emit("plateauOn", msg);
 		// socket.broadcast.emit("message1", 1234);
-		console.log("plateau classification is: " + (msg?"On":"Off"));
+		console.log("plateau classification is: " + (msg ? "On" : "Off"));
+		plateauStatus = msg;
+	});
+	socket.on('plateauNew', function (msg) {
+		socket.broadcast.emit("plateauNew", msg);
+		// socket.broadcast.emit("message1", 1234);
+		console.log("new plateau class: " + msg);
 	})
 });

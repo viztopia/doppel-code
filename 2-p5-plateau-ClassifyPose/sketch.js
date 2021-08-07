@@ -115,18 +115,21 @@ function draw() {
     text("class count is: " + maxCount, width / 2 - 50, height / 2 + 50);
 
     //whenever there's a change in class, given the current window length, mark a class timestamp.
-    if (maxClass != lastClass) {
-      print(maxClass + " started at frame " + frameCount);
+    if (maxClass && maxClass != lastClass) {
+      console.log(maxClass + " started at frame " + frameCount);
       lastClass = maxClass;
+      socket.emit('plateauNew', maxClass);
+
       if (startedRecording) {
-        classTimestamps.push({ class: maxClass, time: millis() - startTime });
+        let tstmp = { className: maxClass, time: millis() - startTime }
+        classTimestamps.push(tstmp);
       }
     }
   }
 }
 
 function getMaxClass(array) {
-  if (array.length == 0) return [null, null];
+  if (array.length == 0) return [undefined, undefined];
   var modeMap = {};
   var maxEl = array[0],
     maxCount = 1;
@@ -176,7 +179,7 @@ function gotResults(err, result) {
     console.error(err);
   }
 
-  console.log(result)
+  // console.log(result)
   if (result.confidencesByLabel) {
     // const confidences = result.confidencesByLabel;
     // result.label is the label that has the highest confidence
