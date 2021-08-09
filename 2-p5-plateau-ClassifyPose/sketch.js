@@ -1,16 +1,24 @@
+// plateau logic, updated 08/07:
+// 1. constantly sending over the current classification;
+// 2. send a plateau (its class, start time and end time) once it's detected;
+// 3. plateau observation window length: 120 frames;
+// 4. what counts as the starting / ending of a plateau: within the window, more than / less than 60% of frames is one class;
+
 let cnv;
 let waiting = 180;
 
 let classResult = 0;
 let classCache = [];
-let cacheLength = 120;
+let cacheLength = 120; //classification window size
 
 let maxClass, maxCount;
-let lastClass = 0;
+let newClassCountBaseline = cacheLength * 0.6; //cacheLength * 0.6 = 120 * 0.6 = 72
+let plateauStarted = false;
+let plateatStartTime, plateauEndTime;
+
 
 let startedRecording = false;
-let startTime = 0;
-let classTimestamps = [];
+let plateaus = [];
 
 let classCacheLengthSlider;
 let recordBtn;
@@ -39,16 +47,12 @@ function setup() {
     select('#cacheLengthLabel').html(cacheLength);
   })
 
-  recordBtn = createButton('Start Recording');
-  recordBtn.mousePressed(startStopRecording);
-  recordBtn.parent('controlsDiv');
-
-  clearBtn = createButton('Clear Recording');
-  clearBtn.mousePressed(() => { classTimestamps = []; });
+  clearBtn = createButton('Clear Plateaus Data');
+  clearBtn.mousePressed(() => { plateaus = []; });
   clearBtn.parent('controlsDiv');
 
   downloadBtn = createButton('Download Plateau JSON');
-  downloadBtn.mousePressed(() => { saveJSON(classTimestamps, 'plateau-' + month() + '-' + day() + '-' + hour() + '-' + minute() + '-' + '.json') });
+  downloadBtn.mousePressed(() => { saveJSON(plateaus, 'plateaus-' + month() + '-' + day() + '-' + hour() + '-' + minute() + '-' + second() + '.json') });
   downloadBtn.parent('controlsDiv');
 
 
@@ -73,20 +77,6 @@ function setup() {
   setupSocket();
 }
 
-function startStopRecording() {
-  if (!startedRecording) {
-    startedRecording = true;
-    recordBtn.html('Stop Recording');
-    startTime = millis();
-    classTimestamps.push({ class: maxClass, time: millis() - startTime });
-  } else {
-    startedRecording = false;
-    recordBtn.html('Start Recording');
-    startTime = 0;
-    console.log(classTimestamps);
-  }
-}
-
 function draw() {
   // background(200);
   image(video, 0, 0, width, height);
@@ -95,35 +85,30 @@ function draw() {
   if (frameCount < waiting) {
     text("Classification will begin in " + waiting + " frames", width / 2 - 100, height / 2);
   } else {
-    // if (mouseX <= width / 4) {
-    //   classCache.push(1);
-    // } else if (mouseX <= width / 2) {
-    //   classCache.push(2);
-    // } else if (mouseX <= (width * 3) / 4) {
-    //   classCache.push(3);
-    // } else {
-    //   classCache.push(4);
-    // }
-
-    // if (classCache.length >= cacheLength) {
-    //   classCache.shift();
-    // }
 
     [maxClass, maxCount] = getMaxClass(classCache);
 
     text("current class is: " + maxClass, width / 2 - 50, height / 2 - 50);
     text("class count is: " + maxCount, width / 2 - 50, height / 2 + 50);
 
-    //whenever there's a change in class, given the current window length, mark a class timestamp.
-    if (maxClass && maxClass != lastClass) {
+    //whenever there's a new plateau start, given the current window length & baseline, mark its start time and send new class over.
+    if (maxClass && maxCount > newClassCountBaseline && !plateauStarted) {
       console.log(maxClass + " started at frame " + frameCount);
-      lastClass = maxClass;
-      socket.emit('plateauNew', maxClass);
+      plateauStarted = true;
+      plateatStartTime = Date.now();
 
-      if (startedRecording) {
-        let tstmp = { className: maxClass, time: millis() - startTime }
-        classTimestamps.push(tstmp);
-      }
+      socket.emit('classNew', maxClass);
+    }
+
+    //whenever the plateau ends, mark its end time and send it over to part 3.
+    if (plateauStarted && maxCount < newClassCountBaseline) {
+      console.log(maxClass + " ended at frame " + frameCount);
+      plateauStarted = false;
+      plateatEndTime = Date.now();
+
+      let newPlat = { className: maxClass, start: plateatStartTime, end: plateatEndTime };
+      socket.emit('plateauNew', newPlat);
+      plateaus.push(newPlat);
     }
   }
 }
@@ -236,10 +221,12 @@ function drawKeypoints() {
 
 //---------------------socket stuff
 function setupSocket() {
-	socket = io.connect('http://127.0.0.1:8081', { port: 8081, rememberTransport: false });
-	socket.on('connect', function () {
+  socket = io.connect('http://127.0.0.1:8081', { port: 8081, rememberTransport: false });
+  socket.on('connect', function () {
+    socket.emit('plateauOn', false);
+  });
 
-		//---Setup OBS OSC---
-		socket.emit('plateauOn', false);
+  socket.on('disconnect', function () {
+    socket.emit('plateauOn', false);
 	});
 }

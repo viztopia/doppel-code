@@ -76,6 +76,13 @@ io.sockets.on('connection', function (socket) {
 	socket.on('plateauNew', function (msg) {
 		socket.broadcast.emit("plateauNew", msg);
 		// socket.broadcast.emit("message1", 1234);
-		console.log("new plateau class: " + msg);
-	})
+		console.log("new plateau data: " + msg);
+	});
+	socket.on('classNew', function (msg) {
+		socket.broadcast.emit("classNew", msg);
+		// socket.broadcast.emit("message1", 1234);
+		console.log("new class: " + msg);
+	});
 });
+
+console.log("waiting for socket connections...");

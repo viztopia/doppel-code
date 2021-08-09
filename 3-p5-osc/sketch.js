@@ -1,3 +1,8 @@
+// choreography logic, updated 08/07:
+// 1. Based on current class, pick one plateau with the same class; if no corresponding plateaus found, just play current frame;
+// 2. If one plateau finishes and we're still in the same class, pick another plateau with the same class;
+// 3. If we receive a new class in the middle of a plateau playback, jump to a new plateau that matches the new class;
+
 let socket;
 
 let isRecording = false;
@@ -17,8 +22,11 @@ let recordedSeconds;
 
 //-------------------clasification plateau stuff----------------
 let plateauOn = false;
-let plateaus = [];
+let plateaus = new Map();
 let currentClass;
+let haveNewClass = false;
+let currentClipFinished = true;
+let lastDelayedFrameIdx;
 
 function setup() {
 	createCanvas(500, 500);
@@ -47,25 +55,44 @@ function draw() {
 
 		text("plateau classification is: " + (plateauOn ? "On, auto controlling TD" : "Off, manual controlling TD"), width / 2 - 150, height / 2 - 25);
 
+		//----------------------auto-controlling TD using plateau data------------------------
 		if (plateauOn) {
-			// let delayFrameIdx = getDelayFrameFirstMatch(plateaus);
-			let delayFrameIdx = getDelayFrameRandom(plateaus);
+			let delayFrameIdx;
+
+			if (haveNewClass || currentClipFinished) {
+				//pick a plateau whenever there's a new class or the current clip is finished
+				// console.log(plateaus);
+				// console.log(currentClass);
+				let [pStartTime, pLength] = getStartTimeAndLengthRandom(plateaus, currentClass);
+				// console.log([delayFrameIdx, clipLength]);
+				delayFrameIdx = floor((Date.now() - startTime - pStartTime) / 1000) * camFPS;
+				lastDelayedFrameIdx = delayFrameIdx;
+				haveNewClass = false;
+				currentClipFinished = false;
+
+				setTimeout(()=>{currentClipFinished = true}, pLength);
+			} else {
+				//otherwise continue on the current clip
+				delayFrameIdx = lastDelayedFrameIdx;
+			}
 
 			// console.log(delayFrameIdx);
 			if (delayFrameIdx) {
 				if (delayFrameIdx < 600) {
 					sendOscTD("/mode", 1); //mode 1: load frame from memory
 					sendOscTD("/frameIdx", delayFrameIdx);
-					text("showing delayed frame:" + delayFrameIdx, width / 2 - 150, height / 2);
+					text("current class is:" + currentClass, width / 2 - 150, height / 2);
+					text("showing delayed frame: " + delayFrameIdx + " frames ago", width / 2 - 150, height / 2 + 25);
 				} else {
-					text("the match is beyond 20 seconds.", width / 2 - 150, height / 2);
+					text("current class is:" + currentClass, width / 2 - 150, height / 2);
+					text("the match is beyond 20 seconds.", width / 2 - 150, height / 2 + 25);
 				}
 			} else {
 				text("no delay frames from plateau yet", width / 2 - 150, height / 2);
 			}
 
 
-
+			//----------------------manual controlling TD using mouse------------------------
 		} else {
 			let delayFrameIdx = floor(map(mouseX, 0, width, TDCacheFrames, 0));
 			let cueFileIdx;
@@ -100,7 +127,7 @@ function draw() {
 
 function startPerformance() {
 	//---clear plateau
-	plateaus = [];
+	plateaus = new Map();
 
 	//---record start time---
 	startTime = Date.now();
@@ -109,18 +136,18 @@ function startPerformance() {
 	toggleOBSRecording();
 
 	recordIntervalID = setInterval(() => {
-		console.log("Stopping at:" + (Date.now() - startTime));
+		console.log("Recording stopped at:" + (Date.now() - startTime));
 		toggleOBSRecording();
 
 		setTimeout(() => {
-			console.log("Starting at:" + (Date.now() - startTime));
+			console.log("Recording started at:" + (Date.now() - startTime));
 			toggleOBSRecording();
 		}, 500); //KNOWN ISSUE--> seems that OBS will take a little bit of time to save a video file (less than 500ms for a 5min video)
 
 	}, clipLength * 1000);
 
 	started = true;
-	console.log("Show begins at: " + startTime);
+	console.log("Show and recording started at: " + startTime);
 }
 
 function stopPerformance() {
@@ -129,7 +156,7 @@ function stopPerformance() {
 	clearInterval(recordIntervalID);
 	sendOsc("/stopRecording", "");
 	isRecording = false;
-	console.log("Show stopped at: " + (Date.now() - startTime));
+	console.log("Show and recording stopped at: " + (Date.now() - startTime));
 
 }
 
@@ -189,16 +216,33 @@ function setupOsc(oscPortIn, oscPortOut, oscPortIn2, oscPortOut2) {
 		}
 	});
 
-	//---socket msg from classification sketch
+	//---socket msg from part 2 classification sketch------------------
 	socket.on('plateauOn', function (msg) {
 		console.log("plateau classification is: " + (msg ? "On" : "Off"));
 		plateauOn = msg;
 	});
 
-	socket.on('plateauNew', function (c) {
-		console.log("got new plateau class: ");
-		console.log(c);
-		plateaus.push({ className: c, time: Date.now() - startTime });
+	socket.on('plateauNew', function (p) {
+		console.log("got a new plateau: ");
+		console.log(p);
+
+		//for each plateau, record its start time relative to the show's start time, i.e., how many milli seconds after the show starts.
+		let st = p.start - startTime > 0 ? p.start - startTime : 0;
+
+		if (!plateaus.has(p.className)){
+			plateaus.set(p.className, [{start: st, length: p.end - p.start}]);
+		} else {
+			plateaus.get(p.className).push({start: st, length: p.end - p.start});
+		}
+		// console.log(plateaus);
+		// plateaus.push({ className: p.className, start: p.start - startTime, length: p.end - p.start }); //save plateaus with timestamps in relation to recording start time 
+	});
+
+	socket.on('classNew', (c) => {
+		if (currentClass != c){
+			haveNewClass = true;
+			currentClass = c;
+		};
 	});
 }
 
@@ -220,31 +264,31 @@ function receiveOsc(address, value) {
 }
 
 
-//------------methods to get delay frame in TD
-function getDelayFrameFirstMatch(_plateaus) {
-	if (_plateaus.length > 0) {
-		const currentClass = _plateaus[_plateaus.length - 1].className;
-		// console.log(currentClass);
-		const foundPlateau = _plateaus.find(({ className }) => className === currentClass);
+//------------helper functions to get delay frame in TD-----------------------
 
-		//converting from seconds to frames
-		const delayFrame = floor(foundPlateau.time / 1000 * camFPS);
+function getStartTimeAndLengthFirstMatch(_plateaus) {
+	let pltData = _plateaus.get(_currentClass);
+	if (pltData.length > 0) {
+		const foundPlateau = pltData[0];
+
+		//converting from milli seconds to frames
+		const delayFrame = floor(foundPlateau.start / 1000 * camFPS);
 		return delayFrame;
 	} else {
 		return undefined;
 	}
 }
 
-function getDelayFrameRandom(_plateaus) {
-	if (_plateaus.length > 0) {
-		const currentClass = _plateaus[_plateaus.length - 1].className;
-		// console.log(currentClass);
-		const foundPlateau = chance.pickone(_plateaus.filter(({ className }) => className === currentClass));
+function getStartTimeAndLengthRandom(_plateaus, _currentClass) {
+	let pltData = _plateaus.get(_currentClass);
+	
+	if (pltData) {
+		const foundPlateau = chance.pickone(pltData);
 
-		//converting from seconds to frames
-		const delayFrame = floor(foundPlateau.time / 1000 * camFPS);
-		return delayFrame;
+		//converting from milli seconds to frames
+		// const frameIdx = floor(foundPlateau.start / 1000 * camFPS);
+		return [foundPlateau.start, foundPlateau.length];
 	} else {
-		return undefined;
+		return [undefined, undefined];
 	}
 }
