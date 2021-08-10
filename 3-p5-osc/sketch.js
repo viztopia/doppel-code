@@ -9,16 +9,18 @@ let isRecording = false;
 let btnStart, btnStop;
 
 let recordingFPS = 30;
-let clipLength = 60; //length of each OBS recording clip in seconds
-let framesPerClip = recordingFPS * clipLength;
-let camFPS = 30;
-let TDCacheLength = 60; //length of cache in TD in seconds
+let recordingLength = 60; //length of each OBS recording clip in seconds
+let framesPerRecording = recordingFPS * recordingLength;
+let camFPS = 30; //should be the same as recording FPS
+let TDCacheLength = 60; //length of cache in TD in seconds. Ideally this should match with recording length so that there won't be gaps between recordings and TD cache.
 let TDCacheFrames = camFPS * TDCacheLength; //this should match the size of the Cache TOP in TD
 
+//------------------TD control----------------------
 let recordIntervalID;
 let started = false;
 let startTime = 0;
 let recordedSeconds;
+let lastAvailableFrames = 0; // used to refresh the controlling timeline
 
 //-------------------clasification plateau stuff----------------
 let plateauOn = false;
@@ -28,9 +30,12 @@ let haveNewClass = false;
 let currentClipFinished = true;
 let lastDelayedFrameIdx;
 
+//-------------------other------------
+let OBSRecordingGap = 1000; //KNOWN ISSUE: some time is required to finish saving the current recording to disk before we can start recording the next clip, especially with high CPU.
+
 function setup() {
-	createCanvas(500, 500);
-	setupOsc(12000, 12001, 13000, 13001);
+	createCanvas(600, 500);
+	setupOsc(12000, 12001, 13000, 13001); //OBS In / Out, TD In / Out
 	btnStart = createButton('START');
 	btnStart.position(0, 0);
 	btnStart.mousePressed(startPerformance);
@@ -46,78 +51,98 @@ function draw() {
 	fill(0);
 	ellipse(mouseX, mouseY, 50, 50);
 	if (!started) {
-		text("please clean all recording files first except record.mp4 before START", width / 2 - 200, height / 2);
+		text("Please clean all recording files first except record.mp4 before START", width / 2 - 225, height / 2);
+		text("The first recording file will be named 'recording(2).mp4', then 3, 4, ...", width / 2 - 225, height / 2 + 25);
 		sendOscTD("/fileIdx", 0);
 	} else {
 
 		recordedSeconds = floor((Date.now() - startTime) / 1000);
-		text("recording stared for " + recordedSeconds + " seconds, " + recordedSeconds * recordingFPS + " frames", width / 2 - 150, height / 2 - 50);
-
-		text("plateau classification is: " + (plateauOn ? "On, auto controlling TD" : "Off, manual controlling TD"), width / 2 - 150, height / 2 - 25);
+		text("Performance & recording started for " + recordedSeconds + " seconds, " + recordedSeconds * recordingFPS + " frames", width / 2 - 250, height / 2 - 50);
+		text("Plateau classification is: " + (plateauOn ? "On, auto controlling TD" : "Off, manual controlling TD."), width / 2 - 250, height / 2 - 25);
 
 		//----------------------auto-controlling TD using plateau data------------------------
-		if (plateauOn) {
-			let delayFrameIdx;
 
+		//----------------------1. first we calculate how many cached/recorded content is available
+		let availableRecordingNum = floor(recordedSeconds / recordingLength);
+		let availableTDCacheSeconds = recordedSeconds > TDCacheLength ? TDCacheLength : recordedSeconds;
+		text(availableRecordingNum + " recording clips and " + availableTDCacheSeconds + " seconds in TD cache available", width / 2 - 250, height / 2);
+
+		let delayFrameIdx;
+
+		//-----------------------2. then based on if plateau classification is on, we calculate the number of frames to be delayed either automatically or manually
+		if (plateauOn) {
+			//----------------------auto controlling TD using plateau data------------------------
+			// console.log(haveNewClass, currentClipFinished);
 			if (haveNewClass || currentClipFinished) {
 				//pick a plateau whenever there's a new class or the current clip is finished
-				// console.log(plateaus);
-				// console.log(currentClass);
 				let [pStartTime, pLength] = getStartTimeAndLengthRandom(plateaus, currentClass);
-				// console.log([delayFrameIdx, clipLength]);
-				delayFrameIdx = floor((Date.now() - startTime - pStartTime) / 1000) * camFPS;
-				lastDelayedFrameIdx = delayFrameIdx;
-				haveNewClass = false;
-				currentClipFinished = false;
 
-				setTimeout(()=>{currentClipFinished = true}, pLength);
+				if (pStartTime && pLength){
+					delayFrameIdx = floor((Date.now() - startTime - pStartTime) / 1000 * camFPS); //convert plateau start time to how many frames we should go back from the present
+					lastDelayedFrameIdx = delayFrameIdx;
+					haveNewClass = false;
+					currentClipFinished = false;
+	
+					setTimeout(() => { currentClipFinished = true }, pLength);
+				}
+
 			} else {
 				//otherwise continue on the current clip
 				delayFrameIdx = lastDelayedFrameIdx;
 			}
 
-			// console.log(delayFrameIdx);
-			if (delayFrameIdx) {
-				if (delayFrameIdx < 600) {
-					sendOscTD("/mode", 1); //mode 1: load frame from memory
-					sendOscTD("/frameIdx", delayFrameIdx);
-					text("current class is:" + currentClass, width / 2 - 150, height / 2);
-					text("showing delayed frame: " + delayFrameIdx + " frames ago", width / 2 - 150, height / 2 + 25);
-				} else {
-					text("current class is:" + currentClass, width / 2 - 150, height / 2);
-					text("the match is beyond 20 seconds.", width / 2 - 150, height / 2 + 25);
-				}
-			} else {
-				text("no delay frames from plateau yet", width / 2 - 150, height / 2);
-			}
+			text("current class is:" + currentClass, width / 2 - 150, height / 2 + 25);
 
 
-			//----------------------manual controlling TD using mouse------------------------
 		} else {
-			let delayFrameIdx = floor(map(mouseX, 0, width, TDCacheFrames, 0));
+			//----------------------manual controlling TD using mouse------------------------
+
+			//first calculate the number of frames available for manual srubbing
+			//dynamically allocating TD cached frames for scrubbing is too glitchy, so we assume TD is already fully cached.
+			let availableFrames = availableRecordingNum * framesPerRecording + TDCacheFrames;
+
+			//then we reversely map mouseX with available Frames
+			delayFrameIdx = constrain(floor(map(mouseX, 0, width, availableFrames, 0)), 0, availableFrames);
+
+		}
+
+		//-----------------------3. then control TD using delay frame----------------------------
+		// console.log(delayFrameIdx);
+		if (delayFrameIdx) {
+			// if (delayFrameIdx < 600) {
+			// 	sendOscTD("/mode", 1); //mode 1: load frame from TD cache memory
+			// 	sendOscTD("/frameIdx", delayFrameIdx);
+			// 	text("current class is:" + currentClass, width / 2 - 150, height / 2);
+			// 	text("showing a new clip with TD frame cache Idx: " + delayFrameIdx + " frames ago", width / 2 - 150, height / 2 + 25);
+			// } else {
+			// 	text("current class is:" + currentClass, width / 2 - 150, height / 2);
+			// 	text("the match is beyond 20 seconds.", width / 2 - 150, height / 2 + 25);
+			// }
+
 			let cueFileIdx;
 			let cuePoint;
-			if (delayFrameIdx > 1200) {
-
-				sendOscTD("/mode", 0); //mode 0: load frame from recordings
-				cueFileIdx = 2;
-				cuePoint = 1 - (delayFrameIdx - 1200) / framesPerClip;
-				sendOscTD("/fileIdx", cueFileIdx);
-				sendOscTD("/cuePoint", cuePoint);
-			} else if (delayFrameIdx > 600) {
-				sendOscTD("/mode", 0);
-				cueFileIdx = 3;
-				cuePoint = 1 - (delayFrameIdx - 600) / framesPerClip;
-				sendOscTD("/fileIdx", cueFileIdx);
-				sendOscTD("/cuePoint", cuePoint);
-			} else {
-				sendOscTD("/mode", 1); //mode 1: load frame from memory
+			if (delayFrameIdx <= TDCacheFrames) {
+				sendOscTD("/mode", 1); //mode 1: load frame from TD cache memory
 				cueFileIdx = -99;
-				cuePoint = 1 - delayFrameIdx / framesPerClip;
+				cuePoint = 1 - delayFrameIdx / framesPerRecording;
+				sendOscTD("/frameIdx", delayFrameIdx);
+
+			} else {
+				sendOscTD("/mode", 0); //mode 0: load frame from recordings
+				let idxOfRecordingFromTD = floor((delayFrameIdx - TDCacheFrames) / framesPerRecording)
+				cueFileIdx = availableRecordingNum - (idxOfRecordingFromTD + 1) + 2; // 2 is the offset for getting the correct recording file name idx in Windows. May need a different value for Mac.
+				cuePoint = 1 - (delayFrameIdx - TDCacheFrames - idxOfRecordingFromTD * framesPerRecording) / framesPerRecording;
+				sendOscTD("/fileIdx", cueFileIdx);
+				sendOscTD("/cuePoint", cuePoint);
 			}
-			sendOscTD("/frameIdx", delayFrameIdx);
-			text("showing delayed frame:" + delayFrameIdx, width / 2 - 150, height / 2);
-			text("showing file:" + cueFileIdx + " cuePoint: " + cuePoint, width / 2 - 150, height / 2 + 25);
+
+			text("showing delayed frame:" + delayFrameIdx, width / 2 - 250, height / 2 + 50);
+			text("showing file:" + cueFileIdx + " cuePoint: " + cuePoint, width / 2 - 250, height / 2 + 75);
+
+		} else {
+			text("No delay frames from plateau data or manual input yet. Show TD current frame", width / 2 - 250, height / 2 + 50);
+			sendOscTD("/mode", 1); //mode 1: load frame from TD cache memory
+			sendOscTD("/frameIdx", 0);
 		}
 
 
@@ -135,16 +160,16 @@ function startPerformance() {
 	//start OBS recording
 	toggleOBSRecording();
 
-	recordIntervalID = setInterval(() => {
+	recordIntervalID = setInterval(() => { // record a new clip every for every recordingLength seconds, so that both TD cache and hard drive recording latency is managable.
 		console.log("Recording stopped at:" + (Date.now() - startTime));
 		toggleOBSRecording();
 
 		setTimeout(() => {
 			console.log("Recording started at:" + (Date.now() - startTime));
 			toggleOBSRecording();
-		}, 500); //KNOWN ISSUE--> seems that OBS will take a little bit of time to save a video file (less than 500ms for a 5min video)
+		}, OBSRecordingGap); //KNOWN ISSUE--> seems that OBS will take a little bit of time to save a video file (less than 600ms for a 5min video). NEED TO FIX THIS!
 
-	}, clipLength * 1000);
+	}, recordingLength * 1000);
 
 	started = true;
 	console.log("Show and recording started at: " + startTime);
@@ -229,17 +254,17 @@ function setupOsc(oscPortIn, oscPortOut, oscPortIn2, oscPortOut2) {
 		//for each plateau, record its start time relative to the show's start time, i.e., how many milli seconds after the show starts.
 		let st = p.start - startTime > 0 ? p.start - startTime : 0;
 
-		if (!plateaus.has(p.className)){
-			plateaus.set(p.className, [{start: st, length: p.end - p.start}]);
+		if (!plateaus.has(p.className)) {
+			plateaus.set(p.className, [{ start: st, length: p.end - p.start }]);
 		} else {
-			plateaus.get(p.className).push({start: st, length: p.end - p.start});
+			plateaus.get(p.className).push({ start: st, length: p.end - p.start });
 		}
 		// console.log(plateaus);
 		// plateaus.push({ className: p.className, start: p.start - startTime, length: p.end - p.start }); //save plateaus with timestamps in relation to recording start time 
 	});
 
 	socket.on('classNew', (c) => {
-		if (currentClass != c){
+		if (currentClass != c) {
 			haveNewClass = true;
 			currentClass = c;
 		};
@@ -281,7 +306,7 @@ function getStartTimeAndLengthFirstMatch(_plateaus) {
 
 function getStartTimeAndLengthRandom(_plateaus, _currentClass) {
 	let pltData = _plateaus.get(_currentClass);
-	
+
 	if (pltData) {
 		const foundPlateau = chance.pickone(pltData);
 

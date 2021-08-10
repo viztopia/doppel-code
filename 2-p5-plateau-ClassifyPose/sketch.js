@@ -59,7 +59,10 @@ function setup() {
   //------------PoseNet & KNN----------------------
   video = createCapture(VIDEO);
   video.size(width, height);
-  poseNet = ml5.poseNet(video, function () {
+  poseNet = ml5.poseNet(video, {
+    flipHorizontal: false,
+    detectionType: 'single'
+  }, function () {
     select('#poseNetStatus').html('PoseNet Loaded')
   });
   poseNet.on('pose', function (results) {
