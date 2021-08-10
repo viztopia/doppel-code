@@ -83,6 +83,9 @@ io.sockets.on('connection', function (socket) {
 		// socket.broadcast.emit("message1", 1234);
 		console.log("new class: " + msg);
 	});
+	socket.on('jointDist', function (msg) {
+		socket.broadcast.emit("jointDist", msg);
+	});
 });
 
 console.log("waiting for socket connections...");

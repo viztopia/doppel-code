@@ -3,8 +3,12 @@
 // 2. If one plateau finishes and we're still in the same class, pick another plateau with the same class;
 // 3. If we receive a new class in the middle of a plateau playback, jump to a new plateau that matches the new class;
 
+let w = 600;
+let h = 500;
+let mode = 's'; // 'p': plateau-based, 's': speed-based
+
 let socket;
-let socketPort = 8081; 
+let socketPort = 8081;
 
 let isRecording = false;
 let btnStart, btnStop;
@@ -31,11 +35,19 @@ let haveNewClass = false;
 let currentClipFinished = true;
 let lastDelayedFrameIdx;
 
+//-------------------speed-based delay stuff-----------------------
+let jointDist;
+let maxJointDist = w / 20; //an arbitrary guess of the maximum distance of joint position between two frames
+let framesToCache = 600; //caching 10 seconds for testing, so 10 * 60 = 600 frames
+let cachedFrames = [];
+let mappedFrames = [];
+let avgFrame = 0;
+
 //-------------------other------------
 let OBSRecordingGap = 1000; //in milli secs. KNOWN ISSUE: some time is required to finish saving the current recording to disk before we can start recording the next clip, especially with high CPU.
 
 function setup() {
-	createCanvas(600, 500);
+	createCanvas(w, h);
 	setupOsc(12000, 12001, 13000, 13001); //OBS In / Out, TD In / Out
 	btnStart = createButton('START');
 	btnStart.position(0, 0);
@@ -62,7 +74,6 @@ function draw() {
 		text("Plateau classification is: " + (plateauOn ? "On, auto controlling TD" : "Off, manual controlling TD."), width / 2 - 250, height / 2 - 50);
 
 		//----------------------auto-controlling TD using plateau data------------------------
-
 		//----------------------1. first we calculate how many cached/recorded content is available
 		let availableRecordingNum = floor(recordedSeconds / recordingLength);
 		let availableTDCacheSeconds = recordedSeconds > TDCacheLength ? TDCacheLength : recordedSeconds;
@@ -70,73 +81,102 @@ function draw() {
 
 		let delayFrameIdx;
 
-		//-----------------------2. then based on if plateau classification is on, we calculate the number of frames to be delayed either automatically or manually
-		if (plateauOn) {
-			//----------------------auto controlling TD using plateau data------------------------
-			// console.log(haveNewClass, currentClipFinished);
-			if (haveNewClass || currentClipFinished) {
-				//pick a plateau whenever there's a new class or the current clip is finished
-				let [pStartTime, pLength] = getStartTimeAndLengthRandom(plateaus, currentClass);
+		if (mode == 'p') { //-------------plateau-based----------------
 
-				if (pStartTime && pLength){
-					delayFrameIdx = floor((Date.now() - startTime - pStartTime) / 1000 * camFPS); //convert plateau start time to how many frames we should go back from the present
-					lastDelayedFrameIdx = delayFrameIdx;
-					haveNewClass = false;
-					currentClipFinished = false;
-	
-					setTimeout(() => { currentClipFinished = true }, pLength);
+			//-----------------------2. then based on if plateau classification is on, we calculate the number of frames to be delayed either automatically or manually
+			if (plateauOn) {
+				//----------------------auto controlling TD using plateau data------------------------
+				// console.log(haveNewClass, currentClipFinished);
+				if (haveNewClass || currentClipFinished) {
+					//pick a plateau whenever there's a new class or the current clip is finished
+					let [pStartTime, pLength] = getStartTimeAndLengthRandom(plateaus, currentClass);
+
+					if (pStartTime && pLength) {
+						delayFrameIdx = floor((Date.now() - startTime - pStartTime) / 1000 * camFPS); //convert plateau start time to how many frames we should go back from the present
+						lastDelayedFrameIdx = delayFrameIdx;
+						haveNewClass = false;
+						currentClipFinished = false;
+
+						setTimeout(() => { currentClipFinished = true }, pLength);
+					}
+
+				} else {
+					//otherwise continue on the current clip
+					delayFrameIdx = lastDelayedFrameIdx;
 				}
 
+				text("current class is:" + currentClass, width / 2 - 150, height / 2 + 25);
+
+
 			} else {
-				//otherwise continue on the current clip
-				delayFrameIdx = lastDelayedFrameIdx;
+				//----------------------manual controlling TD using mouse------------------------
+
+				//first calculate the number of frames available for manual srubbing
+				//dynamically allocating TD cached frames for scrubbing is too glitchy, so we assume TD is already fully cached.
+				let availableFrames = availableRecordingNum * framesPerRecording + TDCacheFrames;
+
+				//then we reversely map mouseX with available Frames
+				delayFrameIdx = constrain(floor(map(mouseX, 0, width, availableFrames, 0)), 0, availableFrames);
+
 			}
 
-			text("current class is:" + currentClass, width / 2 - 150, height / 2 + 25);
+			//-----------------------3. then control TD using delay frame----------------------------
+			// console.log(delayFrameIdx);
+			if (delayFrameIdx) {
 
+				let cueFileIdx;
+				let cuePoint;
+				if (delayFrameIdx <= TDCacheFrames) {
+					sendOscTD("/mode", 1); //mode 1: load frame from TD cache memory
+					cueFileIdx = -99;
+					cuePoint = 1 - delayFrameIdx / framesPerRecording;
+					sendOscTD("/frameIdx", delayFrameIdx);
 
-		} else {
-			//----------------------manual controlling TD using mouse------------------------
+				} else {
+					sendOscTD("/mode", 0); //mode 0: load frame from recordings
+					let idxOfRecordingFromTD = floor((delayFrameIdx - TDCacheFrames) / framesPerRecording)
+					cueFileIdx = availableRecordingNum - (idxOfRecordingFromTD + 1) + 2; // 2 is the offset for getting the correct recording file name idx in Windows. May need a different value for Mac.
+					cuePoint = 1 - (delayFrameIdx - TDCacheFrames - idxOfRecordingFromTD * framesPerRecording) / framesPerRecording;
+					sendOscTD("/fileIdx", cueFileIdx);
+					sendOscTD("/cuePoint", cuePoint);
+				}
 
-			//first calculate the number of frames available for manual srubbing
-			//dynamically allocating TD cached frames for scrubbing is too glitchy, so we assume TD is already fully cached.
-			let availableFrames = availableRecordingNum * framesPerRecording + TDCacheFrames;
+				text("showing delayed frame:" + delayFrameIdx, width / 2 - 250, height / 2 + 50);
+				text("showing file:" + cueFileIdx + " cuePoint: " + cuePoint, width / 2 - 250, height / 2 + 75);
 
-			//then we reversely map mouseX with available Frames
-			delayFrameIdx = constrain(floor(map(mouseX, 0, width, availableFrames, 0)), 0, availableFrames);
-
-		}
-
-		//-----------------------3. then control TD using delay frame----------------------------
-		// console.log(delayFrameIdx);
-		if (delayFrameIdx) {
-
-			let cueFileIdx;
-			let cuePoint;
-			if (delayFrameIdx <= TDCacheFrames) {
+			} else {
+				text("No available delay frames yet. Showing TD current frame", width / 2 - 250, height / 2 + 50);
 				sendOscTD("/mode", 1); //mode 1: load frame from TD cache memory
-				cueFileIdx = -99;
-				cuePoint = 1 - delayFrameIdx / framesPerRecording;
-				sendOscTD("/frameIdx", delayFrameIdx);
-
-			} else {
-				sendOscTD("/mode", 0); //mode 0: load frame from recordings
-				let idxOfRecordingFromTD = floor((delayFrameIdx - TDCacheFrames) / framesPerRecording)
-				cueFileIdx = availableRecordingNum - (idxOfRecordingFromTD + 1) + 2; // 2 is the offset for getting the correct recording file name idx in Windows. May need a different value for Mac.
-				cuePoint = 1 - (delayFrameIdx - TDCacheFrames - idxOfRecordingFromTD * framesPerRecording) / framesPerRecording;
-				sendOscTD("/fileIdx", cueFileIdx);
-				sendOscTD("/cuePoint", cuePoint);
+				sendOscTD("/frameIdx", 0);
 			}
 
-			text("showing delayed frame:" + delayFrameIdx, width / 2 - 250, height / 2 + 50);
-			text("showing file:" + cueFileIdx + " cuePoint: " + cuePoint, width / 2 - 250, height / 2 + 75);
+		} else if (mode = 's') { //------------speed-based--------------------------
 
-		} else {
-			text("No available delay frames yet. Showing TD current frame", width / 2 - 250, height / 2 + 50);
-			sendOscTD("/mode", 1); //mode 1: load frame from TD cache memory
-			sendOscTD("/frameIdx", 0);
+			//map the jointDist amount to a frame index between 0 and framesToCache
+			let mappedFrame = constrain(map(jointDist, 0, maxJointDist, 0, framesToCache - 1), 0, framesToCache - 1);
+			// console.log(mappedFrame);
+
+			//save the mapped frame into an array to get avg frame
+			mappedFrames.push(mappedFrame);
+			if (mappedFrames.length > framesToCache) {
+				mappedFrames.splice(0, 1);
+			}
+
+			if (mappedFrames.length > 0) {
+				avgFrame = floor(getAvg1d(mappedFrames));
+				// select('#cFrame').elt.innerText = avgFrame;
+				// select('#delayTime').elt.innerText = nf((framesToCache - avgFrame) / frameRate(), 2, 2);
+
+				// if (!alwaysShowCurrnt) {
+				// 	image(cachedFrames[avgFrame], 0, 0, w, h);
+				// } else {
+				// 	image(cachedFrames[framesToCache - 1], 0, 0, w, h);
+				// }
+
+				sendOscTD("/mode", 1); //mode 1: load frame from TD cache memory
+				sendOscTD("/frameIdx", avgFrame);
+			}
 		}
-
 	}
 }
 
@@ -258,6 +298,10 @@ function setupOsc(oscPortIn, oscPortOut, oscPortIn2, oscPortOut2) {
 			haveNewClass = true;
 			currentClass = c;
 		};
+	});
+
+	socket.on('jointDist', (jd) => {
+		jointDist = jd;
 	});
 }
 

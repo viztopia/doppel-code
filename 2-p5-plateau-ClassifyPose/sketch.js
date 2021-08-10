@@ -35,6 +35,11 @@ let isClassifying = false;
 let loadKNNBtn, classifyBtn;
 let classIndexOffset = 1;
 
+//-----------------speed-based delay----------------------
+let joint, jointPrev;
+let jointNumber = 0;
+let jointThreshold = 0.95;
+
 //------------------socket----------
 let socket;
 let port = 8081;
@@ -75,6 +80,7 @@ function setup() {
   });
   poseNet.on('pose', function (results) {
     poses = results;
+    joint = poses[0].pose.keypoints[jointNumber];
   });
   video.hide();
 
@@ -83,6 +89,12 @@ function setup() {
 
   classifyBtn = select('#buttonClassify');
   classifyBtn.mousePressed(toggleClassification);
+
+  //----------speed-based delay setup----------------
+  jointPrev = {
+    x: width / 2,
+    y: height / 2
+  };
 
   //----------setup socket communication---------------------
   setupSocket();
@@ -121,6 +133,20 @@ function draw() {
       socket.emit('plateauNew', newPlat);
       plateaus.push(newPlat);
     }
+
+
+
+    //---------------speed-based delay----------------
+    if (joint && joint.score > jointThreshold) {
+
+      let jointDist = dist(joint.position.x, joint.position.y, jointPrev.x, jointPrev.y);
+      jointPrev = joint.position;
+
+      if (jointDist > 0) {
+        // select('#jointDist').elt.innerText = jointDist;
+        socket.emit('jointDist', jointDist);
+      }
+    } 
   }
 }
 
