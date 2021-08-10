@@ -4,6 +4,7 @@
 // 3. If we receive a new class in the middle of a plateau playback, jump to a new plateau that matches the new class;
 
 let socket;
+let socketPort = 8081; 
 
 let isRecording = false;
 let btnStart, btnStop;
@@ -31,7 +32,7 @@ let currentClipFinished = true;
 let lastDelayedFrameIdx;
 
 //-------------------other------------
-let OBSRecordingGap = 1000; //KNOWN ISSUE: some time is required to finish saving the current recording to disk before we can start recording the next clip, especially with high CPU.
+let OBSRecordingGap = 1000; //in milli secs. KNOWN ISSUE: some time is required to finish saving the current recording to disk before we can start recording the next clip, especially with high CPU.
 
 function setup() {
 	createCanvas(600, 500);
@@ -57,15 +58,15 @@ function draw() {
 	} else {
 
 		recordedSeconds = floor((Date.now() - startTime) / 1000);
-		text("Performance & recording started for " + recordedSeconds + " seconds, " + recordedSeconds * recordingFPS + " frames", width / 2 - 250, height / 2 - 50);
-		text("Plateau classification is: " + (plateauOn ? "On, auto controlling TD" : "Off, manual controlling TD."), width / 2 - 250, height / 2 - 25);
+		text("Performance & recording started for " + recordedSeconds + " seconds, " + recordedSeconds * recordingFPS + " frames", width / 2 - 250, height / 2 - 75);
+		text("Plateau classification is: " + (plateauOn ? "On, auto controlling TD" : "Off, manual controlling TD."), width / 2 - 250, height / 2 - 50);
 
 		//----------------------auto-controlling TD using plateau data------------------------
 
 		//----------------------1. first we calculate how many cached/recorded content is available
 		let availableRecordingNum = floor(recordedSeconds / recordingLength);
 		let availableTDCacheSeconds = recordedSeconds > TDCacheLength ? TDCacheLength : recordedSeconds;
-		text(availableRecordingNum + " recording clips and " + availableTDCacheSeconds + " seconds in TD cache available", width / 2 - 250, height / 2);
+		text(availableRecordingNum + " recording clips and " + availableTDCacheSeconds + " seconds in TD cache available", width / 2 - 250, height / 2 - 25);
 
 		let delayFrameIdx;
 
@@ -109,15 +110,6 @@ function draw() {
 		//-----------------------3. then control TD using delay frame----------------------------
 		// console.log(delayFrameIdx);
 		if (delayFrameIdx) {
-			// if (delayFrameIdx < 600) {
-			// 	sendOscTD("/mode", 1); //mode 1: load frame from TD cache memory
-			// 	sendOscTD("/frameIdx", delayFrameIdx);
-			// 	text("current class is:" + currentClass, width / 2 - 150, height / 2);
-			// 	text("showing a new clip with TD frame cache Idx: " + delayFrameIdx + " frames ago", width / 2 - 150, height / 2 + 25);
-			// } else {
-			// 	text("current class is:" + currentClass, width / 2 - 150, height / 2);
-			// 	text("the match is beyond 20 seconds.", width / 2 - 150, height / 2 + 25);
-			// }
 
 			let cueFileIdx;
 			let cuePoint;
@@ -140,19 +132,17 @@ function draw() {
 			text("showing file:" + cueFileIdx + " cuePoint: " + cuePoint, width / 2 - 250, height / 2 + 75);
 
 		} else {
-			text("No delay frames from plateau data or manual input yet. Show TD current frame", width / 2 - 250, height / 2 + 50);
+			text("No available delay frames yet. Showing TD current frame", width / 2 - 250, height / 2 + 50);
 			sendOscTD("/mode", 1); //mode 1: load frame from TD cache memory
 			sendOscTD("/frameIdx", 0);
 		}
-
-
 
 	}
 }
 
 function startPerformance() {
-	//---clear plateau
-	plateaus = new Map();
+	//---clear plateau data
+	plateaus.clear();
 
 	//---record start time---
 	startTime = Date.now();
@@ -201,7 +191,7 @@ function mouseClicked() {
 //-------------------------p5 OSC & Socket Setup--------------------------------------
 
 function setupOsc(oscPortIn, oscPortOut, oscPortIn2, oscPortOut2) {
-	socket = io.connect('http://127.0.0.1:8081', { port: 8081, rememberTransport: false });
+	socket = io.connect('http://127.0.0.1:' + socketPort, { port: socketPort, rememberTransport: false });
 	socket.on('connect', function () {
 
 		//---Setup OBS OSC---
@@ -255,9 +245,9 @@ function setupOsc(oscPortIn, oscPortOut, oscPortIn2, oscPortOut2) {
 		let st = p.start - startTime > 0 ? p.start - startTime : 0;
 
 		if (!plateaus.has(p.className)) {
-			plateaus.set(p.className, [{ start: st, length: p.end - p.start }]);
+			plateaus.set(p.className, [{ start: st, length: p.end - p.start }]); // if plateau of this class never exists, add one.
 		} else {
-			plateaus.get(p.className).push({ start: st, length: p.end - p.start });
+			plateaus.get(p.className).push({ start: st, length: p.end - p.start }); // if plateau of this class already exists, add data to array.
 		}
 		// console.log(plateaus);
 		// plateaus.push({ className: p.className, start: p.start - startTime, length: p.end - p.start }); //save plateaus with timestamps in relation to recording start time 
@@ -310,8 +300,6 @@ function getStartTimeAndLengthRandom(_plateaus, _currentClass) {
 	if (pltData) {
 		const foundPlateau = chance.pickone(pltData);
 
-		//converting from milli seconds to frames
-		// const frameIdx = floor(foundPlateau.start / 1000 * camFPS);
 		return [foundPlateau.start, foundPlateau.length];
 	} else {
 		return [undefined, undefined];

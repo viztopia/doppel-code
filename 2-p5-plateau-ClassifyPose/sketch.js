@@ -1,8 +1,8 @@
 // plateau logic, updated 08/07:
 // 1. constantly sending over the current classification;
-// 2. send a plateau (its class, start time and end time) once it's detected;
-// 3. plateau observation window length: 120 frames;
-// 4. what counts as the starting / ending of a plateau: within the window, more than / less than 60% of frames is one class;
+// 2. send a plateau (its class, start time and end time) once it's detected, converted from MiMi's plateau code;
+// 3. plateau observation window length: 120 frames, adjustable via slider;
+// 4. what counts as the starting / ending of a plateau: given the current window, more than / less than <threshold> of frames is one class;
 
 let cnv;
 let waiting = 180;
@@ -12,7 +12,8 @@ let classCache = [];
 let cacheLength = 120; //classification window size
 
 let maxClass, maxCount;
-let newClassCountBaseline = cacheLength * 0.6; //cacheLength * 0.6 = 120 * 0.6 = 72
+let classThreshold = 0.7;
+let newClassCountBaseline = cacheLength * classThreshold;
 let plateauStarted = false;
 let plateatStartTime, plateauEndTime;
 
@@ -36,14 +37,21 @@ let classIndexOffset = 1;
 
 //------------------socket----------
 let socket;
+let port = 8081;
+
+function preload(){
+  video = createVideo('https://player.vimeo.com/external/584042738.hd.mp4?s=92569f00b28bbe55cd9fefec9e02980ce3cb9594&profile_id=175');
+  video.loop();
+}
 
 function setup() {
-  cnv = createCanvas(640, 480);
+  cnv = createCanvas(1280, 720);
   cnv.parent('cnvDiv');
   classCacheLengthSlider = createSlider(10, 180, cacheLength, 10);
   classCacheLengthSlider.parent('controlsDiv');
   classCacheLengthSlider.input(() => {
-    cacheLength = classCacheLengthSlider.value()
+    cacheLength = classCacheLengthSlider.value();
+    newClassCountBaseline = cacheLength * classThreshold; //recalculate the baseline for deciding how much we count as a new class
     select('#cacheLengthLabel').html(cacheLength);
   })
 
@@ -57,7 +65,7 @@ function setup() {
 
 
   //------------PoseNet & KNN----------------------
-  video = createCapture(VIDEO);
+  // video = createCapture(VIDEO);
   video.size(width, height);
   poseNet = ml5.poseNet(video, {
     flipHorizontal: false,
@@ -180,7 +188,7 @@ function gotResults(err, result) {
       select('#confidence').html(`${confidences[parseInt(result.label)] * 100} %`);
 
       classCache.push(idx);
-      if (classCache.length >= cacheLength) {
+      while (classCache.length >= cacheLength) {
         classCache.shift();
       }
     }
@@ -224,7 +232,7 @@ function drawKeypoints() {
 
 //---------------------socket stuff
 function setupSocket() {
-  socket = io.connect('http://127.0.0.1:8081', { port: 8081, rememberTransport: false });
+  socket = io.connect('http://127.0.0.1:' + port, { port: port, rememberTransport: false });
   socket.on('connect', function () {
     socket.emit('plateauOn', false);
   });
