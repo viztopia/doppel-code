@@ -1,11 +1,18 @@
-// choreography logic, updated 08/07:
+// choreography logic, updated 08/11:
 // 1. Based on current class, pick one plateau with the same class; if no corresponding plateaus found, just play current frame;
 // 2. If one plateau finishes and we're still in the same class, pick another plateau with the same class;
 // 3. If we receive a new class in the middle of a plateau playback, jump to a new plateau that matches the new class;
+// 4. Added code and modes for plateau-based control and speed-based control and manual
 
 let w = 600;
 let h = 500;
-let mode = 's'; // 'p': plateau-based, 's': speed-based
+
+let mode = 0; // 0: manual 60 interval, 1: manual 1 interval, 2: speed-based, 3:plateau-based
+let modePrev = 0;
+let manualCount60 = 0;
+let manualCount1 = 0;
+let manualCount60Thres = 100;
+let manualCount1Thres = 6000;
 
 let socket;
 let socketPort = 8081;
@@ -36,7 +43,7 @@ let currentClipFinished = true;
 let lastDelayedFrameIdx;
 
 //-------------------speed-based delay stuff-----------------------
-let jointDist;
+let jointDist = 0;
 let maxJointDist = w / 20; //an arbitrary guess of the maximum distance of joint position between two frames
 let framesToCache = 600; //caching 10 seconds for testing, so 10 * 60 = 600 frames
 let cachedFrames = [];
@@ -53,37 +60,105 @@ function setup() {
 	btnStart.position(0, 0);
 	btnStart.mousePressed(startPerformance);
 	btnStop = createButton('STOP');
-	btnStop.position(100, 0);
+	btnStop.position(80, 0);
 	btnStop.mousePressed(stopPerformance);
 
 	textSize(14);
 }
 
 function draw() {
-	background(255, 0, 255);
-	fill(0);
-	ellipse(mouseX, mouseY, 50, 50);
+
 	if (!started) {
+		background(255, 0, 255);
+
 		text("Please clean all recording files first except record.mp4 before START", width / 2 - 225, height / 2);
 		text("The first recording file will be named 'recording(2).mp4', then 3, 4, ...", width / 2 - 225, height / 2 + 25);
 		sendOscTD("/fileIdx", 0);
 	} else {
 
+		if (mode == 0) background(140, 226, 238);
+		else if (mode == 1) background(147, 186, 225);
+		else if (mode == 2) background(137, 132, 214);
+		else if (mode == 3) background(114, 81, 178);
+
 		recordedSeconds = floor((Date.now() - startTime) / 1000);
 		text("Performance & recording started for " + recordedSeconds + " seconds, " + recordedSeconds * recordingFPS + " frames", width / 2 - 250, height / 2 - 75);
-		text("Plateau classification is: " + (plateauOn ? "On, auto controlling TD" : "Off, manual controlling TD."), width / 2 - 250, height / 2 - 50);
-
-		//----------------------auto-controlling TD using plateau data------------------------
-		//----------------------1. first we calculate how many cached/recorded content is available
+		
+		//----------------------1. first we calculate how many cached/recorded content is available-----------
 		let availableRecordingNum = floor(recordedSeconds / recordingLength);
 		let availableTDCacheSeconds = recordedSeconds > TDCacheLength ? TDCacheLength : recordedSeconds;
-		text(availableRecordingNum + " recording clips and " + availableTDCacheSeconds + " seconds in TD cache available", width / 2 - 250, height / 2 - 25);
+		text(availableRecordingNum + " recording clips and " + availableTDCacheSeconds + " seconds in TD cache available", width / 2 - 250, height / 2 - 50);
 
+
+		//----------------------2. then we calculate how many frames to delay based on current mode------------
 		let delayFrameIdx;
 
-		if (mode == 'p') { //-------------plateau-based----------------
+		if (mode == 0) {//------------manual 60 interval--------------------------
+			//---------sync the counts first----------
+			if (modePrev == 1) {manualCount60 = floor(manualCount1 / 60); modePrev = mode;}
 
-			//-----------------------2. then based on if plateau classification is on, we calculate the number of frames to be delayed either automatically or manually
+			textSize(40);
+			text("mode: manual 60", width / 2 - 150, height / 2 - 150);
+			textSize(14);
+
+			delayFrameIdx = manualCount60 * 60;
+			
+			text("Manual Count: " + manualCount60, width / 2 - 250, height / 2 + 25);
+
+			if (delayFrameIdx > recordedSeconds * recordingFPS) {
+				delayFrameIdx = recordedSeconds * recordingFPS;
+				text("Maximum delay reaced based on available recorded content.", width / 2 - 250, height / 2 + 50);
+				text("Capping it to recordedSeconds * recordingFPS.", width / 2 - 250, height / 2 + 75);
+			}
+
+		} else if (mode == 1) {//------------manual 1 interval--------------------------
+			//---------sync the counts first----------
+			if (modePrev == 0) {manualCount1 = manualCount60 * 60; modePrev = mode;}
+
+			textSize(40);
+			text("mode: manual 1", width / 2 - 150, height / 2 - 150);
+			textSize(14);
+
+			delayFrameIdx = manualCount1;
+			
+			text("Manual Count: " + manualCount1, width / 2 - 250, height / 2 + 25);
+
+			if (delayFrameIdx > recordedSeconds * recordingFPS) {
+				delayFrameIdx = recordedSeconds * recordingFPS;
+				text("Maximum delay reached based on available recorded content.", width / 2 - 250, height / 2 + 50);
+				text("Capping it to recordedSeconds * recordingFPS.", width / 2 - 250, height / 2 + 75);
+			}
+
+		} else if (mode == 2) { //------------speed-based--------------------------
+
+			textSize(40);
+			text("mode: speed", width / 2 - 150, height / 2 - 150);
+			textSize(14);
+
+			//map the jointDist amount to a frame index between 0 and framesToCache
+			let mappedFrame = constrain(map(jointDist, 0, maxJointDist, 0, TDCacheFrames - 1), 0, TDCacheFrames - 1);
+			// console.log(mappedFrame);
+
+			//save the mapped frame into an array to get avg frame
+			mappedFrames.push(mappedFrame);
+			if (mappedFrames.length > framesToCache) {
+				mappedFrames.splice(0, 1);
+			}
+
+			if (mappedFrames.length > 0) {
+				delayFrameIdx = floor(getAvg1d(mappedFrames));
+				text("Current joint dist is: " + jointDist, width / 2 - 250, height / 2 + 25);
+				text("Averaged delay frame is: " + delayFrameIdx, width / 2 - 250, height / 2 + 50);
+			}
+		} else if (mode == 3) { //-------------plateau-based----------------
+
+			textSize(40);
+			text("mode: plateau", width / 2 - 150, height / 2 - 150);
+			textSize(14);
+
+			text("Plateau classification is: " + (plateauOn ? "On." : "Off. Using mouseX instead."), width / 2 - 250, height / 2 - 25);
+
+			//-----------------------if plateau classification is on, we calculate the number of frames to be delayed either automatically or manually
 			if (plateauOn) {
 				//----------------------auto controlling TD using plateau data------------------------
 				// console.log(haveNewClass, currentClipFinished);
@@ -105,80 +180,86 @@ function draw() {
 					delayFrameIdx = lastDelayedFrameIdx;
 				}
 
-				text("current class is:" + currentClass, width / 2 - 150, height / 2 + 25);
+				text("current class is:" + currentClass, width / 2 - 250, height / 2 + 25);
 
 
 			} else {
-				//----------------------manual controlling TD using mouse------------------------
-
+				//----------------------manual controlling TD using mouse as a fall back------------------------
+				fill(0);
+				ellipse(mouseX, mouseY, 50, 50);
 				//first calculate the number of frames available for manual srubbing
 				//dynamically allocating TD cached frames for scrubbing is too glitchy, so we assume TD is already fully cached.
 				let availableFrames = availableRecordingNum * framesPerRecording + TDCacheFrames;
 
 				//then we reversely map mouseX with available Frames
-				delayFrameIdx = constrain(floor(map(mouseX, 0, width, availableFrames, 0)), 0, availableFrames);
-
+				delayFrameIdx = constrain(floor(map(mouseX, 0, width, availableFrames - 1, 0)), 0, availableFrames - 1);
 			}
 
-			//-----------------------3. then control TD using delay frame----------------------------
-			// console.log(delayFrameIdx);
-			if (delayFrameIdx) {
+		}
 
-				let cueFileIdx;
-				let cuePoint;
-				if (delayFrameIdx <= TDCacheFrames) {
-					sendOscTD("/mode", 1); //mode 1: load frame from TD cache memory
-					cueFileIdx = -99;
-					cuePoint = 1 - delayFrameIdx / framesPerRecording;
-					sendOscTD("/frameIdx", delayFrameIdx);
+		//-----------------------3. then control TD using delay frame----------------------------
+		// console.log(delayFrameIdx);
+		if (delayFrameIdx) {
 
-				} else {
-					sendOscTD("/mode", 0); //mode 0: load frame from recordings
-					let idxOfRecordingFromTD = floor((delayFrameIdx - TDCacheFrames) / framesPerRecording)
-					cueFileIdx = availableRecordingNum - (idxOfRecordingFromTD + 1) + 2; // 2 is the offset for getting the correct recording file name idx in Windows. May need a different value for Mac.
-					cuePoint = 1 - (delayFrameIdx - TDCacheFrames - idxOfRecordingFromTD * framesPerRecording) / framesPerRecording;
-					sendOscTD("/fileIdx", cueFileIdx);
-					sendOscTD("/cuePoint", cuePoint);
-				}
-
-				text("showing delayed frame:" + delayFrameIdx, width / 2 - 250, height / 2 + 50);
-				text("showing file:" + cueFileIdx + " cuePoint: " + cuePoint, width / 2 - 250, height / 2 + 75);
+			let cueFileIdx;
+			let cuePoint;
+			if (delayFrameIdx <= TDCacheFrames) {
+				sendOscTD("/mode", 1); //mode 1: load frame from TD cache memory
+				cueFileIdx = -99;
+				cuePoint = 1 - delayFrameIdx / framesPerRecording;
+				sendOscTD("/frameIdx", delayFrameIdx);
 
 			} else {
-				text("No available delay frames yet. Showing TD current frame", width / 2 - 250, height / 2 + 50);
-				sendOscTD("/mode", 1); //mode 1: load frame from TD cache memory
-				sendOscTD("/frameIdx", 0);
+				sendOscTD("/mode", 0); //mode 0: load frame from recordings
+				let idxOfRecordingFromTD = floor((delayFrameIdx - TDCacheFrames) / framesPerRecording)
+				cueFileIdx = availableRecordingNum - (idxOfRecordingFromTD + 1) + 2; // 2 is the offset for getting the correct recording file name idx in Windows. May need a different value for Mac.
+				cuePoint = 1 - (delayFrameIdx - TDCacheFrames - idxOfRecordingFromTD * framesPerRecording) / framesPerRecording;
+				sendOscTD("/fileIdx", cueFileIdx);
+				sendOscTD("/cuePoint", cuePoint);
 			}
 
-		} else if (mode = 's') { //------------speed-based--------------------------
+			text("showing delayed frame:" + delayFrameIdx, width / 2 - 250, height / 2 + 125);
+			text("showing file:" + cueFileIdx + " cuePoint: " + cuePoint, width / 2 - 250, height / 2 + 150);
 
-			//map the jointDist amount to a frame index between 0 and framesToCache
-			let mappedFrame = constrain(map(jointDist, 0, maxJointDist, 0, framesToCache - 1), 0, framesToCache - 1);
-			// console.log(mappedFrame);
-
-			//save the mapped frame into an array to get avg frame
-			mappedFrames.push(mappedFrame);
-			if (mappedFrames.length > framesToCache) {
-				mappedFrames.splice(0, 1);
-			}
-
-			if (mappedFrames.length > 0) {
-				avgFrame = floor(getAvg1d(mappedFrames));
-				// select('#cFrame').elt.innerText = avgFrame;
-				// select('#delayTime').elt.innerText = nf((framesToCache - avgFrame) / frameRate(), 2, 2);
-
-				// if (!alwaysShowCurrnt) {
-				// 	image(cachedFrames[avgFrame], 0, 0, w, h);
-				// } else {
-				// 	image(cachedFrames[framesToCache - 1], 0, 0, w, h);
-				// }
-
-				sendOscTD("/mode", 1); //mode 1: load frame from TD cache memory
-				sendOscTD("/frameIdx", avgFrame);
-			}
+		} else {
+			text("No available delay frames yet. Showing TD current frame", width / 2 - 250, height / 2 + 125);
+			sendOscTD("/mode", 1); //mode 1: load frame from TD cache memory
+			sendOscTD("/frameIdx", 0);
 		}
 	}
 }
+//----------------------Mode Select--------------------------
+function keyPressed() {
+	// console.log(keyCode);
+	switch (keyCode) {
+		case UP_ARROW: //arrow up
+			mode--;
+			break;
+		case DOWN_ARROW: //arrow down
+			mode++;
+			break;
+		case LEFT_ARROW: //arrow left
+			manualCount60--;
+			manualCount1--;
+			break;
+		case RIGHT_ARROW: //arrow right
+			manualCount60++;
+			manualCount1++;
+			break;
+	}
+
+	if (mode > 3) mode = 0;
+	if (mode < 0) mode = 3;
+
+	if (manualCount60 > manualCount60Thres) manualCount60 = manualCount60Thres;
+	if (manualCount60 < 0) manualCount60 = 0;
+
+	if (manualCount1 > manualCount1Thres) manualCount1 = manualCount1Thres;
+	if (manualCount1 < 0) manualCount1 = 0;
+}
+
+
+//----------------------Performance Start/Stop Control------------------------------
 
 function startPerformance() {
 	//---clear plateau data
@@ -212,6 +293,8 @@ function stopPerformance() {
 	sendOsc("/stopRecording", "");
 	isRecording = false;
 	console.log("Show and recording stopped at: " + (Date.now() - startTime));
+	manualCount60 = 0;
+	manualCount1 = 0;
 
 }
 

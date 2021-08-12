@@ -4,11 +4,14 @@ let io = require('socket.io')(8081);
 //for OBS
 let oscServer1, oscClient1;
 let isConnected1 = false;
+let obsSocketID;
 
 //for TouchDesigner
 let oscServer2, oscClient2;
 let isConnected2 = false;
+let tdSocketID;
 
+//------------used to maintain plateau classification status-------------
 let plateauStatus = false;
 
 
@@ -29,10 +32,16 @@ io.sockets.on('connection', function (socket) {
 			socket.emit("message1", msg);
 		});
 		socket.emit("connected", 1);
+		obsSocketID = socket.id;
+		console.log("OBS OSC client opened.");
 	});
 	socket.on("message1", function (obj) {
-		// console.log("got message 1");
-		oscClient1.send.apply(oscClient1, obj);
+		if (oscClient1){
+			oscClient1.send.apply(oscClient1, obj);
+		} else {
+			console.log("OBS OSC client not open.");
+		}
+		
 	});
 
 	//---TouchDesigner---
@@ -45,22 +54,29 @@ io.sockets.on('connection', function (socket) {
 			socket.emit("message2", msg);
 		});
 		socket.emit("connected", 1);
+		tdSocketID = socket.id;
+		console.log("TD OSC client opened.");
 	});
 	socket.on("message2", function (obj) {
-		// console.log("got message 2");
-		oscClient2.send.apply(oscClient2, obj);
+		if (oscClient2){
+			oscClient2.send.apply(oscClient2, obj);
+		} else {
+			console.log("TD OSC client not open.");
+		}
 	});
 
 	socket.on('disconnect', function () {
-		if (isConnected1) {
+		if (isConnected1 && socket.id==obsSocketID) {
 			oscServer1.kill();
 			oscClient1.kill();
 			isConnected1 = false;
+			console.log("OBS OSC client closed.");
 		}
-		if (isConnected2) {
+		if (isConnected2 && socket.id==obsSocketID) {
 			oscServer2.kill();
 			oscClient2.kill();
 			isConnected2 = false;
+			console.log("TD OSC client closed.");
 		}
 		console.log('disconnected');
 	});
