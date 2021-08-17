@@ -1,5 +1,8 @@
 let osc = require('node-osc');
-let io = require('socket.io')(8081);
+let httpServer = require("http").createServer().listen(8081);
+let io = require('socket.io')(httpServer, {
+	cors: { origin: "*" }
+  });
 
 //for OBS
 let oscServer1, oscClient1;

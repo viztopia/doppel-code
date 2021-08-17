@@ -42,15 +42,16 @@ let jointThreshold = 0.95;
 
 //------------------socket----------
 let socket;
+let ip = "172.20.10.2";
 let port = 8081;
 
 function preload(){
-  // video = createVideo('https://player.vimeo.com/external/584042738.hd.mp4?s=92569f00b28bbe55cd9fefec9e02980ce3cb9594&profile_id=175');
-  // video.loop();
+  video = createVideo('https://player.vimeo.com/external/584042738.hd.mp4?s=92569f00b28bbe55cd9fefec9e02980ce3cb9594&profile_id=175');
+  video.loop();
 }
 
 function setup() {
-  cnv = createCanvas(640, 480);
+  cnv = createCanvas(1920, 1080);
   cnv.parent('cnvDiv');
   classCacheLengthSlider = createSlider(10, 180, cacheLength, 10);
   classCacheLengthSlider.parent('controlsDiv');
@@ -70,8 +71,8 @@ function setup() {
 
 
   //------------PoseNet & KNN----------------------
-  video = createCapture(VIDEO);
-  // video.size(width, height);
+  // video = createCapture(VIDEO);
+  video.size(width, height);
   poseNet = ml5.poseNet(video, {
     flipHorizontal: false,
     detectionType: 'single'
@@ -258,7 +259,7 @@ function drawKeypoints() {
 
 //---------------------socket stuff
 function setupSocket() {
-  socket = io.connect('http://127.0.0.1:' + port, { port: port, rememberTransport: false });
+  socket = io.connect('http://'+ ip +':' + port, { port: port, rememberTransport: false });
   socket.on('connect', function () {
     socket.emit('plateauOn', false);
   });
