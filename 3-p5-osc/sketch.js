@@ -7,12 +7,17 @@
 let w = 600;
 let h = 500;
 
-let mode = 0; // 0: manual 60 interval, 1: manual 1 interval, 2: speed-based, 3:plateau-based
+let mode = 0; // 0: fixed interval looping btw 4s, 4.5s, 6s and 10s, 1: manual 1 interval, 2: speed-based, 3:plateau-based, 4: bookmark
 let modePrev = 0;
 let manualCount60 = 0;
+let fixedIntervalIdx = 0;
+let fixedIntervals = [4, 4.5, 6, 10];
 let manualCount1 = 0;
 let manualCount60Thres = 100;
 let manualCount1Thres = 6000;
+
+
+//--------------sockets-----------------------
 
 let socket;
 let socketPort = 8081;
@@ -50,6 +55,11 @@ let cachedFrames = [];
 let mappedFrames = [];
 let avgFrame = 0;
 
+//-------------------bookmark stuff-----------------------
+let bookmarkTime = -99;
+let haveNewJump = false;
+let lastJumpedFrameIdx;
+
 //-------------------other------------
 let OBSRecordingGap = 1000; //in milli secs. KNOWN ISSUE: some time is required to finish saving the current recording to disk before we can start recording the next clip, especially with high CPU.
 
@@ -80,10 +90,11 @@ function draw() {
 		else if (mode == 1) background(147, 186, 225);
 		else if (mode == 2) background(137, 132, 214);
 		else if (mode == 3) background(114, 81, 178);
+		else if (mode == 4) background(164, 188, 188);
 
 		recordedSeconds = floor((Date.now() - startTime) / 1000);
 		text("Performance & recording started for " + recordedSeconds + " seconds, " + recordedSeconds * recordingFPS + " frames", width / 2 - 250, height / 2 - 75);
-		
+
 		//----------------------1. first we calculate how many cached/recorded content is available-----------
 		let availableRecordingNum = floor(recordedSeconds / recordingLength);
 		let availableTDCacheSeconds = recordedSeconds > TDCacheLength ? TDCacheLength : recordedSeconds;
@@ -94,33 +105,42 @@ function draw() {
 		let delayFrameIdx;
 
 		if (mode == 0) {//------------manual 60 interval--------------------------
-			//---------sync the counts first----------
-			if (modePrev == 1) {manualCount60 = floor(manualCount1 / 60); modePrev = mode;}
+			// //---------sync the counts first----------
+			// if (modePrev == 1) {manualCount60 = floor(manualCount1 / 60); modePrev = mode;}
+
+			// textSize(40);
+			// text("mode: manual 60", width / 2 - 150, height / 2 - 150);
+			// textSize(14);
+
+			// delayFrameIdx = manualCount60 * 60;
+
+			// text("Manual Count: " + manualCount60, width / 2 - 250, height / 2 + 25);
+
+			// if (delayFrameIdx > recordedSeconds * recordingFPS) {
+			// 	delayFrameIdx = recordedSeconds * recordingFPS;
+			// 	text("Maximum delay reaced based on available recorded content.", width / 2 - 250, height / 2 + 50);
+			// 	text("Capping it to recordedSeconds * recordingFPS.", width / 2 - 250, height / 2 + 75);
+			// }
+
 
 			textSize(40);
-			text("mode: manual 60", width / 2 - 150, height / 2 - 150);
+			text("mode: fixed intervals", width / 2 - 200, height / 2 - 150);
 			textSize(14);
 
-			delayFrameIdx = manualCount60 * 60;
-			
-			text("Manual Count: " + manualCount60, width / 2 - 250, height / 2 + 25);
-
-			if (delayFrameIdx > recordedSeconds * recordingFPS) {
-				delayFrameIdx = recordedSeconds * recordingFPS;
-				text("Maximum delay reaced based on available recorded content.", width / 2 - 250, height / 2 + 50);
-				text("Capping it to recordedSeconds * recordingFPS.", width / 2 - 250, height / 2 + 75);
-			}
+			delayFrameIdx = fixedIntervals[fixedIntervalIdx] * recordingFPS;
+			text("Current interval is: " + fixedIntervals[fixedIntervalIdx] + " seconds", width / 2 - 250, height / 2 + 25);
 
 		} else if (mode == 1) {//------------manual 1 interval--------------------------
 			//---------sync the counts first----------
-			if (modePrev == 0) {manualCount1 = manualCount60 * 60; modePrev = mode;}
+			// if (modePrev == 0) {manualCount1 = manualCount60 * 60; modePrev = mode;}
+			if (modePrev == 0) { manualCount1 = fixedIntervals[fixedIntervalIdx] * recordingFPS; modePrev = mode; }
 
 			textSize(40);
 			text("mode: manual 1", width / 2 - 150, height / 2 - 150);
 			textSize(14);
 
 			delayFrameIdx = manualCount1;
-			
+
 			text("Manual Count: " + manualCount1, width / 2 - 250, height / 2 + 25);
 
 			if (delayFrameIdx > recordedSeconds * recordingFPS) {
@@ -195,6 +215,25 @@ function draw() {
 				delayFrameIdx = constrain(floor(map(mouseX, 0, width, availableFrames - 1, 0)), 0, availableFrames - 1);
 			}
 
+		} else if (mode == 4) { //------------bookmark---------------------
+			textSize(40);
+			text("mode: bookmark", width / 2 - 150, height / 2 - 150);
+			textSize(14);
+
+			if (bookmarkTime < 0) {
+				text("No bookmarks available yet. Press Q to save a bookmark.", width / 2 - 250, height / 2 + 25);
+			} else {
+				if (haveNewJump) {
+					delayFrameIdx = floor((Date.now() - startTime - bookmarkTime) / 1000 * camFPS);
+					lastJumpedFrameIdx = delayFrameIdx;
+					haveNewJump = false;
+				} else {
+					delayFrameIdx = lastJumpedFrameIdx;
+				}
+
+				text("Current bookmark is:" + bookmarkTime / 1000 + " seconds", width / 2 - 250, height / 2 + 25);
+				text("Press W to jump, press Q to overwrite the current.", width / 2 - 250, height / 2 + 50);
+			}
 		}
 
 		//-----------------------3. then control TD using delay frame----------------------------
@@ -226,33 +265,59 @@ function draw() {
 			sendOscTD("/mode", 1); //mode 1: load frame from TD cache memory
 			sendOscTD("/frameIdx", 0);
 		}
+
+		
 	}
 }
 //----------------------Mode Select--------------------------
 function keyPressed() {
 	// console.log(keyCode);
 	switch (keyCode) {
-		case UP_ARROW: //arrow up
-			mode--;
+		// case UP_ARROW: //arrow up
+		// 	mode--;
+		// 	break;
+		// case DOWN_ARROW: //arrow down
+		// 	mode++;
+		// 	break;
+		case 48: //----0------
+			mode = 0;
 			break;
-		case DOWN_ARROW: //arrow down
-			mode++;
+		case 49: //----1------
+			mode = 1;
+			break;
+		case 50: //----2------
+			mode = 2;
+			break;
+		case 51: //----3------
+			mode = 3;
+			break;
+		case 52: //----4------
+			mode = 4;
+			haveNewJump = true;
 			break;
 		case LEFT_ARROW: //arrow left
-			manualCount60--;
+			// manualCount60--;
+			fixedIntervalIdx > 0 ? fixedIntervalIdx-- : fixedIntervalIdx = 0;
 			manualCount1--;
 			break;
 		case RIGHT_ARROW: //arrow right
-			manualCount60++;
+			// manualCount60++;
+			fixedIntervalIdx < fixedIntervals.length - 1 ? fixedIntervalIdx++ : fixedIntervalIdx = fixedIntervals.length - 1;
 			manualCount1++;
+			break;
+		case 81: //-----------Q: bookmark a time 
+			bookmarkTime = Date.now() - startTime;
+			break;
+		case 87:
+			haveNewJump = true;
 			break;
 	}
 
-	if (mode > 3) mode = 0;
-	if (mode < 0) mode = 3;
+	// if (mode > 3) mode = 0;
+	// if (mode < 0) mode = 3;
 
-	if (manualCount60 > manualCount60Thres) manualCount60 = manualCount60Thres;
-	if (manualCount60 < 0) manualCount60 = 0;
+	// if (manualCount60 > manualCount60Thres) manualCount60 = manualCount60Thres;
+	// if (manualCount60 < 0) manualCount60 = 0;
 
 	if (manualCount1 > manualCount1Thres) manualCount1 = manualCount1Thres;
 	if (manualCount1 < 0) manualCount1 = 0;
@@ -295,6 +360,8 @@ function stopPerformance() {
 	console.log("Show and recording stopped at: " + (Date.now() - startTime));
 	manualCount60 = 0;
 	manualCount1 = 0;
+	mode = 0;
+	bookmarkTime = -99;
 
 }
 
