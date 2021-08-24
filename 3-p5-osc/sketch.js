@@ -7,18 +7,18 @@
 let w = 600;
 let h = 500;
 
+//---------------modes & performance control---------------------
 let mode = 0; // 0: fixed interval looping btw 4s, 4.5s, 6s and 10s, 1: manual 1 interval, 2: speed-based, 3:plateau-based, 4: bookmark
 let modePrev = 0;
-let manualCount60 = 0;
+let delayFrameIdxPrev = 0;
 let fixedIntervalIdx = 0;
 let fixedIntervals = [4, 4.5, 6, 10];
 let manualCount1 = 0;
-let manualCount60Thres = 100;
 let manualCount1Thres = 6000;
-
+let blackoutLeft = false;
+let blackoutRight = false;
 
 //--------------sockets-----------------------
-
 let socket;
 let socketPort = 8081;
 
@@ -39,15 +39,10 @@ let startTime = 0;
 let recordedSeconds;
 let lastAvailableFrames = 0; // used to refresh the controlling timeline
 
-//-------------------clasification plateau stuff----------------
-let plateauOn = false;
-let plateaus = new Map();
-let currentClass;
-let haveNewClass = false;
-let currentClipFinished = true;
-let lastDelayedFrameIdx;
+//-------------------mode 0: fixed interval stuff-------------------
+let fixedFrame = 0;
 
-//-------------------speed-based delay stuff-----------------------
+//-------------------mode 2: speed-based delay stuff-----------------------
 let jointDist = 0;
 let maxJointDist = w / 20; //an arbitrary guess of the maximum distance of joint position between two frames
 let framesToCache = 600; //caching 10 seconds for testing, so 10 * 60 = 600 frames
@@ -55,7 +50,15 @@ let cachedFrames = [];
 let mappedFrames = [];
 let avgFrame = 0;
 
-//-------------------bookmark stuff-----------------------
+//-------------------mode 3: clasification plateau stuff----------------
+let plateauOn = false;
+let plateaus = new Map();
+let currentClass;
+let haveNewClass = false;
+let currentClipFinished = true;
+let lastPlateauFrameIdx;
+
+//-------------------mode 4: bookmark stuff-----------------------
 let bookmarkTime = -99;
 let haveNewJump = false;
 let lastJumpedFrameIdx;
@@ -105,35 +108,23 @@ function draw() {
 		let delayFrameIdx;
 
 		if (mode == 0) {//------------manual 60 interval--------------------------
-			// //---------sync the counts first----------
-			// if (modePrev == 1) {manualCount60 = floor(manualCount1 / 60); modePrev = mode;}
-
-			// textSize(40);
-			// text("mode: manual 60", width / 2 - 150, height / 2 - 150);
-			// textSize(14);
-
-			// delayFrameIdx = manualCount60 * 60;
-
-			// text("Manual Count: " + manualCount60, width / 2 - 250, height / 2 + 25);
-
-			// if (delayFrameIdx > recordedSeconds * recordingFPS) {
-			// 	delayFrameIdx = recordedSeconds * recordingFPS;
-			// 	text("Maximum delay reaced based on available recorded content.", width / 2 - 250, height / 2 + 50);
-			// 	text("Capping it to recordedSeconds * recordingFPS.", width / 2 - 250, height / 2 + 75);
-			// }
-
+			if (modePrev != mode) { modePrev = mode; }
 
 			textSize(40);
 			text("mode: fixed intervals", width / 2 - 200, height / 2 - 150);
 			textSize(14);
 
-			delayFrameIdx = fixedIntervals[fixedIntervalIdx] * recordingFPS;
+			if (fixedFrame < fixedIntervals[fixedIntervalIdx] * recordingFPS) fixedFrame++;
+			else if (fixedFrame > fixedIntervals[fixedIntervalIdx] * recordingFPS) fixedFrame--;
+			// delayFrameIdx = fixedIntervals[fixedIntervalIdx] * recordingFPS;
+			delayFrameIdx = fixedFrame;
+
 			text("Current interval is: " + fixedIntervals[fixedIntervalIdx] + " seconds", width / 2 - 250, height / 2 + 25);
 
+			delayFrameIdxPrev = delayFrameIdx; //cache the previous delay frame. used for manual 1 interval mode.
+
 		} else if (mode == 1) {//------------manual 1 interval--------------------------
-			//---------sync the counts first----------
-			// if (modePrev == 0) {manualCount1 = manualCount60 * 60; modePrev = mode;}
-			if (modePrev == 0) { manualCount1 = fixedIntervals[fixedIntervalIdx] * recordingFPS; modePrev = mode; }
+			if (modePrev != mode) { manualCount1 = delayFrameIdxPrev; modePrev = mode; }
 
 			textSize(40);
 			text("mode: manual 1", width / 2 - 150, height / 2 - 150);
@@ -150,6 +141,7 @@ function draw() {
 			}
 
 		} else if (mode == 2) { //------------speed-based--------------------------
+			if (modePrev != mode) { modePrev = mode; }
 
 			textSize(40);
 			text("mode: speed", width / 2 - 150, height / 2 - 150);
@@ -170,7 +162,11 @@ function draw() {
 				text("Current joint dist is: " + jointDist, width / 2 - 250, height / 2 + 25);
 				text("Averaged delay frame is: " + delayFrameIdx, width / 2 - 250, height / 2 + 50);
 			}
+
+			delayFrameIdxPrev = delayFrameIdx; //cache the previous delay frame. used for manual 1 interval mode.
+
 		} else if (mode == 3) { //-------------plateau-based----------------
+			if (modePrev != mode) { modePrev = mode; }
 
 			textSize(40);
 			text("mode: plateau", width / 2 - 150, height / 2 - 150);
@@ -188,7 +184,7 @@ function draw() {
 
 					if (pStartTime && pLength) {
 						delayFrameIdx = floor((Date.now() - startTime - pStartTime) / 1000 * camFPS); //convert plateau start time to how many frames we should go back from the present
-						lastDelayedFrameIdx = delayFrameIdx;
+						lastPlateauFrameIdx = delayFrameIdx;
 						haveNewClass = false;
 						currentClipFinished = false;
 
@@ -197,11 +193,10 @@ function draw() {
 
 				} else {
 					//otherwise continue on the current clip
-					delayFrameIdx = lastDelayedFrameIdx;
+					delayFrameIdx = lastPlateauFrameIdx;
 				}
 
 				text("current class is:" + currentClass, width / 2 - 250, height / 2 + 25);
-
 
 			} else {
 				//----------------------manual controlling TD using mouse as a fall back------------------------
@@ -215,25 +210,33 @@ function draw() {
 				delayFrameIdx = constrain(floor(map(mouseX, 0, width, availableFrames - 1, 0)), 0, availableFrames - 1);
 			}
 
+			delayFrameIdxPrev = delayFrameIdx; //cache the previous delay frame. used for manual 1 interval mode.
+
 		} else if (mode == 4) { //------------bookmark---------------------
+
+			if (modePrev != mode) { modePrev = mode; }
+
 			textSize(40);
 			text("mode: bookmark", width / 2 - 150, height / 2 - 150);
 			textSize(14);
 
 			if (bookmarkTime < 0) {
 				text("No bookmarks available yet. Press Q to save a bookmark.", width / 2 - 250, height / 2 + 25);
+				delayFrameIdx = 0;
 			} else {
-				if (haveNewJump) {
+				if (haveNewJump) { //if W is pressed
 					delayFrameIdx = floor((Date.now() - startTime - bookmarkTime) / 1000 * camFPS);
 					lastJumpedFrameIdx = delayFrameIdx;
 					haveNewJump = false;
-				} else {
+				} else { //otherwise stay on the last jump
 					delayFrameIdx = lastJumpedFrameIdx;
 				}
 
 				text("Current bookmark is:" + bookmarkTime / 1000 + " seconds", width / 2 - 250, height / 2 + 25);
 				text("Press W to jump, press Q to overwrite the current.", width / 2 - 250, height / 2 + 50);
 			}
+
+			delayFrameIdxPrev = delayFrameIdx; //cache the previous delay frame. used for manual 1 interval mode.
 		}
 
 		//-----------------------3. then control TD using delay frame----------------------------
@@ -266,7 +269,7 @@ function draw() {
 			sendOscTD("/frameIdx", 0);
 		}
 
-		
+
 	}
 }
 //----------------------Mode Select--------------------------
@@ -296,28 +299,31 @@ function keyPressed() {
 			haveNewJump = true;
 			break;
 		case LEFT_ARROW: //arrow left
-			// manualCount60--;
 			fixedIntervalIdx > 0 ? fixedIntervalIdx-- : fixedIntervalIdx = 0;
 			manualCount1--;
 			break;
 		case RIGHT_ARROW: //arrow right
-			// manualCount60++;
 			fixedIntervalIdx < fixedIntervals.length - 1 ? fixedIntervalIdx++ : fixedIntervalIdx = fixedIntervals.length - 1;
 			manualCount1++;
 			break;
 		case 81: //-----------Q: bookmark a time 
 			bookmarkTime = Date.now() - startTime;
 			break;
-		case 87:
+		case 87: //-----------W: jump to bookmark
 			haveNewJump = true;
+			break;
+		case 65: //-----------A: toggle blackout left
+			blackoutLeft = !blackoutLeft;
+			sendOscTD("/blackoutLeft", blackoutLeft ? 1 : 0);
+			break;
+		case 83: //-----------S: blackout right
+			blackoutRight = !blackoutRight;
+			sendOscTD("/blackoutRight", blackoutRight ? 1 : 0);
 			break;
 	}
 
 	// if (mode > 3) mode = 0;
 	// if (mode < 0) mode = 3;
-
-	// if (manualCount60 > manualCount60Thres) manualCount60 = manualCount60Thres;
-	// if (manualCount60 < 0) manualCount60 = 0;
 
 	if (manualCount1 > manualCount1Thres) manualCount1 = manualCount1Thres;
 	if (manualCount1 < 0) manualCount1 = 0;
@@ -358,7 +364,6 @@ function stopPerformance() {
 	sendOsc("/stopRecording", "");
 	isRecording = false;
 	console.log("Show and recording stopped at: " + (Date.now() - startTime));
-	manualCount60 = 0;
 	manualCount1 = 0;
 	mode = 0;
 	bookmarkTime = -99;

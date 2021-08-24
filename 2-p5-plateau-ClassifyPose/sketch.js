@@ -42,7 +42,8 @@ let jointThreshold = 0.95;
 
 //------------------socket----------
 let socket;
-let ip = "172.20.10.2";
+// let ip = "10.23.11.61";
+let ip = "127.0.0.1";
 let port = 8081;
 
 function preload(){
@@ -267,4 +268,8 @@ function setupSocket() {
   socket.on('disconnect', function () {
     socket.emit('plateauOn', false);
 	});
+}
+
+function keyPressed(){
+  
 }
