@@ -184,6 +184,7 @@ function draw() {
 
 			//-----------------------if plateau classification is on, we calculate the number of frames to be delayed either automatically or manually
 			if (plateauOn) {
+				if (!currentClass) socket.emit("queryClass");
 				//----------------------auto controlling TD using plateau data------------------------
 				// console.log(haveNewClass, currentClipFinished);
 				if (haveNewClass || currentClipFinished) {
@@ -204,7 +205,7 @@ function draw() {
 					delayFrameIdx = lastPlateauFrameIdx;
 				}
 
-				text("Current class is:" + currentClass, width / 2 - 250, height / 2 + 25);
+				text("Current class is: " + currentClass, width / 2 - 250, height / 2 + 25);
 				text("We need at least one complated plateau record to pull from the recording.", width / 2 - 250, height / 2 + 50);
 				text("Current pulling method is: Random", width / 2 - 250, height / 2 + 75);
 

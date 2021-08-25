@@ -16,6 +16,7 @@ let tdSocketID;
 
 //------------used to maintain plateau classification status-------------
 let plateauStatus = false;
+let currentClass;
 
 
 io.sockets.on('connection', function (socket) {
@@ -100,7 +101,13 @@ io.sockets.on('connection', function (socket) {
 	socket.on('classNew', function (msg) {
 		socket.broadcast.emit("classNew", msg);
 		// socket.broadcast.emit("message1", 1234);
+		currentClass = msg;
 		console.log("new class: " + msg);
+	});
+	socket.on('queryClass', function () {
+		if (currentClass) socket.emit("classNew", currentClass);
+		// socket.broadcast.emit("message1", 1234);
+		console.log("queried class: " + currentClass);
 	});
 	socket.on('jointDist', function (msg) {
 		socket.broadcast.emit("jointDist", msg);
