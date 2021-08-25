@@ -1,30 +1,32 @@
-// choreography logic, updated 08/11:
-// 1. Based on current class, pick one plateau with the same class; if no corresponding plateaus found, just play current frame;
-// 2. If one plateau finishes and we're still in the same class, pick another plateau with the same class;
-// 3. If we receive a new class in the middle of a plateau playback, jump to a new plateau that matches the new class;
-// 4. Added code and modes for plateau-based control and speed-based control and manual
+// choreography logic, updated 08/24:
+// 0: Fixed interval mode: fixed interval looping btw 4s, 4.5s, 6s and 10s
+// 1: Manual 1 mode: manual mode controlling the number of frames to delay using 1 interval;
+// 2: Speed mode: based on the joint distance, calcualte the amount of delay;
+// 3: Plateau mode: based on current class, pick one plateau with the same class; if no corresponding plateaus found, just play current frame;
+// - If one plateau finishes and we're still in the same class, pick another plateau with the same class;
+// - If we receive a new class in the middle of a plateau playback, jump to a new plateau that matches the new class;
+// - Added code and modes for plateau-based control and speed-based control and manual
+// 4: Bookmark mode: Q to save the current time as a bookmark, W to jump to bookmark
 
 let w = 600;
 let h = 500;
 
-//---------------modes & performance control---------------------
-let mode = 0; // 0: fixed interval looping btw 4s, 4.5s, 6s and 10s, 1: manual 1 interval, 2: speed-based, 3:plateau-based, 4: bookmark
+//---------------modes config---------------------
+let mode = 0; // 0: fixed interval, 1: manual 1 interval, 2: speed-based, 3:plateau-based, 4: bookmark
 let modePrev = 0;
 let delayFrameIdxPrev = 0;
 let fixedIntervalIdx = 0;
 let fixedIntervals = [4, 4.5, 6, 10];
 let manualCount1 = 0;
 let manualCount1Thres = 6000;
-let blackoutLeft = false;
-let blackoutRight = false;
+let blackoutLeft = false; //key A to blackout / un-blackout left half
+let blackoutRight = false; //key S to blackout / un-blackout right half
 
-//--------------sockets-----------------------
+//--------------sockets config-----------------------
 let socket;
 let socketPort = 8081;
 
-let isRecording = false;
-let btnStart, btnStop;
-
+//--------------OBS & TD config-------------
 let recordingFPS = 30;
 let recordingLength = 60; //length of each OBS recording clip in seconds
 let framesPerRecording = recordingFPS * recordingLength;
@@ -32,12 +34,13 @@ let camFPS = 30; //should be the same as recording FPS
 let TDCacheLength = 60; //length of cache in TD in seconds. Ideally this should match with recording length so that there won't be gaps between recordings and TD cache.
 let TDCacheFrames = camFPS * TDCacheLength; //this should match the size of the Cache TOP in TD
 
-//------------------TD control----------------------
-let recordIntervalID;
+//-------------show settings--------------
+let btnStart, btnStartVideo, btnStop;
 let started = false;
 let startTime = 0;
+let isRecording = false;
+let recordIntervalID;
 let recordedSeconds;
-let lastAvailableFrames = 0; // used to refresh the controlling timeline
 
 //-------------------mode 0: fixed interval stuff-------------------
 let fixedFrame = 0;
@@ -68,12 +71,16 @@ let OBSRecordingGap = 1000; //in milli secs. KNOWN ISSUE: some time is required 
 
 function setup() {
 	createCanvas(w, h);
-	setupOsc(12000, 12001, 13000, 13001); //OBS In / Out, TD In / Out
-	btnStart = createButton('START');
+	setupOsc(12000, 12001, 13000, 13001); //ports for OBS In / Out, TD In / Out
+
+	btnStart = createButton('START'); //master control: start performance 
 	btnStart.position(0, 0);
 	btnStart.mousePressed(startPerformance);
-	btnStop = createButton('STOP');
-	btnStop.position(80, 0);
+	btnStartVideo = createButton('START VIDEO'); //master control: start performance in video mode (in progress)
+	btnStartVideo.position(80, 0);
+	btnStartVideo.mousePressed(()=>{startVideo(); startPerformance();});
+	btnStop = createButton('STOP'); //master control: stop performance 
+	btnStop.position(200, 0);
 	btnStop.mousePressed(stopPerformance);
 
 	textSize(14);
@@ -89,12 +96,14 @@ function draw() {
 		sendOscTD("/fileIdx", 0);
 	} else {
 
+		//--------draw backgrounds in different color---------------
 		if (mode == 0) background(140, 226, 238);
 		else if (mode == 1) background(147, 186, 225);
 		else if (mode == 2) background(137, 132, 214);
 		else if (mode == 3) background(114, 81, 178);
 		else if (mode == 4) background(164, 188, 188);
 
+		//--------display show time------------------
 		recordedSeconds = floor((Date.now() - startTime) / 1000);
 		text("Performance & recording started for " + recordedSeconds + " seconds, " + recordedSeconds * recordingFPS + " frames", width / 2 - 250, height / 2 - 75);
 
@@ -103,11 +112,10 @@ function draw() {
 		let availableTDCacheSeconds = recordedSeconds > TDCacheLength ? TDCacheLength : recordedSeconds;
 		text(availableRecordingNum + " recording clips and " + availableTDCacheSeconds + " seconds in TD cache available", width / 2 - 250, height / 2 - 50);
 
-
-		//----------------------2. then we calculate how many frames to delay based on current mode------------
+		//----------------------2. then we calculate how many frames to delay based on the current mode------------
 		let delayFrameIdx;
 
-		if (mode == 0) {//------------manual 60 interval--------------------------
+		if (mode == 0) {//------------fixed interval--------------------------
 			if (modePrev != mode) { modePrev = mode; }
 
 			textSize(40);
@@ -124,7 +132,7 @@ function draw() {
 			delayFrameIdxPrev = delayFrameIdx; //cache the previous delay frame. used for manual 1 interval mode.
 
 		} else if (mode == 1) {//------------manual 1 interval--------------------------
-			if (modePrev != mode) { manualCount1 = delayFrameIdxPrev; modePrev = mode; }
+			if (modePrev != mode) { manualCount1 = delayFrameIdxPrev; modePrev = mode; } //keep the current delay from other modes if there's one already
 
 			textSize(40);
 			text("mode: manual 1", width / 2 - 150, height / 2 - 150);
@@ -148,7 +156,7 @@ function draw() {
 			textSize(14);
 
 			//map the jointDist amount to a frame index between 0 and framesToCache
-			let mappedFrame = constrain(map(jointDist, 0, maxJointDist, 0, TDCacheFrames - 1), 0, TDCacheFrames - 1);
+			let mappedFrame = constrain(map(jointDist, 0, maxJointDist, 0, TDCacheFrames - 1), 0, TDCacheFrames - 1); //currently using only TD cache for performance considerations
 			// console.log(mappedFrame);
 
 			//save the mapped frame into an array to get avg frame
@@ -172,7 +180,7 @@ function draw() {
 			text("mode: plateau", width / 2 - 150, height / 2 - 150);
 			textSize(14);
 
-			text("Plateau classification is: " + (plateauOn ? "On." : "Off. Using mouseX instead."), width / 2 - 250, height / 2 - 25);
+			text("Plateau classification is: " + (plateauOn ? "On." : "Off."), width / 2 - 250, height / 2 - 25);
 
 			//-----------------------if plateau classification is on, we calculate the number of frames to be delayed either automatically or manually
 			if (plateauOn) {
@@ -196,18 +204,21 @@ function draw() {
 					delayFrameIdx = lastPlateauFrameIdx;
 				}
 
-				text("current class is:" + currentClass, width / 2 - 250, height / 2 + 25);
+				text("Current class is:" + currentClass, width / 2 - 250, height / 2 + 25);
+				text("We need at least one complated plateau record to pull from the recording.", width / 2 - 250, height / 2 + 50);
+				text("Current pulling method is: Random", width / 2 - 250, height / 2 + 75);
 
 			} else {
-				//----------------------manual controlling TD using mouse as a fall back------------------------
-				fill(0);
-				ellipse(mouseX, mouseY, 50, 50);
-				//first calculate the number of frames available for manual srubbing
-				//dynamically allocating TD cached frames for scrubbing is too glitchy, so we assume TD is already fully cached.
-				let availableFrames = availableRecordingNum * framesPerRecording + TDCacheFrames;
+				// //----------------------manual controlling TD using mouse as a fall back------------------------
+				// fill(0);
+				// ellipse(mouseX, mouseY, 50, 50);
+				// //first calculate the number of frames available for manual srubbing
+				// //dynamically allocating TD cached frames for scrubbing is too glitchy, so we assume TD is already fully cached.
+				// let availableFrames = availableRecordingNum * framesPerRecording + TDCacheFrames;
 
-				//then we reversely map mouseX with available Frames
-				delayFrameIdx = constrain(floor(map(mouseX, 0, width, availableFrames - 1, 0)), 0, availableFrames - 1);
+				// //then we reversely map mouseX with available Frames
+				// delayFrameIdx = constrain(floor(map(mouseX, 0, width, availableFrames - 1, 0)), 0, availableFrames - 1);
+				delayFrameIdx = 0;
 			}
 
 			delayFrameIdxPrev = delayFrameIdx; //cache the previous delay frame. used for manual 1 interval mode.
@@ -269,6 +280,11 @@ function draw() {
 			sendOscTD("/frameIdx", 0);
 		}
 
+		//-----------------To-do: video mode--------------------
+		//1. tell pose estimation & classification sketch to scrub to a specific time
+		//2. tell TD to srub movie file in to a specific time
+		//3. scrubbing method: TBD
+
 
 	}
 }
@@ -276,12 +292,6 @@ function draw() {
 function keyPressed() {
 	// console.log(keyCode);
 	switch (keyCode) {
-		// case UP_ARROW: //arrow up
-		// 	mode--;
-		// 	break;
-		// case DOWN_ARROW: //arrow down
-		// 	mode++;
-		// 	break;
 		case 48: //----0------
 			mode = 0;
 			break;
@@ -322,16 +332,22 @@ function keyPressed() {
 			break;
 	}
 
-	// if (mode > 3) mode = 0;
-	// if (mode < 0) mode = 3;
-
-	if (manualCount1 > manualCount1Thres) manualCount1 = manualCount1Thres;
-	if (manualCount1 < 0) manualCount1 = 0;
+	// if (manualCount1 > manualCount1Thres) manualCount1 = manualCount1Thres;
+	// if (manualCount1 < 0) manualCount1 = 0;
 }
 
 
 //----------------------Performance Start/Stop Control------------------------------
 
+//-----used only for video mode------------- 
+//Tell pose estimation & classification sketch and TD to start playting the video at the same time
+//Need to change the source from VideoCaptureIn to MovieFileIn in TD first
+function startVideo() { 
+	socket.emit("startPlayingVideo", videoPath);
+	sendOscTD();
+}
+
+//------start & stop performance----------------
 function startPerformance() {
 	//---clear plateau data
 	plateaus.clear();
@@ -370,6 +386,7 @@ function stopPerformance() {
 
 }
 
+//----------OBS controls---------------
 function toggleOBSRecording() {
 	if (isRecording) {
 		sendOsc("/stopRecording", "");
@@ -379,12 +396,14 @@ function toggleOBSRecording() {
 	isRecording = !isRecording;
 }
 
+//----------send a pulse to cue the recording for delay playback. currently used in plateau mode.
+//might be useful for video mode too?
 function mouseClicked() {
 	sendOscTD("/cuePulse", 1);
 	setTimeout(() => { sendOscTD("/cuePulse", 0) }, 20);
 }
-//-------------------------p5 OSC & Socket Setup--------------------------------------
 
+//-------------------------p5 OSC & Socket Setup--------------------------------------
 function setupOsc(oscPortIn, oscPortOut, oscPortIn2, oscPortOut2) {
 	socket = io.connect('http://127.0.0.1:' + socketPort, { port: socketPort, rememberTransport: false });
 	socket.on('connect', function () {
@@ -479,7 +498,6 @@ function receiveOsc(address, value) {
 
 
 //------------helper functions to get delay frame in TD-----------------------
-
 function getStartTimeAndLengthFirstMatch(_plateaus) {
 	let pltData = _plateaus.get(_currentClass);
 	if (pltData.length > 0) {

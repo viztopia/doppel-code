@@ -1,9 +1,18 @@
 // plateau logic, updated 08/07:
-// 1. constantly sending over the current classification;
+// 0. load posenet and constantly send over joint distance (in pixels)
+// 1. once KNN is loaded and classification started, constantly send over the current classification;
 // 2. send a plateau (its class, start time and end time) once it's detected, converted from MiMi's plateau code;
 // 3. plateau observation window length: 120 frames, adjustable via slider;
 // 4. what counts as the starting / ending of a plateau: given the current window, more than / less than <threshold> of frames is one class;
+// To-do: complate video mode(accept socket messages to start to play video and scrub video)
 
+//------------------socket--------------------
+let socket;
+// let ip = "10.23.11.61";
+let ip = "127.0.0.1"; //the ip of the machine that runs bridge.js
+let port = 8081; //the port of the machine that runs bridge.js
+
+//--------simple UI--------------------
 let cnv;
 let waiting = 180;
 
@@ -13,17 +22,13 @@ let cacheLength = 120; //classification window size
 
 let maxClass, maxCount;
 let classThreshold = 0.7;
-let newClassCountBaseline = cacheLength * classThreshold;
+let newClassCountBaseline = cacheLength * classThreshold; //calculate the baseline for deciding how much % within the window we count as a new class
 let plateauStarted = false;
 let plateatStartTime, plateauEndTime;
-
-
-let startedRecording = false;
 let plateaus = [];
 
 let classCacheLengthSlider;
-let recordBtn;
-let downloadBtn;
+let playVidBtn, recordBtn, downloadBtn;
 let clearBtn;
 
 //------------------ml5 posenet & KNN----------------------
@@ -40,19 +45,17 @@ let joint, jointPrev;
 let jointNumber = 0;
 let jointThreshold = 0.95;
 
-//------------------socket----------
-let socket;
-// let ip = "10.23.11.61";
-let ip = "127.0.0.1";
-let port = 8081;
 
-function preload(){
-  video = createVideo('https://player.vimeo.com/external/584042738.hd.mp4?s=92569f00b28bbe55cd9fefec9e02980ce3cb9594&profile_id=175');
-  video.loop();
+
+function preload() { //used for video mode
+  // video = createVideo('https://player.vimeo.com/external/591790914.hd.mp4?s=5423196882ed55a554896959f602c265d48c0af4&profile_id=175');
+  // video = createVideo('dp.mp4');
+  // video.loop();
 }
 
 function setup() {
-  cnv = createCanvas(1920, 1080);
+  // cnv = createCanvas(1920, 1080);
+  cnv = createCanvas(640, 480);
   cnv.parent('cnvDiv');
   classCacheLengthSlider = createSlider(10, 180, cacheLength, 10);
   classCacheLengthSlider.parent('controlsDiv');
@@ -61,6 +64,10 @@ function setup() {
     newClassCountBaseline = cacheLength * classThreshold; //recalculate the baseline for deciding how much we count as a new class
     select('#cacheLengthLabel').html(cacheLength);
   })
+
+  playVidBtn = createButton('Play Video'); //In Progress: used only for playing a video instead of capturing real NiNi via camera
+  playVidBtn.mousePressed(() => { if (video) { console.log("playyyy"); video.loop(); } });
+  playVidBtn.parent('controlsDiv');
 
   clearBtn = createButton('Clear Plateaus Data');
   clearBtn.mousePressed(() => { plateaus = []; });
@@ -72,13 +79,13 @@ function setup() {
 
 
   //------------PoseNet & KNN----------------------
-  // video = createCapture(VIDEO);
+  video = createCapture(VIDEO);
   video.size(width, height);
   poseNet = ml5.poseNet(video, {
     flipHorizontal: false,
     detectionType: 'single'
   }, function () {
-    select('#poseNetStatus').html('PoseNet Loaded')
+    select('#poseNetStatus').html('PoseNet Loaded. You can load KNN classes now and start the classification.')
   });
   poseNet.on('pose', function (results) {
     poses = results;
@@ -108,9 +115,22 @@ function draw() {
   drawKeypoints();
 
   if (frameCount < waiting) {
-    text("Classification will begin in " + waiting + " frames", width / 2 - 100, height / 2);
+    text("Pose analysis will begin in " + waiting + " frames", width / 2 - 100, height / 2);
   } else {
 
+    //---------------for speed-based delay, send over joint dist----------------
+    if (joint && joint.score > jointThreshold) {
+
+      let jointDist = dist(joint.position.x, joint.position.y, jointPrev.x, jointPrev.y);
+      jointPrev = joint.position;
+
+      if (jointDist > 0) {
+        // select('#jointDist').elt.innerText = jointDist;
+        socket.emit('jointDist', jointDist);
+      }
+    }
+
+    //---------------for plateau de-basedlay, send over classification & plateau data----------------
     [maxClass, maxCount] = getMaxClass(classCache);
 
     text("current class is: " + maxClass, width / 2 - 50, height / 2 - 50);
@@ -135,20 +155,6 @@ function draw() {
       socket.emit('plateauNew', newPlat);
       plateaus.push(newPlat);
     }
-
-
-
-    //---------------speed-based delay----------------
-    if (joint && joint.score > jointThreshold) {
-
-      let jointDist = dist(joint.position.x, joint.position.y, jointPrev.x, jointPrev.y);
-      jointPrev = joint.position;
-
-      if (jointDist > 0) {
-        // select('#jointDist').elt.innerText = jointDist;
-        socket.emit('jointDist', jointDist);
-      }
-    } 
   }
 }
 
@@ -169,19 +175,20 @@ function getMaxClass(array) {
   return [maxEl, maxCount];
 }
 
-//---------------------PoseNet & KNN stuff----------------------
+//---------------------Classification Helpers----------------------
 function toggleClassification() {
   if (!isClassifying) {
     classifyBtn.html('Stop classifying');
     isClassifying = true;
     classify();
 
-    socket.emit('plateauOn', true);
+    socket.emit('plateauOn', true); //tells the controller sketch that plateau analysis is ready
+
   } else {
     classifyBtn.html('Start classifying');
     isClassifying = false;
 
-    socket.emit('plateauOn', false);
+    socket.emit('plateauOn', false); //tells the controller sketch that plateau analysis is off
   }
 }
 
@@ -196,7 +203,7 @@ function classify() {
   knnClassifier.classify(poseArray, gotResults);
 }
 
-// Show the results
+// handler of the classification
 function gotResults(err, result) {
   // Display any error
   if (err) {
@@ -240,6 +247,8 @@ function clearAllLabels() {
   updateCounts();
 }
 
+
+//------------draw skeleton keypoints---------------
 function drawKeypoints() {
   // Loop through all the poses detected
   for (let i = 0; i < poses.length; i++) {
@@ -258,18 +267,27 @@ function drawKeypoints() {
   }
 }
 
-//---------------------socket stuff
+//---------------------socket stuff------------------------------
 function setupSocket() {
-  socket = io.connect('http://'+ ip +':' + port, { port: port, rememberTransport: false });
+  socket = io.connect('http://' + ip + ':' + port, { port: port, rememberTransport: false });
   socket.on('connect', function () {
     socket.emit('plateauOn', false);
   });
 
   socket.on('disconnect', function () {
     socket.emit('plateauOn', false);
-	});
+  });
+
+  //-------------In Progress: used for video mode-------------
+  socket.on('playVideo', function (msg) {
+
+  });
+
+  socket.on('scrubVideo', function (msg) {
+
+  });
 }
 
-function keyPressed(){
-  
+function keyPressed() {
+
 }
