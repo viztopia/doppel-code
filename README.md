@@ -1,7 +1,7 @@
 # doppel-code
 
 ## Software Requirements
-- OBS + OBS WebSockets Plug-in
+- OBS + OBS WebSockets Plug-in + OSC for OBS
 - TouchDesigner
 - Node.js
 - VS Code or equivalent for updating code if necessary
@@ -19,13 +19,13 @@
 
 
 ## Show Deplayment
-On desktop PC:
+1. On desktop PC:
 - cd to 0-osc-bridge, npm install (if haven't already), node bridge.js
-- (if using OBS to record) Open OBS, open OSC for OBS, configure the IPs and ports (if haven't already)
+- (if using OBS to record) Open OBS and turn on OBS WebSockets, open OSC for OBS and configure the IPs and ports (if haven't already)
 - Open max.toe in TouchDesigner under TD folder
 
-Then, on a separate laptop:
+2. On a separate laptop:
 - Open 2-p5-plateau-ClassifyPose folder. In sketch.js, update its IP to the desktop PC that runs bridge.js/OBS/TD, and serve the index.html file in http. This can be done on a separate computer.
 
-Finally, on the desktop PC:
+3. On the desktop PC:
 - Open 3-p5-osc folder. Serve the index.html in http, and follow instructions on screen. 
