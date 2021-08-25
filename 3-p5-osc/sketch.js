@@ -182,10 +182,11 @@ function draw() {
 
 			text("Plateau classification is: " + (plateauOn ? "On." : "Off."), width / 2 - 250, height / 2 - 25);
 
-			//-----------------------if plateau classification is on, we calculate the number of frames to be delayed either automatically or manually
-			if (plateauOn) {
+			
+			if (plateauOn) {  //-----------------------if plateau classification is on, we calculate the number of frames to be delayed automatically
 				if (!currentClass) socket.emit("queryClass");
 				//----------------------auto controlling TD using plateau data------------------------
+
 				// console.log(haveNewClass, currentClipFinished);
 				if (haveNewClass || currentClipFinished) {
 					//pick a plateau whenever there's a new class or the current clip is finished
@@ -197,7 +198,7 @@ function draw() {
 						haveNewClass = false;
 						currentClipFinished = false;
 
-						setTimeout(() => { currentClipFinished = true }, pLength);
+						setTimeout(() => { currentClipFinished = true }, pLength); //waift for pLength milliseconds to ask for a new clip
 					}
 
 				} else {
