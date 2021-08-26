@@ -1,10 +1,10 @@
-// plateau logic, updated 08/07:
+// plateau logic, updated 08/24:
 // 0. load posenet and constantly send over joint distance (in pixels)
 // 1. once KNN is loaded and classification started, constantly send over the current classification;
 // 2. send a plateau (its class, start time and end time) once it's detected, converted from MiMi's plateau code;
 // 3. plateau observation window length: 120 frames, adjustable via slider;
 // 4. what counts as the starting / ending of a plateau: given the current window, more than / less than <threshold> of frames is one class;
-// To-do: complate video mode(accept socket messages to start to play video and scrub video)
+// To-do: complete video mode (accept socket messages to start to play video and scrub video)
 
 //------------------socket--------------------
 let socket;
