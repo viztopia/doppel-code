@@ -1,60 +1,21 @@
-// Copyright (c) 2019 ml5
-//
-// This software is released under the MIT License.
-// https://opensource.org/licenses/MIT
-
-/* ===
-ml5 Example
-KNN Classification on Webcam Images with poseNet. Built with p5.js
-=== */
 let video;
 // Create a KNN classifier
-// const knnClassifier = ml5.KNNClassifier();
 let classifier;
-// let mobilenetModule;
-
 
 let moveNet;
 let netReady = false;
 
-// let poseNet;
 let poses = [];
-
-const saveBlob = async (data, name, type) => {
-  const link = document.createElement('a');
-  link.style.display = 'none';
-  document.body.appendChild(link);
-  const blob = new Blob([data], { type });
-  link.href = URL.createObjectURL(blob);
-  link.download = name;
-  link.click();
-};
 
 function setup() {
   const canvas = createCanvas(640, 480);
   canvas.parent('videoContainer');
   video = createCapture(VIDEO, () => { loadMoveNet(); loadKNN(); });
   video.size(width, height);
+  video.hide();
 
   // Create the UI buttons
   createButtons();
-
-  // poseNet = ml5.poseNet(video, {
-  //   flipHorizontal: false,
-  //   detectionType: 'single'
-  // }, modelReady);
-
-  // poseNet.on('pose', function (results) {
-  //   poses = results;
-  // });
-
-
-
-
-  video.hide();
-
-
-  // estimatePose();
 }
 
 //----------moveNet stuff----------------
@@ -63,16 +24,14 @@ async function loadMoveNet() {
   moveNet = await poseDetection.createDetector(poseDetection.SupportedModels.MoveNet, detectorConfig);
 
   netReady = true;
-  // modelReady();
-  // estimatePose();
-  select('#status').html('MoveNet Loaded. ');
+  select('#status').html('MoveNet Loaded. ', true);
 }
+
 async function estimatePose() {
   const poseEstimation = await moveNet.estimatePoses(video.elt);
-  if (poseEstimation.length>0) poses = poseEstimation;
-  // estimatePose();
-  // console.log(poses);
+  if (poseEstimation.length > 0) poses = poseEstimation;
 }
+
 //---------KNN stuff------------
 async function loadKNN() {
 
@@ -89,13 +48,7 @@ function draw() {
   // We can call both functions to draw all keypoints and the skeletons
   if (poses) {
     drawKeypoints();
-    // drawSkeleton();
   }
-}
-
-function modelReady() {
-  select('#status').html('MoveNet Loaded.');
-  console.log(tf.version);
 }
 
 // Add the current frame from the video to the classifier
@@ -122,14 +75,10 @@ async function classify() {
   // Convert poses results to a 2d array [[score0, x0, y0],...,[score16, x16, y16]]
   const poseArray = poses[0].keypoints.map(p => [p.score, p.x, p.y]);
 
-  // Use knnClassifier to classify which label do these features belong to
-  // You can pass in a callback function `gotResults` to knnClassifier.classify function
-  // classifier.classify(poseArray, gotResults);
-
   const example = tf.tensor(poseArray);
   const result = await classifier.predictClass(example);
   gotResults(undefined, result);
-  // console.log(result);
+
 }
 
 // A util function to create UI buttons
@@ -253,77 +202,50 @@ function updateCounts() {
 
 // Save & Load label JSON
 function saveLabels() {
-  saveClassesJSON("classes.json");
-  // const dataset = classifier.getClassifierDataset();
-  // console.log(dataset);
-}
-
-async function saveClassesJSON(name) {
   const dataset = classifier.getClassifierDataset();
-  // if (this.mapStringToIndex.length > 0) {
-  //   Object.keys(dataset).forEach((key) => {
-  //     if (this.mapStringToIndex[key]) {
-  //       dataset[key].label = this.mapStringToIndex[key];
-  //     }
-  //   });
-  // }
 
-  console.log(dataset);
-  // const tensors = Object.keys(dataset).map((key) => {
-  //   const t = dataset[key];
-  //   if (t) {
-  //     return t.dataSync();
-  //   }
-  //   return null;
-  // });
-  let fileName = 'myKNN.json';
-  if (name) {
-    fileName = name.endsWith('.json') ? name : `${name}.json`;
-  }
-  // await saveBlob(JSON.stringify({ dataset, tensors }), fileName, 'application/octet-stream');
-  await saveBlob(JSON.stringify(dataset), fileName, 'application/octet-stream');
+  let tensors={};
+  Object.keys(dataset).forEach((key)=>{
+    const t = dataset[key];
+    if (t) {
+      tensors[key] = t.dataSync();
+    }
+  })
+  saveJSON({ dataset, tensors }, 'classes.json', true);
+
 }
 
-async function loadClassesJSON(pathOrData) {
-  let data;
-  if (typeof pathOrData === 'object') {
-    data = pathOrData;
-  } else {
-    data = await io.loadFile(pathOrData);
-  }
+function loadClassesJSON(data) {
   if (data) {
     const { dataset, tensors } = data;
-    this.mapStringToIndex = Object.keys(dataset).map(key => dataset[key].label);
-    const tensorsData = tensors
-      .map((tensor, i) => {
-        if (tensor) {
-          const values = Object.keys(tensor).map(v => tensor[v]);
-          return tf.tensor(values, dataset[i].shape, dataset[i].dtype);
-        }
-        return null;
-      })
-      .reduce((acc, cur, j) => {
-        acc[j] = cur;
-        return acc;
-      }, {});
-    this.knnClassifier.setClassifierDataset(tensorsData);
+
+
+    let tensorsData = {};
+    Object.keys(dataset).forEach((key)=>{
+      // const tensor = 
+      const values = Object.keys(tensors[key]).map(v => tensors[key][v]);
+      tensorsData[key] = tf.tensor(values, dataset[key].shape, dataset[key].dtype);
+    })
+    classifier.setClassifierDataset(tensorsData);
+    console.log(tensorsData);
   }
 }
 
 function loadLabels() {
-  knnClassifier.load("classes.json");
+  loadJSON("classes.json", loadClassesJSON);
+  updateCounts();
 }
 
 
 // Clear the examples in one label
 function clearLabel(classLabel) {
-  knnClassifier.clearLabel(classLabel);
+  classifier.clearClass(classLabel);
   updateCounts();
 }
 
 // Clear all the examples in all labels
 function clearAllLabels() {
-  knnClassifier.clearAllLabels();
+  classifier.clearAllClasses()
   updateCounts();
 }
 
