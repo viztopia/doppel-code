@@ -85,16 +85,6 @@ function setup() {
   video = createCapture(VIDEO, () => { loadMoveNet(); loadKNN(); });
   video.size(width, height);
   video.hide();
-  // poseNet = ml5.poseNet(video, {
-  //   flipHorizontal: false,
-  //   detectionType: 'single'
-  // }, function () {
-  //   select('#poseNetStatus').html('PoseNet Loaded. You can load KNN classes now and start the classification.')
-  // });
-  // poseNet.on('pose', function (results) {
-  //   poses = results;
-  //   joint = poses[0].pose.keypoints[jointNumber];
-  // });
 
 
   loadKNNBtn = select('#buttonLoad');
@@ -111,28 +101,6 @@ function setup() {
 
   //----------setup socket communication---------------------
   setupSocket();
-}
-
-//----------moveNet stuff----------------
-async function loadMoveNet() {
-  const detectorConfig = { modelType: poseDetection.movenet.modelType.SINGLEPOSE_LIGHTNING };
-  moveNet = await poseDetection.createDetector(poseDetection.SupportedModels.MoveNet, detectorConfig);
-
-  netReady = true;
-  select('#status').html('MoveNet Loaded. ', true);
-}
-
-async function estimatePose() {
-  const poseEstimation = await moveNet.estimatePoses(video.elt);
-  if (poseEstimation.length > 0) {poses = poseEstimation; joint = poses[0].keypoints[jointNumber]};
-}
-
-//---------KNN stuff------------
-async function loadKNN() {
-
-  classifier = knnClassifier.create();
-
-  select('#status').html('KNN Loaded. ', true);
 }
 
 //---------draw-----------------
@@ -188,39 +156,29 @@ function draw() {
   }
 }
 
-function getMaxClass(array) {
-  if (array.length == 0) return [undefined, undefined];
-  var modeMap = {};
-  var maxEl = array[0],
-    maxCount = 1;
-  for (var i = 0; i < array.length; i++) {
-    var el = array[i];
-    if (modeMap[el] == null) modeMap[el] = 1;
-    else modeMap[el]++;
-    if (modeMap[el] > maxCount) {
-      maxEl = el;
-      maxCount = modeMap[el];
-    }
-  }
-  return [maxEl, maxCount];
+//----------moveNet stuff----------------
+async function loadMoveNet() {
+  const detectorConfig = { modelType: poseDetection.movenet.modelType.SINGLEPOSE_LIGHTNING };
+  moveNet = await poseDetection.createDetector(poseDetection.SupportedModels.MoveNet, detectorConfig);
+
+  netReady = true;
+  select('#status').html('MoveNet Loaded. ', true);
 }
 
-//---------------------Classification Helpers----------------------
-function toggleClassification() {
-  if (!isClassifying) {
-    classifyBtn.html('Stop classifying');
-    isClassifying = true;
-    classify();
-
-    socket.emit('plateauOn', true); //tells the controller sketch that plateau analysis is ready
-
-  } else {
-    classifyBtn.html('Start classifying');
-    isClassifying = false;
-
-    socket.emit('plateauOn', false); //tells the controller sketch that plateau analysis is off
-  }
+async function estimatePose() {
+  const poseEstimation = await moveNet.estimatePoses(video.elt);
+  if (poseEstimation.length > 0) {poses = poseEstimation; joint = poses[0].keypoints[jointNumber]};
 }
+
+//---------KNN stuff------------
+async function loadKNN() {
+
+  classifier = knnClassifier.create();
+
+  select('#status').html('KNN Loaded. ', true);
+}
+
+
 
 async function classify() {
   // Get the total number of labels from knnClassifier
@@ -267,6 +225,40 @@ function gotResults(err, result) {
   }
 }
 
+function getMaxClass(array) {
+  if (array.length == 0) return [undefined, undefined];
+  var modeMap = {};
+  var maxEl = array[0],
+    maxCount = 1;
+  for (var i = 0; i < array.length; i++) {
+    var el = array[i];
+    if (modeMap[el] == null) modeMap[el] = 1;
+    else modeMap[el]++;
+    if (modeMap[el] > maxCount) {
+      maxEl = el;
+      maxCount = modeMap[el];
+    }
+  }
+  return [maxEl, maxCount];
+}
+
+//---------------------Classification Helpers----------------------
+function toggleClassification() {
+  if (!isClassifying) {
+    classifyBtn.html('Stop classifying');
+    isClassifying = true;
+    classify();
+
+    socket.emit('plateauOn', true); //tells the controller sketch that plateau analysis is ready
+
+  } else {
+    classifyBtn.html('Start classifying');
+    isClassifying = false;
+
+    socket.emit('plateauOn', false); //tells the controller sketch that plateau analysis is off
+  }
+}
+
 //------------load KNN classes---------------
 function loadClassesJSON(data) {
   if (data) {
@@ -283,19 +275,6 @@ function loadClassesJSON(data) {
     console.log(tensorsData);
   }
 }
-
-// Clear the examples in one label
-function clearLabel(classLabel) {
-  classifier.clearClass(classLabel);
-  updateCounts();
-}
-
-// Clear all the examples in all labels
-function clearAllLabels() {
-  classifier.clearAllClasses()
-  updateCounts();
-}
-
 
 //------------draw skeleton keypoints---------------
 function drawKeypoints() {
