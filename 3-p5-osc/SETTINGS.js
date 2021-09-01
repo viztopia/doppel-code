@@ -8,7 +8,6 @@ const VIDEOPATH = 'https://player.vimeo.com/external/591790914.hd.mp4?s=54231968
 
 
 const PERFORM = true;
-const PRESETDELAYS = [4, 4.5, 6, 10];
 
 // Names Mode indices
 const PRESET = 0;
@@ -38,6 +37,7 @@ const RECORDINGFRAMES = RECORDINGFPS * RECORDINGSECONDS;
 //-------------------other------------
 let RECORDINGGAP = 1000; //in milli secs. KNOWN ISSUE: some time is required to finish saving the current recording to disk before we can start recording the next clip, especially with high CPU.
 
+// How long to wait to play new recorded file
 const PULSEDELAY = 100;
 
 const CAMFPS = 30; //should be the same as recording FPS
