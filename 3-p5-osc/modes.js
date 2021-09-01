@@ -34,6 +34,7 @@ let manual = {
   }
 }
 
+
 let speed = { //------------speed-based--------------------------
   //-------------------mode 2: speed-based delay stuff-----------------------
   jointDist: 0,
@@ -90,11 +91,10 @@ let plateau = { //-------------plateau-based----------------
             this.currentClipFinished = true
           }, pLength); //waift for pLength milliseconds to ask for a new clip
         }
+
       } else {
         //otherwise continue on the current clip
-        if (this.lastPlateauFrameIdx) {
-          delayFrameIdx = this.lastPlateauFrameIdx;
-        }
+        if (this.lastPlateauFrameIdx) delayFrameIdx = this.lastPlateauFrameIdx;
       }
 
       text("Current class is: " + currentClass, INFOX, INFOY + 50);
