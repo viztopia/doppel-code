@@ -54,7 +54,7 @@ let speed = { //------------speed-based--------------------------
       this.mappedFrames.splice(0, 1);
     }
 
-    if (mappedFrames.length > 0) {
+    if (this.mappedFrames.length > 0) {
       delayFrameIdx = floor(getAvg1d(this.mappedFrames));
       text("Current joint dist is: " + this.jointDist, INFOX, INFOY + 25);
       text("Averaged delay frame is: " + delayFrameIdx, INFOX, INFOY + 50);
@@ -80,7 +80,7 @@ let plateau = { //-------------plateau-based----------------
       // console.log(haveNewClass, currentClipFinished);
       if (this.haveNewClass || this.currentClipFinished) {
         //pick a plateau whenever there's a new class or the current clip is finished
-        let [pStartTime, pLength] = getStartTimeAndLengthRandom(plateaus, currentClass);
+        let [pStartTime, pLength] = getStartTimeAndLengthRandom(this.plateaus, this.currentClass);
 
         if (pStartTime && pLength) {
           delayFrameIdx = floor((Date.now() - startTime - pStartTime) / 1000 * CAMFPS); //convert plateau start time to how many frames we should go back from the present
@@ -98,7 +98,7 @@ let plateau = { //-------------plateau-based----------------
         if (this.lastPlateauFrameIdx) delayFrameIdx = this.lastPlateauFrameIdx;
       }
 
-      text("Current class is: " + currentClass, INFOX, INFOY + 50);
+      text("Current class is: " + this.currentClass, INFOX, INFOY + 50);
       text("We need at least one complated plateau record to pull from the recording.", INFOX, INFOY + 75);
       text("Current pulling method is: Random", INFOX, INFOY + 100);
 

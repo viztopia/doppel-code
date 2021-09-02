@@ -227,13 +227,13 @@ function connect() {
     //for each plateau, record its start time relative to the show's start time, i.e., how many milli seconds after the show starts.
     let st = p.start - startTime > 0 ? p.start - startTime : 0;
 
-    if (!plateaus.has(p.className)) {
-      plateaus.set(p.className, [{
+    if (!plateau.plateaus.has(p.className)) {
+      plateau.plateaus.set(p.className, [{
         start: st,
         length: p.end - p.start
       }]); // if plateau of this class never exists, add one.
     } else {
-      plateaus.get(p.className).push({
+      plateau.plateaus.get(p.className).push({
         start: st,
         length: p.end - p.start
       }); // if plateau of this class already exists, add data to array.
@@ -243,13 +243,13 @@ function connect() {
   });
 
   socket.on('classNew', (c) => {
-    if (currentClass != c) {
-      haveNewClass = true;
-      currentClass = c;
+    if (plateau.currentClass != c) {
+      plateau.haveNewClass = true;
+      plateau.currentClass = c;
     };
   });
 
   socket.on('jointDist', (jd) => {
-    jointDist = jd;
+    speed.jointDist = jd;
   });
 }
