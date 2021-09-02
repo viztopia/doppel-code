@@ -1,0 +1,70 @@
+let cue = {
+  fileIdx: -99,
+  pfileIdx: undefined,
+  cuePoint: 0,
+  availableRecordingNum: 0,
+  run: function () {
+
+    //----------------------1. first we calculate how many cached/recorded content is available-----------
+    this.availableRecordingNum = floor(recordedSeconds / RECORDINGSECONDS);
+    let availableCACHESeconds = recordedSeconds > CACHELENGTH ? CACHELENGTH : recordedSeconds;
+    text(this.availableRecordingNum + " recording clips and " + availableCACHESeconds + " seconds in TD cache available", INFOX, INFOY - 50);
+
+    // Display current delay and file
+    text("Delayed frame:" + delayFrameIdx, INFOX, INFOY + 125);
+    text("File:" + this.fileIdx + " cuePoint: " + this.cuePoint, INFOX, INFOY + 150);
+
+    // Cue doppelganger in TD, only if there's a change
+    if (abs(delayFrameIdx - pDelayFrameIdx) > 0) {
+      this.update();
+      pDelayFrameIdx = delayFrameIdx;
+    }
+  },
+  update: function () {
+    // Only update cue if something has changed
+    // if (abs(delayFrameIdx - pdelayFrameIdx) <= 0) return; 
+
+    if (delayFrameIdx) {
+
+      // If delay frame is within what is cached...
+      if (delayFrameIdx <= CACHEFRAMES) {
+        socket.emit("source", CACHE); //source 0: load frame from TD cache memory
+        this.fileIdx = -99;
+        cuePoint = 1 - delayFrameIdx / RECORDINGFRAMES;
+        socket.emit("frameIdx", delayFrameIdx);
+
+      // } else if (availableRecordingNum > 2) {
+      } else {
+        socket.emit("source", RECORDINGS); //source 1: load frame from recordings
+        let idxOfRecordingFromTD = floor((delayFrameIdx - CACHEFRAMES) / RECORDINGFRAMES)
+        this.fileIdx = this.availableRecordingNum - (idxOfRecordingFromTD + 1) ; // 0 is the offset for getting the correct recording file name idx in Windows. May need a different value for Mac.
+        this.cuePoint = 1 - (delayFrameIdx - CACHEFRAMES - idxOfRecordingFromTD * RECORDINGFRAMES) / RECORDINGFRAMES;
+        let pulseDelay = 0;
+        if (this.fileIdx != this.pfileIdx) {
+          socket.emit("fileIdx", this.fileIdx);
+          pulseDelay = PULSEDELAY;
+          this.pfileIdx = this.fileIdx;
+          // socket.emit("cuePulse", 1);
+          // setTimeout(() => { socket.emit("cuePulse", 0); }, 20);
+        }
+        socket.emit("cuePoint", this.cuePoint);
+        socket.emit("cuePulse", 1);
+        // setTimeout(() => { socket.emit("cuePulse", 1); }, pulseDelay);
+        // TODO: Turn off pulse
+
+      }
+
+    } else {
+      text("No available delay frames yet. Showing TD current frame", INFOX, INFOY + 125);
+      socket.emit("source", CACHE); //source 0: load frame from TD cache memory
+      socket.emit("frameIdx", 0);
+    }
+
+
+  }
+}
+
+//-----------------To-do: video mode--------------------
+//1. tell pose estimation & classification sketch to scrub to a specific time
+//2. tell TD to srub movie file in to a specific time
+//3. scrubbing method: TBD

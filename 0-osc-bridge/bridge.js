@@ -85,6 +85,50 @@ io.sockets.on('connection', function (socket) {
 		console.log('disconnected');
 	});
 
+	//-----------------broadcast stage managing events-----------------
+	socket.on('source', function (msg) {
+		socket.broadcast.emit("source", msg);
+		// socket.broadcast.emit("message1", 1234);
+		console.log("source is: " + msg);
+	});
+	socket.on('frameIdx', function (msg) {
+		socket.broadcast.emit("frameIdx", msg);
+		// socket.broadcast.emit("message1", 1234);
+		console.log("frameIdx is: " + msg);
+	});
+	socket.on('fileIdx', function (msg) {
+		socket.broadcast.emit("fileIdx", msg);
+		// socket.broadcast.emit("message1", 1234);
+		console.log("fileIdx is: " + msg);
+	});
+	socket.on('cuePoint', function (msg) {
+		socket.broadcast.emit("cuePoint", msg);
+		// socket.broadcast.emit("message1", 1234);
+		console.log("cuePoint is: " + msg);
+	});
+	socket.on('cuePulse', function (msg) {
+		socket.broadcast.emit("cuePulse", msg);
+		// socket.broadcast.emit("message1", 1234);
+		console.log("cuePulse is: " + msg);
+	});
+	socket.on('blackoutleft', function (msg) {
+		socket.broadcast.emit("blackoutleft", msg);
+		// socket.broadcast.emit("message1", 1234);
+		console.log("blackoutleft is: " + msg);
+	});
+	socket.on('blackoutright', function (msg) {
+		socket.broadcast.emit("blackoutright", msg);
+		// socket.broadcast.emit("message1", 1234);
+		console.log("blackoutright is: " + msg);
+	});
+	socket.on('record', function (msg) {
+		socket.broadcast.emit("record", msg);
+		// socket.broadcast.emit("message1", 1234);
+		console.log("record is: " + msg);
+	});
+
+
+
 	//-----------------broadcast classification plateau stuff-----------------
 	//broadcast plateau stuff
 	socket.on('plateauOn', function (msg) {

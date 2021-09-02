@@ -18,28 +18,6 @@ function setup() {
   createButtons();
 }
 
-//----------moveNet stuff----------------
-async function loadMoveNet() {
-  const detectorConfig = { modelType: poseDetection.movenet.modelType.SINGLEPOSE_LIGHTNING };
-  moveNet = await poseDetection.createDetector(poseDetection.SupportedModels.MoveNet, detectorConfig);
-
-  netReady = true;
-  select('#status').html('MoveNet Loaded. ', true);
-}
-
-async function estimatePose() {
-  const poseEstimation = await moveNet.estimatePoses(video.elt);
-  if (poseEstimation.length > 0) poses = poseEstimation;
-}
-
-//---------KNN stuff------------
-async function loadKNN() {
-
-  classifier = knnClassifier.create();
-
-  select('#status').html('KNN Loaded. ', true);
-}
-
 //-------------------------------------------
 function draw() {
   if (netReady) estimatePose();
@@ -51,35 +29,6 @@ function draw() {
   }
 }
 
-// Add the current frame from the video to the classifier
-function addExample(label) {
-  // Convert poses results to a 2d array [[score0, x0, y0],...,[score16, x16, y16]]
-  // const poseArray = poses[0].pose.keypoints.map(p => [p.score, p.position.x, p.position.y]);
-  const poseArray = poses[0].keypoints.map(p => [p.score, p.x, p.y]);
-
-  // Add an example with a label to the classifier
-  const example = tf.tensor(poseArray);
-  // console.log(example)
-  classifier.addExample(example, label);
-  updateCounts();
-}
-
-// Predict the current frame.
-async function classify() {
-  // Get the total number of labels from knnClassifier
-  const numLabels = classifier.getNumClasses();
-  if (numLabels <= 0) {
-    console.error('There is no examples in any label');
-    return;
-  }
-  // Convert poses results to a 2d array [[score0, x0, y0],...,[score16, x16, y16]]
-  const poseArray = poses[0].keypoints.map(p => [p.score, p.x, p.y]);
-
-  const example = tf.tensor(poseArray);
-  const result = await classifier.predictClass(example);
-  gotResults(undefined, result);
-
-}
 
 // A util function to create UI buttons
 function createButtons() {
@@ -160,6 +109,60 @@ function createButtons() {
   buttonClearAll = select('#clearAll');
   buttonClearAll.mousePressed(clearAllLabels);
 }
+
+//----------moveNet stuff----------------
+async function loadMoveNet() {
+  const detectorConfig = { modelType: poseDetection.movenet.modelType.SINGLEPOSE_LIGHTNING };
+  moveNet = await poseDetection.createDetector(poseDetection.SupportedModels.MoveNet, detectorConfig);
+
+  netReady = true;
+  select('#status').html('MoveNet Loaded. ', true);
+}
+
+async function estimatePose() {
+  const poseEstimation = await moveNet.estimatePoses(video.elt);
+  if (poseEstimation.length > 0) poses = poseEstimation;
+}
+
+//---------KNN stuff------------
+async function loadKNN() {
+
+  classifier = knnClassifier.create();
+
+  select('#status').html('KNN Loaded. ', true);
+}
+
+// Add the current frame from the video to the classifier
+function addExample(label) {
+  // Convert poses results to a 2d array [[score0, x0, y0],...,[score16, x16, y16]]
+  // const poseArray = poses[0].pose.keypoints.map(p => [p.score, p.position.x, p.position.y]);
+  const poseArray = poses[0].keypoints.map(p => [p.score, p.x, p.y]);
+
+  // Add an example with a label to the classifier
+  const example = tf.tensor(poseArray);
+  // console.log(example)
+  classifier.addExample(example, label);
+  updateCounts();
+}
+
+// Predict the current frame.
+async function classify() {
+  // Get the total number of labels from knnClassifier
+  const numLabels = classifier.getNumClasses();
+  if (numLabels <= 0) {
+    console.error('There is no examples in any label');
+    return;
+  }
+  // Convert poses results to a 2d array [[score0, x0, y0],...,[score16, x16, y16]]
+  const poseArray = poses[0].keypoints.map(p => [p.score, p.x, p.y]);
+
+  const example = tf.tensor(poseArray);
+  const result = await classifier.predictClass(example);
+  gotResults(undefined, result);
+
+}
+
+
 
 // Show the results
 function gotResults(err, result) {

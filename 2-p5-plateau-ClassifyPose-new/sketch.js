@@ -37,7 +37,6 @@ let video;
 let moveNet;
 let netReady = false;
 let poses = [];
-// const knnClassifier = ml5.KNNClassifier();
 let classifier;
 let isClassifying = false;
 let loadKNNBtn, classifyBtn;
@@ -46,7 +45,7 @@ let classIndexOffset = 0;
 //-----------------speed-based delay----------------------
 let joint, jointPrev;
 let jointNumber = 0;
-let jointThreshold = 0.65;
+let jointThreshold = 0.6;
 
 
 
