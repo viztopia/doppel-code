@@ -1,15 +1,15 @@
 let preset = {
   idx: 0,
-  run: function() {
+  run: function () {
     text("Current delay interval is: " + PRESETS[this.idx] + " seconds", INFOX, INFOY + 25);
     this.updateCurrentFrame();
   },
-  update: function(step) {
+  update: function (step) {
     // Update current preset
     this.idx += step;
-    this.idx = constrain(this.idx, 0, PRESETS.length-1);
+    this.idx = constrain(this.idx, 0, PRESETS.length - 1);
   },
-  updateCurrentFrame: function(){
+  updateCurrentFrame: function () {
     // Easing
     if (currentDelayFrameIdx < PRESETS[this.idx] * RECORDINGFPS) currentDelayFrameIdx++;
     else if (currentDelayFrameIdx > PRESETS[this.idx] * RECORDINGFPS) currentDelayFrameIdx--;
@@ -20,10 +20,10 @@ let preset = {
 
 let manual = {
   TH: 6000,
-  run: function() {
+  run: function () {
     text("Manual Count: " + delayFrameIdx, INFOX, INFOY + 25);
   },
-  update: function(step) {
+  update: function (step) {
 
     // Update the delay
     delayFrameIdx += step;
@@ -42,7 +42,7 @@ let speed = { //------------speed-based--------------------------
   FRAMESTOCACHE: 600, //caching 10 seconds for testing, so 10 * 60 = 600 frames
   mappedFrames: [],
   avgFrame: 0,
-  run: function() {
+  run: function () {
 
     //map the jointDist amount to a frame index between 0 and framesToCache
     let mappedFrame = constrain(map(this.jointDist, 0, MAXJOINTDIST, 0, CACHEFRAMES - 1), 0, CACHEFRAMES - 1); //currently using only TD cache for performance considerations
@@ -68,29 +68,44 @@ let plateau = { //-------------plateau-based----------------
   plateaus: new Map(),
   currentClass: undefined,
   haveNewClass: false,
+  targetClass: undefined,
+  targetClassInPlateaus: false,
+  currentClipStartTime: undefined,
   currentClipFinished: true,
+  currentClipLength: undefined,
   lastPlateauFrameIdx: undefined,
-  run: function() {
+  run: function () {
     text("Plateau classification is: " + (this.plateauOn ? "On." : "Off."), INFOX, INFOY + 25);
 
     if (this.plateauOn) { //-----------------------if plateau classification is on, we calculate the number of frames to be delayed automatically
-      if (!this.currentClass) socket.emit("queryClass");
+      if (!this.currentClass) { console.log("querying class"); socket.emit("queryClass"); }
       //----------------------auto controlling TD using plateau data------------------------
 
       // console.log(haveNewClass, currentClipFinished);
-      if (this.haveNewClass || this.currentClipFinished) {
+      if (this.currentClipFinished) {
         //pick a plateau whenever there's a new class or the current clip is finished
         let [pStartTime, pLength] = getStartTimeAndLengthRandom(this.plateaus, this.currentClass);
+        this.haveNewClass = false;
+        // this.currentClipFinished = false;
 
         if (pStartTime && pLength) {
+          this.targetClass = this.currentClass;
+          this.targetClassInPlateaus = true;
+          this.currentClipStartTime = Date.now();
+          this.currentClipLength = pLength;
+          console.log("target class " + this.currentClass + " in plateaus: " + this.targetClassInPlateaus);
+          console.log("start: " + pStartTime + " length: " + pLength);
           delayFrameIdx = floor((Date.now() - startTime - pStartTime) / 1000 * CAMFPS); //convert plateau start time to how many frames we should go back from the present
           this.lastPlateauFrameIdx = delayFrameIdx;
-          this.haveNewClass = false;
+          // this.haveNewClass = false;
           this.currentClipFinished = false;
 
           setTimeout(() => {
-            this.currentClipFinished = true
+            this.currentClipFinished = true;
+            console.log("current clip done.")
           }, pLength); //waift for pLength milliseconds to ask for a new clip
+        } else {
+          this.targetClassInPlateaus = false;
         }
 
       } else {
@@ -99,8 +114,8 @@ let plateau = { //-------------plateau-based----------------
       }
 
       text("Current class is: " + this.currentClass, INFOX, INFOY + 50);
-      text("We need at least one complated plateau record to pull from the recording.", INFOX, INFOY + 75);
-      text("Current pulling method is: Random", INFOX, INFOY + 100);
+      if (!this.targetClassInPlateaus) text("We need at least one complated plateau record to pull from the recording.", INFOX, INFOY + 75);
+      if (this.targetClassInPlateaus) text("Current pulling " + this.targetClass + ", method is: Random. Finishing in: " + (this.currentClipLength - (Date.now() - this.currentClipStartTime)) / 1000, INFOX, INFOY + 100);
 
     } else {
       //----------------------manual controlling TD using mouse as a fall back------------------------
@@ -122,7 +137,7 @@ let bookmark = { //------------bookmark---------------------
   // TODO: Implement multiple bookmarks
   ts: undefined,
   lastJumpedFrameIdx: undefined,
-  run: function() {
+  run: function () {
     if (this.ts) {
       text("Current bookmark is:" + this.bookmarkTime / 1000 + " seconds", INFOX, INFOY + 25);
     } else {
@@ -130,7 +145,7 @@ let bookmark = { //------------bookmark---------------------
     }
     text("Press W to jump, press Q to overwrite the current.", INFOX, INFOY + 50);
   },
-  jump: function() {
+  jump: function () {
     if (!this.ts) return;
 
     delayFrameIdx = floor((Date.now() - startTime - this.ts) / 1000 * CAMFPS);
@@ -161,7 +176,38 @@ function getStartTimeAndLengthRandom(_plateaus, _currentClass) {
 
   if (pltData) {
     const foundPlateau = chance.pickone(pltData);
+    return [foundPlateau.start, foundPlateau.length];
+  } else {
+    return [undefined, undefined];
+  }
+}
 
+function getStartTimeAndLengthRandomOpposite(_plateaus, _currentClass) {
+  let pltData;
+  switch (_currentClass) {
+    case "1":
+      pltData = _plateaus.get("4");
+      break;
+    case "2":
+      pltData = _plateaus.get("3");
+      break;
+    case "3":
+      pltData = _plateaus.get("2");
+      break;
+    case "4":
+      pltData = _plateaus.get("1");
+      break;
+    case "5":
+      pltData = _plateaus.get("6");
+      break;
+    case "6":
+      pltData = _plateaus.get("5");
+      break;
+  }
+  
+
+  if (pltData) {
+    const foundPlateau = chance.pickone(pltData);
     return [foundPlateau.start, foundPlateau.length];
   } else {
     return [undefined, undefined];

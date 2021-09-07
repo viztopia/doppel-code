@@ -37,7 +37,7 @@ let cue = {
       } else {
         socket.emit("source", RECORDINGS); //source 1: load frame from recordings
         let idxOfRecordingFromTD = floor((delayFrameIdx - CACHEFRAMES) / RECORDINGFRAMES)
-        this.fileIdx = this.availableRecordingNum - (idxOfRecordingFromTD + 1) ; // 0 is the offset for getting the correct recording file name idx in Windows. May need a different value for Mac.
+        this.fileIdx = this.availableRecordingNum - (idxOfRecordingFromTD + 1) ; // 1 bc number of recordings starts at 1 and TD file idx starts at 0
         this.cuePoint = 1 - (delayFrameIdx - CACHEFRAMES - idxOfRecordingFromTD * RECORDINGFRAMES) / RECORDINGFRAMES;
         let pulseDelay = 0;
         if (this.fileIdx != this.pfileIdx) {

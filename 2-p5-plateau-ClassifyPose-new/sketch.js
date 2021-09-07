@@ -57,7 +57,7 @@ function preload() { //used for video mode
 
 function setup() {
   // cnv = createCanvas(1920, 1080);
-  cnv = createCanvas(640, 480);
+  cnv = createCanvas(960, 540);
   cnv.parent('cnvDiv');
   classCacheLengthSlider = createSlider(10, 180, cacheLength, 10);
   classCacheLengthSlider.parent('controlsDiv');
@@ -80,8 +80,16 @@ function setup() {
   downloadBtn.parent('controlsDiv');
 
 
-  //------------PoseNet & KNN----------------------
-  video = createCapture(VIDEO, () => { loadMoveNet(); loadKNN(); });
+  //------------MoveNet & KNN----------------------
+  let constraints = {
+    video: {
+      mandatory: {
+        minWidth: 960,
+        minHeight: 540
+      }
+    }
+  };
+  video = createCapture(constraints, () => { loadMoveNet(); loadKNN(); });
   video.size(width, height);
   video.hide();
 

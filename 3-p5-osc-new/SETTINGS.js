@@ -32,7 +32,7 @@ const CACHE = 0;
 const RECORDINGS = 1;
 
 const RECORDINGFPS = 30;
-const RECORDINGSECONDS = 10; //length of each OBS recording clip in seconds
+const RECORDINGSECONDS = 30; //length of each OBS recording clip in seconds
 const RECORDINGFRAMES = RECORDINGFPS * RECORDINGSECONDS;
 //-------------------other------------
 let RECORDINGGAP = 1000; //in milli secs. KNOWN ISSUE: some time is required to finish saving the current recording to disk before we can start recording the next clip, especially with high CPU.
@@ -41,5 +41,5 @@ let RECORDINGGAP = 1000; //in milli secs. KNOWN ISSUE: some time is required to 
 const PULSEDELAY = 100;
 
 const CAMFPS = 30; //should be the same as recording FPS
-const CACHELENGTH = 10; //length of cache in TD in seconds. Ideally this should match with recording length so that there won't be gaps between recordings and TD cache.
+const CACHELENGTH = 30; //length of cache in TD in seconds. Ideally this should match with recording length so that there won't be gaps between recordings and TD cache.
 const CACHEFRAMES = CAMFPS * CACHELENGTH; //this should match the size of the Cache TOP in TD

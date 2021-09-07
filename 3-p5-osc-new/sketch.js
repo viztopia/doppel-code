@@ -242,10 +242,18 @@ function connect() {
     // plateaus.push({ className: p.className, start: p.start - startTime, length: p.end - p.start }); //save plateaus with timestamps in relation to recording start time
   });
 
+  socket.on('queriedClass', (c) => {
+    if (!plateau.currentClass) {
+      plateau.currentClass = c;
+      console.log("got queried class: " + c);
+    };
+  });
+
   socket.on('classNew', (c) => {
-    if (plateau.currentClass != c) {
+    if (mode == PLATEAU && plateau.currentClass != c) {
       plateau.haveNewClass = true;
       plateau.currentClass = c;
+      console.log("got new class: " + c);
     };
   });
 
