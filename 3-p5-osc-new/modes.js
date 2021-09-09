@@ -73,7 +73,7 @@ let plateau = { //-------------plateau-based----------------
   currentClipStartTime: undefined,
   currentClipFinished: true,
   currentClipLength: undefined,
-  lastPlateauFrameIdx: undefined,
+  initialDelayFrameIdx: undefined,
   run: function () {
     text("Plateau classification is: " + (this.plateauOn ? "On." : "Off."), INFOX, INFOY + 25);
 
@@ -96,21 +96,23 @@ let plateau = { //-------------plateau-based----------------
           console.log("target class " + this.currentClass + " in plateaus: " + this.targetClassInPlateaus);
           console.log("start: " + pStartTime + " length: " + pLength);
           delayFrameIdx = floor((Date.now() - startTime - pStartTime) / 1000 * CAMFPS); //convert plateau start time to how many frames we should go back from the present
-          this.lastPlateauFrameIdx = delayFrameIdx;
+          this.initialDelayFrameIdx = delayFrameIdx;
           // this.haveNewClass = false;
           this.currentClipFinished = false;
 
+          //wait for pLength milliseconds to ask for a new clip
           setTimeout(() => {
             this.currentClipFinished = true;
             console.log("current clip done.")
-          }, pLength); //waift for pLength milliseconds to ask for a new clip
+          }, pLength);
+
         } else {
           this.targetClassInPlateaus = false;
         }
 
       } else {
-        //otherwise continue on the current clip
-        if (this.lastPlateauFrameIdx) delayFrameIdx = this.lastPlateauFrameIdx;
+        //otherwise continue on the current clip (update the delayFrameIdx every RECORDINGSECONDS )
+        if (this.initialDelayFrameIdx) delayFrameIdx = this.initialDelayFrameIdx + floor((Date.now() - this.currentClipStartTime) / 1000 / RECORDINGSECONDS) * RECORDINGFRAMES;
       }
 
       text("Current class is: " + this.currentClass, INFOX, INFOY + 50);
@@ -204,7 +206,7 @@ function getStartTimeAndLengthRandomOpposite(_plateaus, _currentClass) {
       pltData = _plateaus.get("5");
       break;
   }
-  
+
 
   if (pltData) {
     const foundPlateau = chance.pickone(pltData);

@@ -8,10 +8,10 @@ let netReady = false;
 let poses = [];
 
 function setup() {
-  const canvas = createCanvas(640, 480);
+  const canvas = createCanvas(960, 540);
   canvas.parent('videoContainer');
   video = createCapture(VIDEO, () => { loadMoveNet(); loadKNN(); });
-  video.size(width, height);
+  // video.size(width, height);
   video.hide();
 
   // Create the UI buttons
