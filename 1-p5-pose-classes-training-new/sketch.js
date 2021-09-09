@@ -17,8 +17,10 @@ let nx, ny;
 function setup() {
   const canvas = createCanvas(1440, 1080);
   canvas.parent('videoContainer');
+
   video = createCapture(VIDEO, () => { loadMoveNet(); loadKNN(); });
-  video.size(width, height);
+  console.log(video);
+  // video.size(width, height);
   video.hide();
 
   // Create the UI buttons
