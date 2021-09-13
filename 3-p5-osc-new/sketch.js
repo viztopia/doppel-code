@@ -23,18 +23,16 @@ let mode = 0; // 0: PRESET interval, 1: manual 1 interval, 2: speed-based, 3:pla
 let socket;
 
 //-------------show settings--------------
-let btnStart, btnStartVideo, btnStop;
+let btnStart, btnStop, btnSaveShow, btnRecoverShow;
 let started = false;
 let startTime = 0;
 
 // Recorder
-let isRecording = false;
-let recordIntervalID;
 let recordedSeconds;
 
+// Delay Frame Idx for cueing
 let delayFrameIdx = 0;
 let pDelayFrameIdx = 0;
-let currentDelayFrameIdx = 0;
 
 
 
@@ -45,15 +43,17 @@ function setup() {
   btnStart = createButton('START'); //master control: start performance
   btnStart.position(0, 0);
   btnStart.mousePressed(startPerformance);
-  btnStartVideo = createButton('START VIDEO'); //master control: start performance in video mode (in progress)
-  btnStartVideo.position(80, 0);
-  btnStartVideo.mousePressed(() => {
-    startVideo();
-    startPerformance();
-  });
   btnStop = createButton('STOP'); //master control: stop performance
-  btnStop.position(200, 0);
+  btnStop.position(80, 0);
   btnStop.mousePressed(stopPerformance);
+
+  btnSaveShow = createButton('SAVE'); //
+  btnSaveShow.position(160, 0);
+  btnSaveShow.mousePressed(savePerformance);
+
+  btnRecoverShow = createButton('RECOVER'); //
+  btnRecoverShow.position(240, 0);
+  btnRecoverShow.mousePressed(()=>{recoverPerformance("showData.json")}); //make sure to change json name to showData.json
 
   textAlign(LEFT, CENTER);
 
@@ -78,15 +78,6 @@ function draw() {
     textSize(14);
     text("Performance & recording started for " + recordedSeconds + " seconds, " + recordedSeconds * RECORDINGFPS + " frames", width / 2 - 250, height / 2 - 75);
 
-    // // Run the current mode
-    // modes[mode].run();
-
-    // // Cue doppelganger in TD, only if there's a change
-    // if (abs(delayFrameIdx - pDelayFrameIdx) > 0) {
-    //   cue.run();
-    //   pDelayFrameIdx = delayFrameIdx;
-    // }
-
     // Run the current mode
     modes[mode].run();
 
@@ -99,45 +90,140 @@ function draw() {
 
 //------start & stop performance----------------
 function startPerformance() {
-  //---clear plateau data
+
+  //---reset plateau data
   plateau.plateaus.clear();
+
+  //---reset bookmarks
+  bookmark.ts = undefined;
 
   //---record start time---
   startTime = Date.now();
 
   //start recording
   socket.emit("record", 1);
-  isRecording = true;
 
-  // recordIntervalID = setInterval(() => { // record a new clip every for every RECORDINGSECONDS seconds, so that both TD cache and hard drive recording latency is managable.
-  //   console.log("Recording stopped at:" + (Date.now() - startTime));
-  //
-  //   socket.emit("record", 0);
-  //   isRecording = false;
-  //
-  //   setTimeout(() => {
-  //     console.log("Recording started at:" + (Date.now() - startTime));
-  //     socket.emit("record", 1);
-  //     isRecording = true;
-  //   }, RECORDINGGAP); //KNOWN ISSUE--> seems that OBS will take a little bit of time to save a video file (less than 600ms for a 5min video). NEED TO FIX THIS!
-  //
-  // }, RECORDINGSECONDS * 1000);
-
+  //start show
   started = true;
   console.log("Show and recording started at: " + startTime);
 }
 
 function stopPerformance() {
-  //---record stop time---
+  //stop show
   started = false;
-  // clearInterval(recordIntervalID);
-  socket.emit("record", 0)
-  isRecording = false;
-  console.log("Show and recording stopped at: " + (Date.now() - startTime));
-  manualCount1 = 0;  //--------------should reset delay frame idx
-  mode = 0;
-  bookmark.ts = undefined; //
 
+  //stop recording
+  socket.emit("record", 0)
+  console.log("Show and recording stopped at: " + (Date.now() - startTime));
+
+  //reset mode
+  mode = 0;
+
+  //we don't reset startTime, recordedSeconds, delayFrameIdx, pleateaus, and bookmarks just so we can save them if needed
+}
+
+function savePerformance() {
+
+  //------------Handling of Rec every 30 sec issue------------------
+  //first off, we need to remove the extra recordsing in TD, and update the N number accordingly..
+  //then we clean the data to be saved
+
+  //1. get the last available second as a reference
+  const lastSecond = recordedSeconds - recordedSeconds % RECORDINGSECONDS;
+  console.log(lastSecond);
+  const lastSecondMillis = lastSecond * 1000;
+
+  //2. clear extra plateaus beyond the last second
+  //TBD: what about the current class / have new class / target class? These will very likely to be different / recalculated, but might create glitches
+  let plateausToSave = new Map();
+  plateau.plateaus.forEach((value, key) => {
+    let uncleanedPlateaus = plateau.plateaus.get(key);
+    console.log(uncleanedPlateaus);
+    let cleanedPlateaus = [];
+    uncleanedPlateaus.forEach((p) => {
+      if (p.start <= lastSecondMillis) { cleanedPlateaus.push(p) } //using only start or start + length?
+      console.log(cleanedPlateaus);
+    })
+    plateausToSave.set(key, cleanedPlateaus);
+  })
+  console.log(plateausToSave);
+  //3. clear extra bookmark beyond the last second
+  let bookmarkToSave = bookmark.ts <= lastSecondMillis ? bookmark.ts : undefined;
+
+
+
+
+  let showData = {
+    mode: mode,
+    startTime: startTime,
+    recordedSeconds: recordedSeconds,
+    delayFrameIdx: delayFrameIdx,
+    pDelayFrameIdx: pDelayFrameIdx,
+
+    //also saving data for each mode
+    preset_idx: preset.idx,
+    preset_currentDelayFrameIdx: preset.currentDelayFrameIdx,
+    manual_TH: manual.TH,
+    speed_jointDist: speed.jointDist,
+    speed_mappedFrames: speed.mappedFrames,
+    speed_avgFrame: speed.avgFrame,
+    plateau_plateauOn: plateau.plateauOn,
+    plateau_plateaus: JSON.stringify([...plateausToSave]), //replace with cleaned plateaus
+    plateau_currentClass: plateau.currentClass, //should we clear this?
+    plateau_haveNewClass: plateau.haveNewClass, //should we clear this?
+    plateau_targetClass: plateau.targetClass, //should we clear this?
+    plateau_targetClassInPlateaus: plateau.targetClassInPlateaus, //should we clear this?
+    plateau_currentClipStartTime: plateau.currentClipStartTime, //should we clear this?
+    plateau_currentClipFinished: plateau.currentClipFinished,  //should we clear this?
+    plateau_currentClipLength: plateau.currentClipLength, //should we clear this?
+    plateau_initialDelayFrameIdx: plateau.initialDelayFrameIdx, //should we clear this?
+    bookmark_ts: bookmarkToSave, //replace with cleared bookmark
+    bookmark_lastJumpedFrameIdx: bookmark.lastJumpedFrameIdx
+  };
+
+  console.log(showData);
+  saveJSON(showData, 'showData-' + month() + '-' + day() + '-' + hour() + '-' + minute() + '-' + second() + '.json');
+}
+
+function recoverPerformance(jsonPath) {
+
+  loadJSON(jsonPath, (data) => {
+    mode = data.mode;
+    startTime = Date.now() - data.recordedSeconds * 1000;
+    recordedSeconds = data.recordedSeconds;
+    delayFrameIdx = data.delayFrameIdx;
+    pDelayFrameIdx = data.pDelayFrameIdx;
+
+    preset.idx = data.preset_idx;
+    preset.currentDelayFrameIdx = data.preset_currentDelayFrameIdx;
+    manual.TH = data.manual_TH;
+    speed.jointDist = data.speed_jointDist;
+    speed.mappedFrames = data.speed_mappedFrames;
+    speed.avgFrame = data.speed_avgFrame;
+    // plateau.plateauOn = data.plateau_plateauOn;
+    plateau.plateaus = new Map(JSON.parse(data.plateau_plateaus));
+    // plateau.currentClass = data.plateau_currentClass;
+    // plateau.haveNewClass = data.plateau_haveNewClass;
+    // plateau.targetClass = data.plateau_targetClass;
+    // plateau.targetClassInPlateaus = data.plateau_targetClassInPlateaus;
+    // plateau.currentClipStartTime = data.plateau_currentClipStartTime;
+    // plateau.currentClipFinished = data.plateau_currentClipFinished;
+    // plateau.currentClipLength = data.plateau_currentClipLength;
+    // plateau.initialDelayFrameIdx = data.plateau_initialDelayFrameIdx;
+    bookmark.ts = data.bookmark_ts;
+    bookmark.lastJumpedFrameIdx = data.bookmark_lastJumpedFrameIdx;
+
+
+    //start recording
+    socket.emit("record", 1);
+
+    //start show
+    started = true;
+    console.log("Show recovered at original start time: " + startTime);
+
+    console.log("recovered plateaus are:");
+    console.log(plateau.plateaus);
+  });
 }
 
 //----------------------Mode Select--------------------------
@@ -196,8 +282,6 @@ function keyPressed() {
       break;
   }
 
-  // if (manualCount1 > manualCount1Thres) manualCount1 = manualCount1Thres;
-  // if (manualCount1 < 0) manualCount1 = 0;
 }
 
 

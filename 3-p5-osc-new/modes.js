@@ -1,5 +1,6 @@
 let preset = {
   idx: 0,
+  currentDelayFrameIdx: 0,
   run: function () {
     text("Current delay interval is: " + PRESETS[this.idx] + " seconds", INFOX, INFOY + 25);
     this.updateCurrentFrame();
@@ -11,10 +12,10 @@ let preset = {
   },
   updateCurrentFrame: function () {
     // Easing
-    if (currentDelayFrameIdx < PRESETS[this.idx] * RECORDINGFPS) currentDelayFrameIdx++;
-    else if (currentDelayFrameIdx > PRESETS[this.idx] * RECORDINGFPS) currentDelayFrameIdx--;
+    if (this.currentDelayFrameIdx < PRESETS[this.idx] * RECORDINGFPS) this.currentDelayFrameIdx++;
+    else if (this.currentDelayFrameIdx > PRESETS[this.idx] * RECORDINGFPS) this.currentDelayFrameIdx--;
     // delayFrameIdx = PRESETS[fixedIntervalIdx] * RECORDINGFPS;
-    delayFrameIdx = currentDelayFrameIdx;
+    delayFrameIdx = this.currentDelayFrameIdx;
   }
 }
 
@@ -88,7 +89,8 @@ let plateau = { //-------------plateau-based----------------
         this.haveNewClass = false;
         // this.currentClipFinished = false;
 
-        if (pStartTime && pLength) {
+        // console.log(pStartTime, pLength);
+        if (pStartTime != undefined && pLength != undefined ) {
           this.targetClass = this.currentClass;
           this.targetClassInPlateaus = true;
           this.currentClipStartTime = Date.now();
@@ -141,7 +143,7 @@ let bookmark = { //------------bookmark---------------------
   lastJumpedFrameIdx: undefined,
   run: function () {
     if (this.ts) {
-      text("Current bookmark is:" + this.bookmarkTime / 1000 + " seconds", INFOX, INFOY + 25);
+      text("Current bookmark is:" + this.ts / 1000 + " seconds", INFOX, INFOY + 25);
     } else {
       text("No bookmarks available yet. Press Q to save a bookmark.", INFOX, INFOY + 25);
     }
@@ -175,6 +177,7 @@ function getStartTimeAndLengthFirstMatch(_plateaus) {
 
 function getStartTimeAndLengthRandom(_plateaus, _currentClass) {
   let pltData = _plateaus.get(_currentClass);
+  console.log(pltData);
 
   if (pltData) {
     const foundPlateau = chance.pickone(pltData);

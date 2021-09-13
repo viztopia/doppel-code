@@ -1,0 +1,23 @@
+{
+  "mode": 3,
+  "startTime": 1631563706073,
+  "recordedSeconds": 37,
+  "delayFrameIdx": 98,
+  "pDelayFrameIdx": 98,
+  "preset_idx": 0,
+  "preset_currentDelayFrameIdx": 120,
+  "manual_TH": 6000,
+  "speed_jointDist": 0.4135437404697579,
+  "speed_mappedFrames": [],
+  "speed_avgFrame": 0,
+  "plateau_plateauOn": true,
+  "plateau_plateaus": "[[1,[{\"start\":0,\"length\":21397}]],[3,[{\"start\":26151,\"length\":3566}]],[2,[]]]",
+  "plateau_currentClass": 1,
+  "plateau_haveNewClass": false,
+  "plateau_targetClass": 2,
+  "plateau_targetClassInPlateaus": false,
+  "plateau_currentClipStartTime": 1631563740572,
+  "plateau_currentClipFinished": true,
+  "plateau_currentClipLength": 1201,
+  "plateau_initialDelayFrameIdx": 98
+}

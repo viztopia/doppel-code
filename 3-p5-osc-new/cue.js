@@ -28,14 +28,13 @@ let cue = {
 
       // If delay frame is within what is cached...
       if (delayFrameIdx <= CACHEFRAMES) {
-        socket.emit("source", CACHE); //source 0: load frame from TD cache memory
+        socket.emit("source", CACHE);
         this.fileIdx = -99;
         cuePoint = 1 - delayFrameIdx / RECORDINGFRAMES;
         socket.emit("frameIdx", delayFrameIdx);
 
-      // } else if (availableRecordingNum > 2) {
       } else {
-        socket.emit("source", RECORDINGS); //source 1: load frame from recordings
+        socket.emit("source", RECORDINGS);
         let idxOfRecordingFromTD = floor((delayFrameIdx - CACHEFRAMES) / RECORDINGFRAMES)
         this.fileIdx = this.availableRecordingNum - (idxOfRecordingFromTD + 1) ; // 1 bc number of recordings starts at 1 and TD file idx starts at 0
         this.cuePoint = 1 - (delayFrameIdx - CACHEFRAMES - idxOfRecordingFromTD * RECORDINGFRAMES) / RECORDINGFRAMES;
@@ -56,7 +55,7 @@ let cue = {
 
     } else {
       text("No available delay frames yet. Showing TD current frame", INFOX, INFOY + 125);
-      socket.emit("source", CACHE); //source 0: load frame from TD cache memory
+      socket.emit("source", CACHE);
       socket.emit("frameIdx", 0);
     }
 
