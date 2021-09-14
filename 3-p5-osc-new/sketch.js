@@ -64,8 +64,9 @@ function draw() {
   if (!started) {
     background(255, 0, 255);
     textSize(14);
-    text("If you wanna recover show:", width / 2 - 225, height / 2);
+    text("If you wanna recover show:", width / 2 - 225, height / 2 - 25);
     text("Please make sure TD window is active and NOT minimized FIRST!", width / 2 - 225, height / 2 + 25);
+    text("Then make sure showData.json is updated.", width / 2 - 225, height / 2 + 50);
   } else {
 
     //--------display mode-----------------------
@@ -219,7 +220,7 @@ function recoverPerformance(jsonPath) {
     //resume recording
     //socket msg should be the file idx to start recording with. no need for +1 bc file idx starts with 0
     socket.emit("resumeRecord", floor(recordedSeconds / RECORDINGSECONDS));
-    
+
     //start show
     started = true;
     console.log("Show recovered at new start time: " + startTime);
@@ -308,17 +309,18 @@ function connect() {
   });
 
   socket.on('plateauNew', function (p) {
-    console.log("reeived a new plateau of class " + p.className +". it'll be available after " + RECORDINGSECONDS + " seconds.");
-
     if (started) {
+
+      console.log("reeived a new plateau of class " + p.className + ". it'll be available after " + RECORDINGSECONDS + " seconds.");
+
       setTimeout(() => { //delay RECORDINGSECONDS so that plateau playback won't bleed into cache
 
         console.log("new plateau available: ");
         console.log(p);
-  
+
         //for each plateau, record its start time relative to the show's start time, i.e., how many milli seconds after the show starts.
         let st = p.start - startTime > 0 ? p.start - startTime : 0;
-  
+
         if (!plateau.plateaus.has(p.className)) {
           plateau.plateaus.set(p.className, [{
             start: st,
@@ -332,10 +334,10 @@ function connect() {
         }
         // console.log(plateaus);
         // plateaus.push({ className: p.className, start: p.start - startTime, length: p.end - p.start }); //save plateaus with timestamps in relation to recording start time
-  
+
       }, RECORDINGSECONDS * 1000);
     } else {
-      console.log("got a new class " +p.className+ " plateau but show not started yet. skipped.");
+      console.log("got a new class " + p.className + " plateau but show not started yet. skipped.");
       // console.log(p);
     }
   });
