@@ -113,12 +113,15 @@ let plateau = { //-------------plateau-based----------------
         }
 
       } else {
-        //otherwise continue on the current clip (update the delayFrameIdx every RECORDINGSECONDS )
-        if (this.initialDelayFrameIdx) delayFrameIdx = this.initialDelayFrameIdx + floor((Date.now() - this.currentClipStartTime) / 1000 / RECORDINGSECONDS) * RECORDINGFRAMES;
+        //otherwise continue on the current clip (update the delayFrameIdx every RECORDINGSECONDS)
+        // if (this.initialDelayFrameIdx) delayFrameIdx = this.initialDelayFrameIdx + floor((Date.now() - this.currentClipStartTime) / 1000 / RECORDINGSECONDS) * RECORDINGFRAMES;
+
+        //otherwise continue on the current clip (auto roll over to next recording is now happening in TD)
+        if (this.initialDelayFrameIdx) delayFrameIdx = this.initialDelayFrameIdx;
       }
 
       text("Current class is: " + this.currentClass, INFOX, INFOY + 50);
-      if (!this.targetClassInPlateaus) text("We need at least one complated plateau record to pull from the recording.", INFOX, INFOY + 75);
+      if (!this.targetClassInPlateaus) text("We need at least one plateau finished " + RECORDINGSECONDS +" seconds ago to pull from the recording.", INFOX, INFOY + 75);
       if (this.targetClassInPlateaus) text("Current pulling " + this.targetClass + ", method is: Random. Finishing in: " + (this.currentClipLength - (Date.now() - this.currentClipStartTime)) / 1000, INFOX, INFOY + 100);
 
     } else {
@@ -177,7 +180,7 @@ function getStartTimeAndLengthFirstMatch(_plateaus) {
 
 function getStartTimeAndLengthRandom(_plateaus, _currentClass) {
   let pltData = _plateaus.get(_currentClass);
-  console.log(pltData);
+  // console.log(pltData);
 
   if (pltData) {
     const foundPlateau = chance.pickone(pltData);

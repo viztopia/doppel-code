@@ -53,7 +53,7 @@ function setup() {
 
   btnRecoverShow = createButton('RECOVER'); //
   btnRecoverShow.position(240, 0);
-  btnRecoverShow.mousePressed(()=>{recoverPerformance("showData.json")}); //make sure to change json name to showData.json
+  btnRecoverShow.mousePressed(() => { recoverPerformance("showData.json") }); //make sure to change json name to showData.json
 
   textAlign(LEFT, CENTER);
 
@@ -64,8 +64,8 @@ function draw() {
   if (!started) {
     background(255, 0, 255);
     textSize(14);
-    text("Please clean all recording files first except record.mp4 before START", width / 2 - 225, height / 2);
-    text("The first recording file will be named 'recording(2).mp4', then 3, 4, ...", width / 2 - 225, height / 2 + 25);
+    text("If you wanna recover show:", width / 2 - 225, height / 2);
+    text("Please make sure TD window is active and NOT minimized FIRST!", width / 2 - 225, height / 2 + 25);
   } else {
 
     //--------display mode-----------------------
@@ -130,7 +130,7 @@ function savePerformance() {
 
   //1. get the last available second as a reference
   const lastSecond = recordedSeconds - recordedSeconds % RECORDINGSECONDS;
-  console.log(lastSecond);
+  // console.log(lastSecond);
   const lastSecondMillis = lastSecond * 1000;
 
   //2. clear extra plateaus beyond the last second
@@ -138,20 +138,17 @@ function savePerformance() {
   let plateausToSave = new Map();
   plateau.plateaus.forEach((value, key) => {
     let uncleanedPlateaus = plateau.plateaus.get(key);
-    console.log(uncleanedPlateaus);
+    // console.log(uncleanedPlateaus);
     let cleanedPlateaus = [];
     uncleanedPlateaus.forEach((p) => {
       if (p.start <= lastSecondMillis) { cleanedPlateaus.push(p) } //using only start or start + length?
-      console.log(cleanedPlateaus);
+      // console.log(cleanedPlateaus);
     })
     plateausToSave.set(key, cleanedPlateaus);
   })
-  console.log(plateausToSave);
+  // console.log(plateausToSave);
   //3. clear extra bookmark beyond the last second
   let bookmarkToSave = bookmark.ts <= lastSecondMillis ? bookmark.ts : undefined;
-
-
-
 
   let showData = {
     mode: mode,
@@ -168,7 +165,7 @@ function savePerformance() {
     speed_mappedFrames: speed.mappedFrames,
     speed_avgFrame: speed.avgFrame,
     plateau_plateauOn: plateau.plateauOn,
-    plateau_plateaus: JSON.stringify([...plateausToSave]), //replace with cleaned plateaus
+    plateau_plateaus: JSON.stringify([...plateausToSave]), //replace with cleaned plateaus now
     plateau_currentClass: plateau.currentClass, //should we clear this?
     plateau_haveNewClass: plateau.haveNewClass, //should we clear this?
     plateau_targetClass: plateau.targetClass, //should we clear this?
@@ -181,16 +178,18 @@ function savePerformance() {
     bookmark_lastJumpedFrameIdx: bookmark.lastJumpedFrameIdx
   };
 
+  console.log("saving the following show data: ");
   console.log(showData);
   saveJSON(showData, 'showData-' + month() + '-' + day() + '-' + hour() + '-' + minute() + '-' + second() + '.json');
+  // saveJSON(showData, 'showData.json');
 }
 
 function recoverPerformance(jsonPath) {
 
   loadJSON(jsonPath, (data) => {
     mode = data.mode;
-    startTime = Date.now() - data.recordedSeconds * 1000;
-    recordedSeconds = data.recordedSeconds;
+    startTime = Date.now() - (data.recordedSeconds - data.recordedSeconds % RECORDINGSECONDS) * 1000;
+    recordedSeconds = data.recordedSeconds - data.recordedSeconds % RECORDINGSECONDS;
     delayFrameIdx = data.delayFrameIdx;
     pDelayFrameIdx = data.pDelayFrameIdx;
 
@@ -215,11 +214,15 @@ function recoverPerformance(jsonPath) {
 
 
     //start recording
-    socket.emit("record", 1);
+    // socket.emit("record", 1);
 
+    //resume recording
+    //socket msg should be the file idx to start recording with. no need for +1 bc file idx starts with 0
+    socket.emit("resumeRecord", floor(recordedSeconds / RECORDINGSECONDS));
+    
     //start show
     started = true;
-    console.log("Show recovered at original start time: " + startTime);
+    console.log("Show recovered at new start time: " + startTime);
 
     console.log("recovered plateaus are:");
     console.log(plateau.plateaus);
@@ -305,31 +308,44 @@ function connect() {
   });
 
   socket.on('plateauNew', function (p) {
-    console.log("got a new plateau: ");
-    console.log(p);
+    console.log("reeived a new plateau of class " + p.className +". it'll be available after " + RECORDINGSECONDS + " seconds.");
 
-    //for each plateau, record its start time relative to the show's start time, i.e., how many milli seconds after the show starts.
-    let st = p.start - startTime > 0 ? p.start - startTime : 0;
+    if (started) {
+      setTimeout(() => { //delay RECORDINGSECONDS so that plateau playback won't bleed into cache
 
-    if (!plateau.plateaus.has(p.className)) {
-      plateau.plateaus.set(p.className, [{
-        start: st,
-        length: p.end - p.start
-      }]); // if plateau of this class never exists, add one.
+        console.log("new plateau available: ");
+        console.log(p);
+  
+        //for each plateau, record its start time relative to the show's start time, i.e., how many milli seconds after the show starts.
+        let st = p.start - startTime > 0 ? p.start - startTime : 0;
+  
+        if (!plateau.plateaus.has(p.className)) {
+          plateau.plateaus.set(p.className, [{
+            start: st,
+            length: p.end - p.start
+          }]); // if plateau of this class never exists, add one.
+        } else {
+          plateau.plateaus.get(p.className).push({
+            start: st,
+            length: p.end - p.start
+          }); // if plateau of this class already exists, add data to array.
+        }
+        // console.log(plateaus);
+        // plateaus.push({ className: p.className, start: p.start - startTime, length: p.end - p.start }); //save plateaus with timestamps in relation to recording start time
+  
+      }, RECORDINGSECONDS * 1000);
     } else {
-      plateau.plateaus.get(p.className).push({
-        start: st,
-        length: p.end - p.start
-      }); // if plateau of this class already exists, add data to array.
+      console.log("got a new class " +p.className+ " plateau but show not started yet. skipped.");
+      // console.log(p);
     }
-    // console.log(plateaus);
-    // plateaus.push({ className: p.className, start: p.start - startTime, length: p.end - p.start }); //save plateaus with timestamps in relation to recording start time
   });
 
   socket.on('queriedClass', (c) => {
     if (!plateau.currentClass) {
       plateau.currentClass = c;
       console.log("got queried class: " + c);
+    } else {
+      console.log("current class is: " + plateau.currentClass);
     };
   });
 

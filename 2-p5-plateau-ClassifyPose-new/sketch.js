@@ -18,7 +18,7 @@ let waiting = 180;
 
 let classResult = 0;
 let classCache = [];
-let cacheLength = 120; //classification window size
+let cacheLength = 60; //classification window size
 
 let maxClass, maxCount;
 let classThreshold = 0.7;
@@ -182,7 +182,7 @@ async function loadKNN() {
 
   classifier = knnClassifier.create();
 
-  select('#status').html('KNN Loaded. ', true);
+  select('#status').html('KNN Model Loaded. ', true);
 }
 
 

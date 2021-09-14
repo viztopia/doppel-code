@@ -1,0 +1,16 @@
+{
+	"folders": [
+		{
+			"path": "3-p5-osc-new"
+		}
+	],
+	"settings": {
+		"liveServer.settings.ignoreFiles": [
+			"**/*.json",
+			".vscode/**",
+			"**/*.scss",
+			"**/*.sass",
+			"**/*.ts"
+		]
+	}
+}

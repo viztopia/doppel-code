@@ -1,13 +1,13 @@
 {
   "mode": 3,
   "startTime": 1631635950306,
-  "recordedSeconds": 699,
-  "delayFrameIdx": 5298,
-  "pDelayFrameIdx": 5298,
+  "recordedSeconds": 387,
+  "delayFrameIdx": 3463,
+  "pDelayFrameIdx": 3463,
   "preset_idx": 3,
   "preset_currentDelayFrameIdx": 300,
   "manual_TH": 6000,
-  "speed_jointDist": 0.28778875830220085,
+  "speed_jointDist": 0.9237563342513777,
   "speed_mappedFrames": [
     20.243846738635618,
     20.243846738635618,
@@ -612,13 +612,13 @@
   ],
   "speed_avgFrame": 0,
   "plateau_plateauOn": true,
-  "plateau_plateaus": "[[4,[{\"start\":0,\"length\":14182},{\"start\":36710,\"length\":4040},{\"start\":44944,\"length\":12336},{\"start\":107244,\"length\":10365},{\"start\":141420,\"length\":7185},{\"start\":207377,\"length\":16208},{\"start\":244910,\"length\":2348},{\"start\":253034,\"length\":6973},{\"start\":478243,\"length\":1421},{\"start\":587826,\"length\":2183}]],[1,[{\"start\":11110,\"length\":24604},{\"start\":41639,\"length\":2349},{\"start\":58127,\"length\":20985},{\"start\":83358,\"length\":23006},{\"start\":118442,\"length\":15808},{\"start\":136868,\"length\":3644},{\"start\":149542,\"length\":17738},{\"start\":189887,\"length\":16629},{\"start\":224616,\"length\":19493},{\"start\":248514,\"length\":3576},{\"start\":261231,\"length\":33117},{\"start\":301671,\"length\":20320},{\"start\":334722,\"length\":22372},{\"start\":368345,\"length\":16748},{\"start\":399903,\"length\":16115},{\"start\":418665,\"length\":5758},{\"start\":427083,\"length\":1687},{\"start\":430291,\"length\":966},{\"start\":434509,\"length\":13777},{\"start\":453762,\"length\":2125},{\"start\":458681,\"length\":822},{\"start\":465994,\"length\":728},{\"start\":476404,\"length\":1263},{\"start\":480187,\"length\":6419},{\"start\":537850,\"length\":513},{\"start\":557844,\"length\":3844},{\"start\":581652,\"length\":677},{\"start\":595584,\"length\":6337},{\"start\":604167,\"length\":2203},{\"start\":609496,\"length\":2578},{\"start\":613084,\"length\":4304},{\"start\":629830,\"length\":1376},{\"start\":634468,\"length\":435},{\"start\":644737,\"length\":478},{\"start\":658076,\"length\":4789}]],[3,[{\"start\":80010,\"length\":2530},{\"start\":168736,\"length\":20261},{\"start\":295235,\"length\":5559},{\"start\":330292,\"length\":3539},{\"start\":365596,\"length\":1903},{\"start\":425257,\"length\":991},{\"start\":432201,\"length\":2059},{\"start\":434287,\"length\":14},{\"start\":487049,\"length\":2281},{\"start\":510019,\"length\":772},{\"start\":539051,\"length\":5279},{\"start\":544958,\"length\":236},{\"start\":573466,\"length\":430},{\"start\":647065,\"length\":3308},{\"start\":663307,\"length\":1348}]],[5,[{\"start\":322940,\"length\":6507},{\"start\":357973,\"length\":6691},{\"start\":385995,\"length\":11526},{\"start\":448900,\"length\":3564},{\"start\":509205,\"length\":364}]],[2,[{\"start\":456679,\"length\":1251},{\"start\":460107,\"length\":5145},{\"start\":468458,\"length\":7471},{\"start\":490051,\"length\":7358},{\"start\":498495,\"length\":10221},{\"start\":511442,\"length\":25958},{\"start\":546070,\"length\":11315},{\"start\":562302,\"length\":10498},{\"start\":574466,\"length\":6725},{\"start\":582824,\"length\":4159},{\"start\":591054,\"length\":4074},{\"start\":602572,\"length\":764},{\"start\":606921,\"length\":1938},{\"start\":617869,\"length\":11405},{\"start\":631664,\"length\":2341},{\"start\":635342,\"length\":1938},{\"start\":638126,\"length\":6112},{\"start\":645645,\"length\":809},{\"start\":651035,\"length\":5329}]]]",
-  "plateau_currentClass": 3,
+  "plateau_plateaus": "[[4,[{\"start\":0,\"length\":14182},{\"start\":36710,\"length\":4040},{\"start\":44944,\"length\":12336},{\"start\":107244,\"length\":10365},{\"start\":141420,\"length\":7185},{\"start\":207377,\"length\":16208},{\"start\":244910,\"length\":2348},{\"start\":253034,\"length\":6973}]],[1,[{\"start\":11110,\"length\":24604},{\"start\":41639,\"length\":2349},{\"start\":58127,\"length\":20985},{\"start\":83358,\"length\":23006},{\"start\":118442,\"length\":15808},{\"start\":136868,\"length\":3644},{\"start\":149542,\"length\":17738},{\"start\":189887,\"length\":16629},{\"start\":224616,\"length\":19493},{\"start\":248514,\"length\":3576},{\"start\":261231,\"length\":33117},{\"start\":301671,\"length\":20320},{\"start\":334722,\"length\":22372}]],[3,[{\"start\":80010,\"length\":2530},{\"start\":168736,\"length\":20261},{\"start\":295235,\"length\":5559},{\"start\":330292,\"length\":3539}]],[5,[{\"start\":322940,\"length\":6507}]]]",
+  "plateau_currentClass": 5,
   "plateau_haveNewClass": true,
-  "plateau_targetClass": 2,
+  "plateau_targetClass": 1,
   "plateau_targetClassInPlateaus": true,
-  "plateau_currentClipStartTime": 1631636638356,
+  "plateau_currentClipStartTime": 1631636326978,
   "plateau_currentClipFinished": false,
-  "plateau_currentClipLength": 25958,
-  "plateau_initialDelayFrameIdx": 5298
+  "plateau_currentClipLength": 33117,
+  "plateau_initialDelayFrameIdx": 3463
 }
