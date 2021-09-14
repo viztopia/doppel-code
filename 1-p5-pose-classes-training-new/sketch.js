@@ -7,10 +7,19 @@ let netReady = false;
 
 let poses = [];
 
+
+// bounding box
+let pose;
+let minX, minY, maxX, maxY, bboxW, bboxH;
+// normalization
+let nx, ny;
+
 function setup() {
-  const canvas = createCanvas(960, 540);
+  const canvas = createCanvas(1440, 1080);
   canvas.parent('videoContainer');
+
   video = createCapture(VIDEO, () => { loadMoveNet(); loadKNN(); });
+  console.log(video);
   // video.size(width, height);
   video.hide();
 
@@ -20,6 +29,7 @@ function setup() {
 
 //-------------------------------------------
 function draw() {
+  
   if (netReady) estimatePose();
   image(video, 0, 0, width, height);
 
@@ -29,6 +39,43 @@ function draw() {
   }
 }
 
+function normalizePoints(x,y) {
+  nx = nf((x -minX)/ bboxW, 1, 2);
+  ny = nf((y -minY)/ bboxH,1,2);
+}
+
+function findKeypoints() {
+  minX = Math.min.apply(
+    Math,
+    pose.keypoints.map(function (p) {
+      return p.x;
+    })
+  );
+
+  minY = Math.min.apply(
+    Math,
+    pose.keypoints.map(function (p) {
+      return p.y;
+    })
+  );
+
+  maxX = Math.max.apply(
+    Math,
+    pose.keypoints.map(function (p) {
+      return p.x;
+    })
+  );
+
+  maxY = Math.max.apply(
+    Math,
+    pose.keypoints.map(function (p) {
+      maxY = p.y;
+      return p.y;
+    })
+  );
+}
+  
+  
 
 // A util function to create UI buttons
 function createButtons() {
@@ -136,7 +183,7 @@ async function loadKNN() {
 function addExample(label) {
   // Convert poses results to a 2d array [[score0, x0, y0],...,[score16, x16, y16]]
   // const poseArray = poses[0].pose.keypoints.map(p => [p.score, p.position.x, p.position.y]);
-  const poseArray = poses[0].keypoints.map(p => [p.score, p.x, p.y]);
+  const poseArray = poses[0].keypoints.map(p => [p.score, nx, ny]);
 
   // Add an example with a label to the classifier
   const example = tf.tensor(poseArray);
@@ -154,7 +201,7 @@ async function classify() {
     return;
   }
   // Convert poses results to a 2d array [[score0, x0, y0],...,[score16, x16, y16]]
-  const poseArray = poses[0].keypoints.map(p => [p.score, p.x, p.y]);
+  const poseArray = poses[0].keypoints.map(p => [p.score, nx, ny]);
 
   const example = tf.tensor(poseArray);
   const result = await classifier.predictClass(example);
@@ -257,15 +304,31 @@ function drawKeypoints() {
   // Loop through all the poses detected
   for (let i = 0; i < poses.length; i++) {
     // For each pose detected, loop through all the keypoints
-    let pose = poses[i];
+     pose = poses[i];
+    // console.log(pose.keypoints);
+    findKeypoints();
+    noFill();
+    stroke(255, 0, 0);
+    bboxW = maxX - minX;
+    bboxH = maxY - minY;
+    rect(minX, minY, bboxW, bboxH);
+    stroke(255, 0, 0);
+    
+    
+    
     for (let j = 0; j < pose.keypoints.length; j++) {
       // A keypoint is an object describing a body part (like rightArm or leftShoulder)
       let keypoint = pose.keypoints[j];
+      
       // Only draw an ellipse is the pose probability is bigger than 0.2
       if (keypoint.score > 0.2) {
         fill(255, 0, 0);
         noStroke();
+        normalizePoints(keypoint.x, keypoint.y);
+        
+        
         ellipse(keypoint.x, keypoint.y, 10, 10);
+        text("x: " + nx + " y:" + ny,keypoint.x, keypoint.y);
       }
     }
   }

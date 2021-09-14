@@ -8,8 +8,8 @@
 
 //------------------socket--------------------
 let socket;
-// let ip = "10.23.11.4"; //the IP of the machine that runs bridge.js
-let ip = "127.0.0.1"; 
+let ip = "10.23.11.4";
+// let ip = "127.0.0.1"; //the IP of the machine that runs bridge.js
 let port = 8081; //the port of the machine that runs bridge.js
 
 //--------simple UI--------------------
@@ -18,7 +18,7 @@ let waiting = 180;
 
 let classResult = 0;
 let classCache = [];
-let cacheLength = 60; //classification window size
+let cacheLength = 120; //classification window size
 
 let maxClass, maxCount;
 let classThreshold = 0.7;
@@ -47,7 +47,11 @@ let joint, jointPrev;
 let jointNumber = 0;
 let jointThreshold = 0.6;
 
-
+// bounding box
+let pose;
+let minX, minY, maxX, maxY, bboxW, bboxH;
+// normalization
+let nx, ny;
 
 function preload() { //used for video mode
   // video = createVideo('https://player.vimeo.com/external/591790914.hd.mp4?s=5423196882ed55a554896959f602c265d48c0af4&profile_id=175');
@@ -57,7 +61,7 @@ function preload() { //used for video mode
 
 function setup() {
   // cnv = createCanvas(1920, 1080);
-  cnv = createCanvas(960, 540);
+  cnv = createCanvas(1440, 1080);
   cnv.parent('cnvDiv');
   classCacheLengthSlider = createSlider(10, 180, cacheLength, 10);
   classCacheLengthSlider.parent('controlsDiv');
@@ -163,6 +167,42 @@ function draw() {
   }
 }
 
+function normalizePoints(x,y) {
+  nx = nf((x -minX)/ bboxW, 1, 2);
+  ny = nf((y -minY)/ bboxH,1,2);
+}
+
+function findKeypoints() {
+  minX = Math.min.apply(
+    Math,
+    pose.keypoints.map(function (p) {
+      return p.x;
+    })
+  );
+
+  minY = Math.min.apply(
+    Math,
+    pose.keypoints.map(function (p) {
+      return p.y;
+    })
+  );
+
+  maxX = Math.max.apply(
+    Math,
+    pose.keypoints.map(function (p) {
+      return p.x;
+    })
+  );
+
+  maxY = Math.max.apply(
+    Math,
+    pose.keypoints.map(function (p) {
+      maxY = p.y;
+      return p.y;
+    })
+  );
+}
+
 //----------moveNet stuff----------------
 async function loadMoveNet() {
   const detectorConfig = { modelType: poseDetection.movenet.modelType.SINGLEPOSE_LIGHTNING };
@@ -182,7 +222,7 @@ async function loadKNN() {
 
   classifier = knnClassifier.create();
 
-  select('#status').html('KNN Model Loaded. ', true);
+  select('#status').html('KNN Loaded. ', true);
 }
 
 
@@ -195,7 +235,11 @@ async function classify() {
     return;
   }
   // Convert poses results to a 2d array [[score0, x0, y0],...,[score16, x16, y16]]
-  const poseArray = poses[0].keypoints.map(p => [p.score, p.x, p.y]);
+  
+  
+  
+  
+  const poseArray = poses[0].keypoints.map(p => [p.score, nx, ny]);
 
   const example = tf.tensor(poseArray);
   const result = await classifier.predictClass(example);
@@ -288,7 +332,15 @@ function drawKeypoints() {
   // Loop through all the poses detected
   for (let i = 0; i < poses.length; i++) {
     // For each pose detected, loop through all the keypoints
-    let pose = poses[i];
+     pose = poses[i];
+        findKeypoints();
+    noFill();
+    stroke(255, 0, 0);
+    bboxW = maxX - minX;
+    bboxH = maxY - minY;
+    rect(minX, minY, bboxW, bboxH);
+    stroke(255, 0, 0);
+    
     for (let j = 0; j < pose.keypoints.length; j++) {
       // A keypoint is an object describing a body part (like rightArm or leftShoulder)
       let keypoint = pose.keypoints[j];
@@ -296,7 +348,11 @@ function drawKeypoints() {
       if (keypoint.score > 0.2) {
         fill(255, 0, 0);
         noStroke();
+        normalizePoints(keypoint.x, keypoint.y);
+        
+        
         ellipse(keypoint.x, keypoint.y, 10, 10);
+        text("x: " + nx + " y:" + ny,keypoint.x, keypoint.y);
       }
     }
   }
