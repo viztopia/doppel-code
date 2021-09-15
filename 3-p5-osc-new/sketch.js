@@ -308,7 +308,9 @@ function connect() {
     plateau.plateauOn = msg;
   });
 
+  // socket.on('plateauNew222222', function (p) {  //black out all plateaus, for testing only
   socket.on('plateauNew', function (p) {
+
     if (started) {
 
       console.log("reeived a new plateau of class " + p.className + ". it'll be available after " + RECORDINGSECONDS + " seconds.");

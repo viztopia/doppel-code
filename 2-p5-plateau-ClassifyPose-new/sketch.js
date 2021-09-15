@@ -8,8 +8,8 @@
 
 //------------------socket--------------------
 let socket;
-let ip = "10.23.11.4";
-// let ip = "127.0.0.1"; //the IP of the machine that runs bridge.js
+// let ip = "10.23.11.4";
+let ip = "127.0.0.1"; //the IP of the machine that runs bridge.js
 let port = 8081; //the port of the machine that runs bridge.js
 
 //--------simple UI--------------------
@@ -18,13 +18,14 @@ let waiting = 180;
 
 let classResult = 0;
 let classCache = [];
-let cacheLength = 120; //classification window size
+let cacheLength = 60; //classification window size
 
 let maxClass, maxCount;
-let classThreshold = 0.7;
+let classThreshold = 0.8;
 let newClassCountBaseline = cacheLength * classThreshold; //calculate the baseline for deciding how much % within the window we count as a new class
 let plateauStarted = false;
-let plateatStartTime, plateauEndTime;
+let plateauStartTime, plateauEndTime;
+let plateauMinLength = 1000;
 let plateaus = [];
 
 let classCacheLengthSlider;
@@ -61,7 +62,8 @@ function preload() { //used for video mode
 
 function setup() {
   // cnv = createCanvas(1920, 1080);
-  cnv = createCanvas(1440, 1080);
+  // cnv = createCanvas(1440, 1080);
+  cnv = createCanvas(960, 540);
   cnv.parent('cnvDiv');
   classCacheLengthSlider = createSlider(10, 180, cacheLength, 10);
   classCacheLengthSlider.parent('controlsDiv');
@@ -149,7 +151,7 @@ function draw() {
     if (maxClass && maxCount > newClassCountBaseline && !plateauStarted) {
       console.log(maxClass + " started at frame " + frameCount);
       plateauStarted = true;
-      plateatStartTime = Date.now();
+      plateauStartTime = Date.now();
 
       socket.emit('classNew', maxClass);
     }
@@ -158,11 +160,13 @@ function draw() {
     if (plateauStarted && maxCount < newClassCountBaseline) {
       console.log(maxClass + " ended at frame " + frameCount);
       plateauStarted = false;
-      plateatEndTime = Date.now();
+      plateauEndTime = Date.now();
 
-      let newPlat = { className: maxClass, start: plateatStartTime, end: plateatEndTime };
-      socket.emit('plateauNew', newPlat);
-      plateaus.push(newPlat);
+      if ((plateauEndTime - plateauStartTime) > plateauMinLength ){
+        let newPlat = { className: maxClass, start: plateauStartTime, end: plateauEndTime };
+        socket.emit('plateauNew', newPlat);
+        plateaus.push(newPlat);
+      }
     }
   }
 }
@@ -352,7 +356,7 @@ function drawKeypoints() {
         
         
         ellipse(keypoint.x, keypoint.y, 10, 10);
-        text("x: " + nx + " y:" + ny,keypoint.x, keypoint.y);
+        // text("x: " + nx + " y:" + ny,keypoint.x, keypoint.y);
       }
     }
   }

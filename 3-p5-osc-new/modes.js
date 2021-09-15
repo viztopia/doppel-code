@@ -91,13 +91,15 @@ let plateau = { //-------------plateau-based----------------
 
         // console.log(pStartTime, pLength);
         if (pStartTime != undefined && pLength != undefined ) {
-          this.targetClass = this.currentClass;
+          this.targetClass = this.currentClass; //TODO: target class is a place holder for interuption logic
           this.targetClassInPlateaus = true;
           this.currentClipStartTime = Date.now();
           this.currentClipLength = pLength;
           console.log("target class " + this.currentClass + " in plateaus: " + this.targetClassInPlateaus);
           console.log("start: " + pStartTime + " length: " + pLength);
-          delayFrameIdx = floor((Date.now() - startTime - pStartTime) / 1000 * CAMFPS); //convert plateau start time to how many frames we should go back from the present
+          let millisToDelay = Date.now() - startTime - pStartTime;
+          console.log("millis to delay: " + millisToDelay);
+          delayFrameIdx = floor((millisToDelay) / 1000 * CAMFPS); //convert plateau start time to how many frames we should go back from the present
           this.initialDelayFrameIdx = delayFrameIdx;
           // this.haveNewClass = false;
           this.currentClipFinished = false;
