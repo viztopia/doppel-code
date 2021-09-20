@@ -13,12 +13,17 @@ let pose;
 let minX, minY, maxX, maxY, bboxW, bboxH;
 // normalization
 let nx, ny;
+let displayClass;
 
 function setup() {
-  const canvas = createCanvas(1440, 1080);
-  canvas.parent('videoContainer');
 
-  video = createCapture(VIDEO, () => { loadMoveNet(); loadKNN(); });
+
+  video = createCapture(VIDEO, () => {
+    const canvas = createCanvas(video.width, video.height);
+    canvas.parent('videoContainer');
+    loadMoveNet();
+    loadKNN();
+  });
   console.log(video);
   // video.size(width, height);
   video.hide();
@@ -29,9 +34,9 @@ function setup() {
 
 //-------------------------------------------
 function draw() {
-  
+
   if (netReady) estimatePose();
-  image(video, 0, 0, width, height);
+  image(video, 0, 0, video.width, video.height);
 
   // We can call both functions to draw all keypoints and the skeletons
   if (poses) {
@@ -73,72 +78,42 @@ function findKeypoints() {
       return p.y;
     })
   );
+  textSize(400);
+  text(displayClass,0,height/2);
+  textSize(10);
 }
-  
-  
+
+
 
 // A util function to create UI buttons
 function createButtons() {
-  buttonA = select('#addClassA');
-  buttonA.mousePressed(function () {
-    addExample('1');
-  });
 
-  buttonB = select('#addClassB');
-  buttonB.mousePressed(function () {
-    addExample('2');
-  });
+  function createClassifiers(classNumber) {
+    let button = select('#addClass' + classNumber);
+    button.on = false;
+    button.mousePressed(function () {
+      this.on = !this.on;
+      this.html(this.on ? 'Adding to Class ' + classNumber : "Class" + classNumber);
+      if(this.on){
+        this.interval = setInterval(()=>{
+          addExample(classNumber);
+        }, 250)
+      }
+      else {
+        clearInterval(this.interval);
+      }
+    });
 
-  buttonC = select('#addClassC');
-  buttonC.mousePressed(function () {
-    addExample('3');
-  });
+    let resetButton = select('#reset' + classNumber);
+    resetButton.mousePressed(function () {
+      clearLabel(classNumber);
+    });
+  }
 
-  buttonD = select('#addClassD');
-  buttonD.mousePressed(function () {
-    addExample('4');
-  });
+  for(let i = 1; i <= 6; i++) {
+    createClassifiers(i);
+  }
 
-  buttonE = select('#addClassE');
-  buttonE.mousePressed(function () {
-    addExample('5');
-  });
-
-  buttonF = select('#addClassF');
-  buttonF.mousePressed(function () {
-    addExample('6');
-  });
-
-  // Reset buttons
-  resetBtnA = select('#resetA');
-  resetBtnA.mousePressed(function () {
-    clearLabel('1');
-  });
-
-  resetBtnB = select('#resetB');
-  resetBtnB.mousePressed(function () {
-    clearLabel('2');
-  });
-
-  resetBtnC = select('#resetC');
-  resetBtnC.mousePressed(function () {
-    clearLabel('3');
-  });
-
-  resetBtnD = select('#resetD');
-  resetBtnD.mousePressed(function () {
-    clearLabel('4');
-  });
-
-  resetBtnE = select('#resetE');
-  resetBtnE.mousePressed(function () {
-    clearLabel('5');
-  });
-
-  resetBtnF = select('#resetF');
-  resetBtnF.mousePressed(function () {
-    clearLabel('6');
-  });
 
   // Predict save
   buttonPredict = select('#buttonSave');
@@ -219,35 +194,37 @@ function gotResults(err, result) {
   }
 
   if (result) {
-    // console.log(result); 
+    // console.log(result);
+
     const confidences = result.confidences;
     // result.label is the label that has the highest confidence
     if (result.label) {
+      displayClass = result.label;
       select('#result').html(result.label);
       select('#confidence').html(`${confidences[result.label] * 100} %`);
     }
 
-    select('#confidenceA').html(`${confidences['1'] ? confidences['1'] * 100 : 0} %`);
-    select('#confidenceB').html(`${confidences['2'] ? confidences['2'] * 100 : 0} %`);
-    select('#confidenceC').html(`${confidences['3'] ? confidences['3'] * 100 : 0} %`);
-    select('#confidenceD').html(`${confidences['4'] ? confidences['4'] * 100 : 0} %`);
-    select('#confidenceE').html(`${confidences['5'] ? confidences['5'] * 100 : 0} %`);
-    select('#confidenceF').html(`${confidences['6'] ? confidences['6'] * 100 : 0} %`);
+    select('#confidence1').html(`${confidences['1'] ? confidences['1'] * 100 : 0} %`);
+    select('#confidence2').html(`${confidences['2'] ? confidences['2'] * 100 : 0} %`);
+    select('#confidence3').html(`${confidences['3'] ? confidences['3'] * 100 : 0} %`);
+    select('#confidence4').html(`${confidences['4'] ? confidences['4'] * 100 : 0} %`);
+    select('#confidence5').html(`${confidences['5'] ? confidences['5'] * 100 : 0} %`);
+    select('#confidence6').html(`${confidences['6'] ? confidences['6'] * 100 : 0} %`);
   }
 
   classify();
 }
 
-// Update the example count for each label	
+// Update the example count for each label
 function updateCounts() {
   const counts = classifier.getClassExampleCount();
 
-  select('#exampleA').html(counts['1'] || 0);
-  select('#exampleB').html(counts['2'] || 0);
-  select('#exampleC').html(counts['3'] || 0);
-  select('#exampleD').html(counts['4'] || 0);
-  select('#exampleE').html(counts['5'] || 0);
-  select('#exampleF').html(counts['6'] || 0);
+  select('#example1').html(counts['1'] || 0);
+  select('#example2').html(counts['2'] || 0);
+  select('#example3').html(counts['3'] || 0);
+  select('#example4').html(counts['4'] || 0);
+  select('#example5').html(counts['5'] || 0);
+  select('#example6').html(counts['6'] || 0);
 }
 
 // Save & Load label JSON
@@ -258,6 +235,7 @@ function saveLabels() {
   Object.keys(dataset).forEach((key)=>{
     const t = dataset[key];
     if (t) {
+      console.log("Saving new data for class: ", key, t);
       tensors[key] = t.dataSync();
     }
   })
@@ -272,7 +250,7 @@ function loadClassesJSON(data) {
 
     let tensorsData = {};
     Object.keys(dataset).forEach((key)=>{
-      // const tensor = 
+      // const tensor =
       const values = Object.keys(tensors[key]).map(v => tensors[key][v]);
       tensorsData[key] = tf.tensor(values, dataset[key].shape, dataset[key].dtype);
     })
@@ -313,20 +291,20 @@ function drawKeypoints() {
     bboxH = maxY - minY;
     rect(minX, minY, bboxW, bboxH);
     stroke(255, 0, 0);
-    
-    
-    
+
+
+
     for (let j = 0; j < pose.keypoints.length; j++) {
       // A keypoint is an object describing a body part (like rightArm or leftShoulder)
       let keypoint = pose.keypoints[j];
-      
+
       // Only draw an ellipse is the pose probability is bigger than 0.2
       if (keypoint.score > 0.2) {
         fill(255, 0, 0);
         noStroke();
         normalizePoints(keypoint.x, keypoint.y);
-        
-        
+
+
         ellipse(keypoint.x, keypoint.y, 10, 10);
         text("x: " + nx + " y:" + ny,keypoint.x, keypoint.y);
       }
