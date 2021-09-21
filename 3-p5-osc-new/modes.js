@@ -75,6 +75,7 @@ let plateau = { //-------------plateau-based----------------
   currentClipFinished: true,
   currentClipLength: undefined,
   initialDelayFrameIdx: undefined,
+  timer: undefined,
   run: function () {
     text("Plateau classification is: " + (this.plateauOn ? "On." : "Off."), INFOX, INFOY + 25);
 
@@ -83,7 +84,7 @@ let plateau = { //-------------plateau-based----------------
       //----------------------auto controlling TD using plateau data------------------------
 
       // console.log(haveNewClass, currentClipFinished);
-      if (this.currentClipFinished) {
+      if (this.haveNewClass || this.currentClipFinished) {
         //pick a plateau whenever there's a new class or the current clip is finished
         let [pStartTime, pLength] = getStartTimeAndLengthRandom(this.plateaus, this.currentClass);
         this.haveNewClass = false;
@@ -104,8 +105,11 @@ let plateau = { //-------------plateau-based----------------
           // this.haveNewClass = false;
           this.currentClipFinished = false;
 
+          // Clear the current timer if there is one
+          if(this.timer) clearTimeout(this.timer);
+          
           //wait for pLength milliseconds to ask for a new clip
-          setTimeout(() => {
+          this.timer = setTimeout(() => {
             this.currentClipFinished = true;
             console.log("current clip done.")
           }, pLength);

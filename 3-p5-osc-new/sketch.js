@@ -23,7 +23,7 @@ let mode = 0; // 0: PRESET interval, 1: manual 1 interval, 2: speed-based, 3:pla
 let socket;
 
 //-------------show settings--------------
-let btnStart, btnStop, btnSaveShow, btnRecoverShow;
+let btnStart, btnStop, btnSaveShow, btnRecoverShow, btnRecoverOhCrap;
 let started = false;
 let startTime = 0;
 
@@ -33,6 +33,9 @@ let recordedSeconds;
 // Delay Frame Idx for cueing
 let delayFrameIdx = 0;
 let pDelayFrameIdx = 0;
+
+//-------------recover settings
+let acceptingNewPlateau = true;
 
 
 
@@ -53,7 +56,11 @@ function setup() {
 
   btnRecoverShow = createButton('RECOVER'); //
   btnRecoverShow.position(240, 0);
-  btnRecoverShow.mousePressed(() => { recoverPerformance("showData.json") }); //make sure to change json name to showData.json
+  btnRecoverShow.mousePressed(() => { acceptingNewPlateau = true; recoverPerformance("showData.json") }); //make sure to change json name to showData.json
+
+  btnRecoverOhCrap = createButton('RECOVER Oh Crap'); //
+  btnRecoverOhCrap.position(240, 25);
+  btnRecoverOhCrap.mousePressed(() => { acceptingNewPlateau = false; recoverPerformance("showData.json") }); //make sure to change json name to showData.json
 
   textAlign(LEFT, CENTER);
 
@@ -313,31 +320,36 @@ function connect() {
 
     if (started) {
 
-      console.log("reeived a new plateau of class " + p.className + ". it'll be available after " + RECORDINGSECONDS + " seconds.");
+      if (acceptingNewPlateau){
+        console.log("received a new plateau of class " + p.className + ". it'll be available after " + RECORDINGSECONDS + " seconds.");
 
-      setTimeout(() => { //delay RECORDINGSECONDS so that plateau playback won't bleed into cache
+        setTimeout(() => { //delay RECORDINGSECONDS so that plateau playback won't bleed into cache
+  
+          console.log("new plateau available: ");
+          console.log(p);
+  
+          //for each plateau, record its start time relative to the show's start time, i.e., how many milli seconds after the show starts.
+          let st = p.start - startTime > 0 ? p.start - startTime : 0;
+  
+          if (!plateau.plateaus.has(p.className)) {
+            plateau.plateaus.set(p.className, [{
+              start: st,
+              length: p.end - p.start
+            }]); // if plateau of this class never exists, add one.
+          } else {
+            plateau.plateaus.get(p.className).push({
+              start: st,
+              length: p.end - p.start
+            }); // if plateau of this class already exists, add data to array.
+          }
+          // console.log(plateaus);
+          // plateaus.push({ className: p.className, start: p.start - startTime, length: p.end - p.start }); //save plateaus with timestamps in relation to recording start time
+  
+        }, RECORDINGSECONDS * 1000);
+      } else {
+        console.log("received a new plateau of class " + p.className + " but acceptance is closed. skipped.");
+      }
 
-        console.log("new plateau available: ");
-        console.log(p);
-
-        //for each plateau, record its start time relative to the show's start time, i.e., how many milli seconds after the show starts.
-        let st = p.start - startTime > 0 ? p.start - startTime : 0;
-
-        if (!plateau.plateaus.has(p.className)) {
-          plateau.plateaus.set(p.className, [{
-            start: st,
-            length: p.end - p.start
-          }]); // if plateau of this class never exists, add one.
-        } else {
-          plateau.plateaus.get(p.className).push({
-            start: st,
-            length: p.end - p.start
-          }); // if plateau of this class already exists, add data to array.
-        }
-        // console.log(plateaus);
-        // plateaus.push({ className: p.className, start: p.start - startTime, length: p.end - p.start }); //save plateaus with timestamps in relation to recording start time
-
-      }, RECORDINGSECONDS * 1000);
     } else {
       console.log("got a new class " + p.className + " plateau but show not started yet. skipped.");
       // console.log(p);
