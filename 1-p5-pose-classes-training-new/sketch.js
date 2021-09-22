@@ -1,3 +1,5 @@
+// test commit
+
 let video;
 // Create a KNN classifier
 let classifier;
@@ -15,9 +17,10 @@ let minX, minY, maxX, maxY, bboxW, bboxH;
 let nx, ny;
 let displayClass;
 
+
+let calibrationState = true;
+
 function setup() {
-
-
   video = createCapture(VIDEO, () => {
     const canvas = createCanvas(video.width, video.height);
     canvas.parent('videoContainer');
@@ -39,15 +42,40 @@ function draw() {
   image(video, 0, 0, video.width, video.height);
 
   // We can call both functions to draw all keypoints and the skeletons
-  if (poses) {
-    drawKeypoints();
+  if (calibrationState) { // if calibrating
+    if (poses) {
+      textSize(40);
+      text("Make a t-pose and press 'c' to capture", 0, height / 2);
+      text("Nose must be at 0.5", 0, height / 2 + 50);
+      textSize(10);
+      drawKeypoints();
+    }
+  } else {
+    if (poses) {
+      drawKeypoints(); // if done calibrating
+      if (displayClass) {
+        textSize(400);
+        text(displayClass, 0, height / 2);
+        textSize(10);
+      }
+    }
   }
 }
 
-function normalizePoints(x,y) {
-  nx = nf((x -minX)/ bboxW, 1, 2);
-  ny = nf((y -minY)/ bboxH,1,2);
+function keyPressed() {
+  if (key == 'c') {
+    calibrationState = !calibrationState;
+    console.log('c');
+  }
 }
+
+function normalizePoints(x, y) {
+  minX = pose.keypoints[0].x-(0.5*bboxW);
+  minY = pose.keypoints[0].y;
+  nx = nf((x - minX) / bboxW, 1, 2);
+  ny = nf((y - minY) / bboxH, 1, 2);
+}
+
 
 function findKeypoints() {
   minX = Math.min.apply(
@@ -78,9 +106,8 @@ function findKeypoints() {
       return p.y;
     })
   );
-  textSize(400);
-  text(displayClass,0,height/2);
-  textSize(10);
+  bboxW = maxX - minX;
+  bboxH = maxY - minY;
 }
 
 
@@ -94,8 +121,8 @@ function createButtons() {
     button.mousePressed(function () {
       this.on = !this.on;
       this.html(this.on ? 'Adding to Class ' + classNumber : "Class" + classNumber);
-      if(this.on){
-        this.interval = setInterval(()=>{
+      if (this.on) {
+        this.interval = setInterval(() => {
           addExample(classNumber);
         }, 250)
       }
@@ -110,7 +137,7 @@ function createButtons() {
     });
   }
 
-  for(let i = 1; i <= 6; i++) {
+  for (let i = 1; i <= 6; i++) {
     createClassifiers(i);
   }
 
@@ -204,12 +231,12 @@ function gotResults(err, result) {
       select('#confidence').html(`${confidences[result.label] * 100} %`);
     }
 
-    select('#confidence1').html(`${confidences['1'] ? confidences['1'] * 100 : 0} %`);
-    select('#confidence2').html(`${confidences['2'] ? confidences['2'] * 100 : 0} %`);
-    select('#confidence3').html(`${confidences['3'] ? confidences['3'] * 100 : 0} %`);
-    select('#confidence4').html(`${confidences['4'] ? confidences['4'] * 100 : 0} %`);
-    select('#confidence5').html(`${confidences['5'] ? confidences['5'] * 100 : 0} %`);
-    select('#confidence6').html(`${confidences['6'] ? confidences['6'] * 100 : 0} %`);
+    select('#confidence1').html(`${confidences['1'] ? (confidences['1'] * 100): 0} %`);
+    select('#confidence2').html(`${confidences['2'] ? (confidences['2'] * 100) : 0} %`);
+    select('#confidence3').html(`${confidences['3'] ? (confidences['3'] * 100) : 0} %`);
+    select('#confidence4').html(`${confidences['4'] ? (confidences['4'] * 100) : 0} %`);
+    select('#confidence5').html(`${confidences['5'] ? (confidences['5'] * 100) : 0} %`);
+    select('#confidence6').html(`${confidences['6'] ? (confidences['6'] * 100) : 0} %`);
   }
 
   classify();
@@ -231,8 +258,8 @@ function updateCounts() {
 function saveLabels() {
   const dataset = classifier.getClassifierDataset();
 
-  let tensors={};
-  Object.keys(dataset).forEach((key)=>{
+  let tensors = {};
+  Object.keys(dataset).forEach((key) => {
     const t = dataset[key];
     if (t) {
       console.log("Saving new data for class: ", key, t);
@@ -249,7 +276,7 @@ function loadClassesJSON(data) {
 
 
     let tensorsData = {};
-    Object.keys(dataset).forEach((key)=>{
+    Object.keys(dataset).forEach((key) => {
       // const tensor =
       const values = Object.keys(tensors[key]).map(v => tensors[key][v]);
       tensorsData[key] = tf.tensor(values, dataset[key].shape, dataset[key].dtype);
@@ -282,14 +309,22 @@ function drawKeypoints() {
   // Loop through all the poses detected
   for (let i = 0; i < poses.length; i++) {
     // For each pose detected, loop through all the keypoints
-     pose = poses[i];
+    pose = poses[i];
     // console.log(pose.keypoints);
-    findKeypoints();
+
+    if (calibrationState) {
+      findKeypoints();
+      textSize(40);
+      let noseX = nf((pose.keypoints[0].x - minX) / bboxW, 1, 2);
+      text("Nose: " + noseX , 0, height / 2 + 100);
+      textSize(10);
+    }
+    
     noFill();
     stroke(255, 0, 0);
-    bboxW = maxX - minX;
-    bboxH = maxY - minY;
-    rect(minX, minY, bboxW, bboxH);
+    console.log()
+    // pose.keypoints[0] is the nose
+    rect(pose.keypoints[0].x-(0.5*bboxW), pose.keypoints[0].y, bboxW, bboxH);
     stroke(255, 0, 0);
 
 
@@ -306,7 +341,7 @@ function drawKeypoints() {
 
 
         ellipse(keypoint.x, keypoint.y, 10, 10);
-        text("x: " + nx + " y:" + ny,keypoint.x, keypoint.y);
+        text(" x: " + nx + " y:" + ny, keypoint.x, keypoint.y);
       }
     }
   }
