@@ -1,9 +1,118 @@
-button {
+
+body {
   font-size: 2em;
-  margin: 0.5em 0.5em 0.5em 0.5em;
+  background: white;
 }
 
-p {
-  font-size: 2em;
+body * {
+  font-family: sans-serif;
+}
+
+canvas {
+  margin: 0 auto;
+}
+
+#videoContainer {
+    background: black;
+    width: 100vw;
+    height: auto;
+    display: flex;
+}
+
+#status {
+  font-size: 0.5em;
+}
+
+#classes {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.class {
+  display: flex;
+  margin: 0.5em 0;
+  width: 25%;
+  min-width: 500px;
+}
+
+#classes #template {
+  width: 0px;
+  min-width: 0px;
+}
+
+.record {
+  min-width: 10em;
+}
+
+.reset {
+  min-width: 2em;
+}
+
+button {
+  font-size: 1em;
+  margin: 0.1em;
+  padding: 0.25em;
+}
+
+p.confidence {
+  margin: 1em;
+}
+
+#menu {
+  margin: 2em 0;
+}
+
+input {
+  font-size: 1em;
+  height: 1.75em;
+  width: 10em;
+}
+
+#rate {
+  text-align: right;
+  width: 2.75em;
+  margin: 0 0 0 2em;
+}
+
+#fps {
+  margin: 0 0 0 0.5em;
+}
+
+#add {
+  width: 5em;
+  margin-right: 2em;
+}
+
+#predict {
+  width: 5em;
+}
+
+#predictions {
+  height: 2em;
+  display: flex;
+}
+
+#clear, #predict, #predictions {
+  float: right;
+}
+
+#result, #confidence {
   margin: 0.5em;
 }
+
+#result {
+  position: fixed;
+  top: 0;
+  left: 0;
+  margin: 0;
+  padding: 0;
+  color: red;
+  font-size: 7.5em;
+}
+
+
+
+/* p {
+  font-size: 2em;
+  margin: 0.5em;
+} */

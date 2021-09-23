@@ -22,63 +22,35 @@
   <!-- Load KNN Classifier -->
   <script src="libraries/knn-classifier.js"></script>
 
-   <link rel="stylesheet" type="text/css" href="style.css">
+  <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 
 <body>
-  <h2>KNN Classification on MoveNet data from webcam. Built with p5.js</h2>
+  <div id="calibrate">Make a T-pose to (c)alibrate. <span id="nose"></span></div>
   <div id="videoContainer"></div>
+  <div id="result"></div>
   <p id="status">Model Status: </p>
-  <br>
-  <div style="display: flex">
-    <button id="addClass1">Class 1</button>
-    <button id="reset1">Reset</button>
-    <p><span id="example1">0</span> examples</p>
-    <p> Confidence 1: <span id="confidence1">0</span></p>
-    <p> --- </p>
-    <br><button id="addClass2">Class 2</button>
-    <button id="reset2">Reset</button>
-    <p><span id="example2">0</span> examples</p>
-    <p> Confidence 2: <span id="confidence2">0</span></p>
-
+  <div id="classes">
+    <div id="template" class="class">
+      <button class="record">...</button>
+      <button class="reset">x</button>
+      <p class="confidence">0</p>
+    </div>
   </div>
 
-  <div style="display: flex">
-    <br><button id="addClass3">Class 3</button>
-    <button id="reset3">Reset</button>
-    <p><span id="example3">0</span> examples</p>
-    <p> Confidence 3: <span id="confidence3">0</span></p>
-    <p> --- </p>
-    <br><button id="addClass4">Class 4</button>
-    <button id="reset4">Reset</button>
-    <p><span id="example4">0</span> examples</p>
-    <p> Confidence 4: <span id="confidence4">0</span></p>
+  <div id="menu">
+    <input id="name" placeholder="Label">
+    <button id="add">+</button>
+    <button id="save">Save</button>
+    <button id="load">Load</button>
+    <input id="rate" value=10><span id="fps">fps</span>
+    <button id="clear">Clear</button>
+    <button id="predict">Predict</button>
+    <div id="predictions"><span id="confidence">...</span></div>
   </div>
 
-  <div style="display: flex">
-    <br><button id="addClass5">Class 5</button>
-    <button id="reset5">Reset</button>
-    <p><span id="example5">0</span> examples</p>
-    <p> Confidence 5: <span id="confidence5">0</span></p>
-    <p> --- </p>
-    <br><button id="addClass6">Class 6</button>
-    <button id="reset6">Reset</button>
-    <p><span id="example6">0</span> examples</p>
-    <p> Confidence 6: <span id="confidence6">0</span></p>
 
-  </div>
-  <br>
-  <p>
-    <button id="buttonSave">Save</button><br>
-    <button id="buttonLoad">Load</button><br>
-    <button id="buttonPredict">Start predicting!</button><br>
-    <button id="clearAll">Clear all classes</button><br>
-  </p>
-  <p>
-    KNN Classifier with mobileNet model labeled this
-    as Class: <span id="result">...</span>
-    with a confidence of <span id="confidence">...</span>
-  </p>
+  <script src="Class.js"></script>
   <script src="sketch.js"></script>
 
 

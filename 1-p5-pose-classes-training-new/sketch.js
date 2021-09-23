@@ -8,17 +8,23 @@ let moveNet;
 let netReady = false;
 
 let poses = [];
+let classes = {};
+let predict = false;
+let prediction;
 
+// Recording rate
+let rate = 250;
+
+const LABELS = ['DFr', 'DRt', 'DLt', 'DFo'];
 
 // bounding box
 let pose;
 let minX, minY, maxX, maxY, bboxW, bboxH;
 // normalization
 let nx, ny;
-let displayClass;
 
-
-let calibrationState = true;
+// Have we calibrated?
+let calibrated = false;
 
 function setup() {
   video = createCapture(VIDEO, () => {
@@ -27,12 +33,12 @@ function setup() {
     loadMoveNet();
     loadKNN();
   });
-  console.log(video);
-  // video.size(width, height);
+
   video.hide();
 
   // Create the UI buttons
-  createButtons();
+  buildUI();
+
 }
 
 //-------------------------------------------
@@ -41,22 +47,17 @@ function draw() {
   if (netReady) estimatePose();
   image(video, 0, 0, video.width, video.height);
 
-  // We can call both functions to draw all keypoints and the skeletons
-  if (calibrationState) { // if calibrating
-    if (poses) {
-      textSize(40);
-      text("Make a t-pose and press 'c' to capture", 0, height / 2);
-      text("Nose must be at 0.5", 0, height / 2 + 50);
-      textSize(10);
-      drawKeypoints();
-    }
-  } else {
-    if (poses) {
-      drawKeypoints(); // if done calibrating
-      if (displayClass) {
-        textSize(400);
-        text(displayClass, 0, height / 2);
-        textSize(10);
+  // If there are bodies detected...
+  if (poses.length > 0) {
+    drawKeypoints();
+    // Find the bounding box anchored on the nose
+    if (!calibrated) {
+      let firstPose = poses[0];
+      findKeypoints(firstPose);
+      let firstNose = firstPose.keypoints[0] || null;
+      if (firstNose) {
+        let noseX = nf((firstNose.x - minX) / bboxW, 1, 2);
+        select('#nose').html("noseX: " + noseX)
       }
     }
   }
@@ -64,44 +65,62 @@ function draw() {
 
 function keyPressed() {
   if (key == 'c') {
-    calibrationState = !calibrationState;
-    console.log('c');
+    calibrated = !calibrated;
+    let calibrateEl = select('#calibrate');
+    if (calibrated) calibrateEl.hide();
+    else calibrateEl.show();
   }
+
+  switch (keyCode) {
+    case RIGHT_ARROW:
+      rate += 100;
+      break;
+    case LEFT_ARROW:
+      rate -= 100;
+      break;
+  }
+
+  console.log(rate);
+  // Update the rate input
+  select('#rate').value(rate);
+
+  // Constrain the rate
+  rate = constrain(rate, 10, 1000);
 }
 
 function normalizePoints(x, y) {
-  minX = pose.keypoints[0].x-(0.5*bboxW);
+  minX = pose.keypoints[0].x - (0.5 * bboxW);
   minY = pose.keypoints[0].y;
   nx = nf((x - minX) / bboxW, 1, 2);
   ny = nf((y - minY) / bboxH, 1, 2);
 }
 
 
-function findKeypoints() {
+function findKeypoints(pose) {
   minX = Math.min.apply(
     Math,
-    pose.keypoints.map(function (p) {
+    pose.keypoints.map(function(p) {
       return p.x;
     })
   );
 
   minY = Math.min.apply(
     Math,
-    pose.keypoints.map(function (p) {
+    pose.keypoints.map(function(p) {
       return p.y;
     })
   );
 
   maxX = Math.max.apply(
     Math,
-    pose.keypoints.map(function (p) {
+    pose.keypoints.map(function(p) {
       return p.x;
     })
   );
 
   maxY = Math.max.apply(
     Math,
-    pose.keypoints.map(function (p) {
+    pose.keypoints.map(function(p) {
       maxY = p.y;
       return p.y;
     })
@@ -113,55 +132,60 @@ function findKeypoints() {
 
 
 // A util function to create UI buttons
-function createButtons() {
+function buildUI() {
 
-  function createClassifiers(classNumber) {
-    let button = select('#addClass' + classNumber);
-    button.on = false;
-    button.mousePressed(function () {
-      this.on = !this.on;
-      this.html(this.on ? 'Adding to Class ' + classNumber : "Class" + classNumber);
-      if (this.on) {
-        this.interval = setInterval(() => {
-          addExample(classNumber);
-        }, 250)
-      }
-      else {
-        clearInterval(this.interval);
-      }
-    });
+  // Clone the template
+  let container = document.getElementById('classes');
 
-    let resetButton = select('#reset' + classNumber);
-    resetButton.mousePressed(function () {
-      clearLabel(classNumber);
-    });
+  // Create UI for new class
+  function createClass(l, label) {
+    let el = document.getElementById('template').cloneNode(true);
+    container.append(el);
+    let idx = l || classes.length;
+    let name = label || select('#name').value();
+    let id = idx + '-' + name;
+    classes[id] = new Class(id, el);
   }
 
-  for (let i = 1; i <= 6; i++) {
-    createClassifiers(i);
+  // Auto-generate first 10
+  for (let l in LABELS) {
+    let label = LABELS[l];
+    createClass(l, label);
   }
 
+  // Rate feedback
+  let rateEl = select('#rate');
+  rateEl.input(function() {
+    rate = this.value();
+  });
+  rateEl.value(rate);
+
+  // Add a class
+  select('#add').mousePressed(createClass);
 
   // Predict save
-  buttonPredict = select('#buttonSave');
-  buttonPredict.mousePressed(saveLabels);
+  select('#save').mousePressed(saveLabels);
 
   // Predict load
-  buttonPredict = select('#buttonLoad');
-  buttonPredict.mousePressed(loadLabels);
+  select('#load').mousePressed(loadLabels);
 
   // Predict button
-  buttonPredict = select('#buttonPredict');
-  buttonPredict.mousePressed(classify);
+  select('#predict').mousePressed(function() {
+    // Toggle predict
+    predict = !predict;
+    this.html(predict ? 'Stop' : 'Predict');
+    classify();
+  });
 
   // Clear all classes button
-  buttonClearAll = select('#clearAll');
-  buttonClearAll.mousePressed(clearAllLabels);
+  select('#clear').mousePressed(clearAllLabels);
 }
 
 //----------moveNet stuff----------------
 async function loadMoveNet() {
-  const detectorConfig = { modelType: poseDetection.movenet.modelType.SINGLEPOSE_LIGHTNING };
+  const detectorConfig = {
+    modelType: poseDetection.movenet.modelType.SINGLEPOSE_LIGHTNING
+  };
   moveNet = await poseDetection.createDetector(poseDetection.SupportedModels.MoveNet, detectorConfig);
 
   netReady = true;
@@ -191,11 +215,17 @@ function addExample(label) {
   const example = tf.tensor(poseArray);
   // console.log(example)
   classifier.addExample(example, label);
-  updateCounts();
+  updateCount(label);
 }
 
 // Predict the current frame.
 async function classify() {
+  // Don't bother if we're not predicting
+  if(!predict) {
+    select('#result').html('');
+    return;
+  }
+
   // Get the total number of labels from knnClassifier
   const numLabels = classifier.getNumClasses();
   if (numLabels <= 0) {
@@ -226,32 +256,27 @@ function gotResults(err, result) {
     const confidences = result.confidences;
     // result.label is the label that has the highest confidence
     if (result.label) {
-      displayClass = result.label;
+      prediction = result.label;
       select('#result').html(result.label);
-      select('#confidence').html(`${confidences[result.label] * 100} %`);
+      let confidence = nfs(confidences[result.label] * 100, 0, 2);
+      select('#confidence').html(confidence + '%');
     }
 
-    select('#confidence1').html(`${confidences['1'] ? (confidences['1'] * 100): 0} %`);
-    select('#confidence2').html(`${confidences['2'] ? (confidences['2'] * 100) : 0} %`);
-    select('#confidence3').html(`${confidences['3'] ? (confidences['3'] * 100) : 0} %`);
-    select('#confidence4').html(`${confidences['4'] ? (confidences['4'] * 100) : 0} %`);
-    select('#confidence5').html(`${confidences['5'] ? (confidences['5'] * 100) : 0} %`);
-    select('#confidence6').html(`${confidences['6'] ? (confidences['6'] * 100) : 0} %`);
+    for (let c in classes) {
+      if (!confidences[c.label]) continue;
+      let confidence = nfs(confidences[c.label] * 100, 0, 2);
+      c.score(confidence + '%')
+    }
   }
 
+  // Keep classifying
   classify();
 }
 
 // Update the example count for each label
-function updateCounts() {
-  const counts = classifier.getClassExampleCount();
-
-  select('#example1').html(counts['1'] || 0);
-  select('#example2').html(counts['2'] || 0);
-  select('#example3').html(counts['3'] || 0);
-  select('#example4').html(counts['4'] || 0);
-  select('#example5').html(counts['5'] || 0);
-  select('#example6').html(counts['6'] || 0);
+function updateCount(label) {
+  let count = classifier.getClassExampleCount()[label];
+  classes[label].count(count);
 }
 
 // Save & Load label JSON
@@ -266,13 +291,19 @@ function saveLabels() {
       tensors[key] = t.dataSync();
     }
   })
-  saveJSON({ dataset, tensors }, 'classes.json', true);
+  saveJSON({
+    dataset,
+    tensors
+  }, 'classes.json', true);
 
 }
 
 function loadClassesJSON(data) {
   if (data) {
-    const { dataset, tensors } = data;
+    const {
+      dataset,
+      tensors
+    } = data;
 
 
     let tensorsData = {};
@@ -293,15 +324,25 @@ function loadLabels() {
 
 
 // Clear the examples in one label
-function clearLabel(classLabel) {
-  classifier.clearClass(classLabel);
-  updateCounts();
+function clearLabel(label) {
+  try {
+    classifier.clearClass(label);
+  } catch (e) {
+    console.log("Class ", label, " no longer exists.");
+  }
+  updateCount(label);
 }
 
 // Clear all the examples in all labels
 function clearAllLabels() {
   classifier.clearAllClasses()
   updateCounts();
+}
+
+function updateCounts() {
+  for (let c in classes) {
+    updateCount(c);
+  }
 }
 
 // A function to draw ellipses over the detected keypoints
@@ -312,19 +353,11 @@ function drawKeypoints() {
     pose = poses[i];
     // console.log(pose.keypoints);
 
-    if (calibrationState) {
-      findKeypoints();
-      textSize(40);
-      let noseX = nf((pose.keypoints[0].x - minX) / bboxW, 1, 2);
-      text("Nose: " + noseX , 0, height / 2 + 100);
-      textSize(10);
-    }
-    
     noFill();
     stroke(255, 0, 0);
-    console.log()
+    textSize(10);
     // pose.keypoints[0] is the nose
-    rect(pose.keypoints[0].x-(0.5*bboxW), pose.keypoints[0].y, bboxW, bboxH);
+    rect(pose.keypoints[0].x - (0.5 * bboxW), pose.keypoints[0].y, bboxW, bboxH);
     stroke(255, 0, 0);
 
 
