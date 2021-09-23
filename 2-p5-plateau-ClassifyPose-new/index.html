@@ -17,20 +17,25 @@
 </head>
 
 <body>
+  <div id="calibrate">Make a T-pose to (c)alibrate. <span id="nose"></span></div>
+  <div id="resultCon"></div>
   <div id="cnvDiv"></div>
   <div id="controlsDiv" style="width:600px; display: flex;flex-direction: column">
     <div>Classification Window Length: <span id="cacheLengthLabel">60</span> Frames</div>
+ 
   </div>
-
+  <div id="resultDisplay"></div>
   <p id="status">Model Status: </p>
   <p>
     <button id="buttonLoad">Load KNN Classes</button><br />
     <button id="buttonClassify">Start classifying</button><br />
   </p>
   <p>
+   
     KNN Classifier with mobileNet model labeled this
     as Class: <span id="result">...</span>
     with a confidence of <span id="confidence">...</span>
+
   </p>
   <script src="sketch.js"></script>
 

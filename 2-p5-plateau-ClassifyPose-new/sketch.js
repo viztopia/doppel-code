@@ -54,6 +54,9 @@ let minX, minY, maxX, maxY, bboxW, bboxH;
 // normalization
 let nx, ny;
 
+// Have we calibrated?
+let calibrated = false;
+
 function preload() { //used for video mode
   // video = createVideo('https://player.vimeo.com/external/591790914.hd.mp4?s=5423196882ed55a554896959f602c265d48c0af4&profile_id=175');
   // video = createVideo('dp.mp4');
@@ -122,7 +125,19 @@ function draw() {
 
   if (netReady) estimatePose();
   image(video, 0, 0, width, height);
-  drawKeypoints();
+  if (poses.length > 0) {
+    drawKeypoints();
+    // Find the bounding box anchored on the nose
+    if (!calibrated) {
+      let firstPose = poses[0];
+      findKeypoints(firstPose);
+      let firstNose = firstPose.keypoints[0] || null;
+      if (firstNose) {
+        let noseX = nf((firstNose.x - minX) / bboxW, 1, 2);
+        select('#nose').html("noseX: " + noseX)
+      }
+    }
+  }
 
   if (frameCount < waiting) {
     text("Pose analysis will begin in " + waiting + " frames", width / 2 - 100, height / 2);
@@ -144,9 +159,15 @@ function draw() {
     //---------------for plateau de-basedlay, send over classification & plateau data----------------
     [maxClass, maxCount] = getMaxClass(classCache);
 
-    text("current class is: " + maxClass, width / 2 - 50, height / 2 - 50);
-    text("class count is: " + maxCount, width / 2 - 50, height / 2 + 50);
-
+    if (maxClass) {
+      select('#resultDisplay').html(maxClass);
+      let resultCon = round(maxCount/cacheLength*100);
+      select('#resultCon').html("confidence: " +resultCon +"%");
+      // text("current class is: " + maxClass, width / 2 - 50, height / 2 - 50);
+      // text("class count is: " + maxCount, width / 2 - 50, height / 2 + 50);
+  
+    }
+    
     //whenever there's a new plateau start, given the current window length & baseline, mark its start time and send new class over.
     if (maxClass && maxCount > newClassCountBaseline && !plateauStarted) {
       console.log(maxClass + " started at frame " + frameCount);
@@ -171,41 +192,56 @@ function draw() {
   }
 }
 
-function normalizePoints(x,y) {
-  nx = nf((x -minX)/ bboxW, 1, 2);
-  ny = nf((y -minY)/ bboxH,1,2);
+function keyPressed() {
+  if (key == 'c') {
+    calibrated = !calibrated;
+    let calibrateEl = select('#calibrate');
+    if (calibrated) calibrateEl.hide();
+    else calibrateEl.show();
+  }
 }
 
-function findKeypoints() {
+function normalizePoints(x, y) {
+  minX = pose.keypoints[0].x - (0.5 * bboxW);
+  minY = pose.keypoints[0].y;
+  nx = nf((x - minX) / bboxW, 1, 2);
+  ny = nf((y - minY) / bboxH, 1, 2);
+}
+
+
+function findKeypoints(pose) {
   minX = Math.min.apply(
     Math,
-    pose.keypoints.map(function (p) {
+    pose.keypoints.map(function(p) {
       return p.x;
     })
   );
 
   minY = Math.min.apply(
     Math,
-    pose.keypoints.map(function (p) {
+    pose.keypoints.map(function(p) {
       return p.y;
     })
   );
 
   maxX = Math.max.apply(
     Math,
-    pose.keypoints.map(function (p) {
+    pose.keypoints.map(function(p) {
       return p.x;
     })
   );
 
   maxY = Math.max.apply(
     Math,
-    pose.keypoints.map(function (p) {
+    pose.keypoints.map(function(p) {
       maxY = p.y;
       return p.y;
     })
   );
+  bboxW = maxX - minX;
+  bboxH = maxY - minY;
 }
+
 
 //----------moveNet stuff----------------
 async function loadMoveNet() {
@@ -333,30 +369,34 @@ function loadClassesJSON(data) {
 
 //------------draw skeleton keypoints---------------
 function drawKeypoints() {
-  // Loop through all the poses detected
-  for (let i = 0; i < poses.length; i++) {
+   // Loop through all the poses detected
+   for (let i = 0; i < poses.length; i++) {
     // For each pose detected, loop through all the keypoints
-     pose = poses[i];
-        findKeypoints();
+    pose = poses[i];
+    // console.log(pose.keypoints);
+
     noFill();
     stroke(255, 0, 0);
-    bboxW = maxX - minX;
-    bboxH = maxY - minY;
-    rect(minX, minY, bboxW, bboxH);
+    textSize(10);
+    // pose.keypoints[0] is the nose
+    rect(pose.keypoints[0].x - (0.5 * bboxW), pose.keypoints[0].y, bboxW, bboxH);
     stroke(255, 0, 0);
-    
+
+
+
     for (let j = 0; j < pose.keypoints.length; j++) {
       // A keypoint is an object describing a body part (like rightArm or leftShoulder)
       let keypoint = pose.keypoints[j];
+
       // Only draw an ellipse is the pose probability is bigger than 0.2
       if (keypoint.score > 0.2) {
         fill(255, 0, 0);
         noStroke();
         normalizePoints(keypoint.x, keypoint.y);
-        
-        
+
+
         ellipse(keypoint.x, keypoint.y, 10, 10);
-        // text("x: " + nx + " y:" + ny,keypoint.x, keypoint.y);
+        text(" x: " + nx + " y:" + ny, keypoint.x, keypoint.y);
       }
     }
   }
@@ -381,8 +421,4 @@ function setupSocket() {
   socket.on('scrubVideo', function (msg) {
 
   });
-}
-
-function keyPressed() {
-
 }
