@@ -17,9 +17,7 @@ class Class {
         this.on = !this.on;
         console.log((this.on ? 'RECORD! ' : 'STOP! ') + this.label);
         if (this.on) {
-          this.interval = setInterval(() => {
-            addExample(this.label);
-          }, rate)
+          this.start();
         } else {
           clearInterval(this.interval);
         }
@@ -35,10 +33,18 @@ class Class {
     // Update
     this.confidence = this.el.getElementsByClassName('confidence')[0];
   }
+  // Start recording frames
+  start() {
+    this.interval = setInterval(() => {
+      addExample(this.label);
+    }, rate);
+  }
 
-
-  updateDuration(change) {
-    this.duration += change;
+  // Change the recording rate
+  updateRate() {
+    if (!this.on) return;
+    clearInterval(this.interval);
+    this.start();
   }
 
   count(count) {
@@ -48,11 +54,4 @@ class Class {
   score(confidence) {
     this.confidence.textContent = confidence || 0;
   }
-
-  reset() {
-
-  }
-
-
-
 }

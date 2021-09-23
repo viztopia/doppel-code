@@ -80,9 +80,8 @@ function keyPressed() {
       break;
   }
 
-  console.log(rate);
-  // Update the rate input
-  select('#rate').value(rate);
+  // Update rate
+  updateRate();
 
   // Constrain the rate
   rate = constrain(rate, 10, 1000);
@@ -130,7 +129,14 @@ function findKeypoints(pose) {
 }
 
 
-
+function updateRate() {
+  // Update the rate input
+  select('#rate').value(rate);
+  // Reset all the timers
+  for(let c in classes) {
+    classes[c].updateRate();
+  }
+}
 // A util function to create UI buttons
 function buildUI() {
 
@@ -154,12 +160,10 @@ function buildUI() {
   }
 
   // Rate feedback
-  let rateEl = select('#rate');
-  rateEl.input(function() {
+  select('#rate').input(function() {
     rate = this.value();
   });
-  rateEl.value(rate);
-
+  updateRate();
   // Add a class
   select('#add').mousePressed(createClass);
 
