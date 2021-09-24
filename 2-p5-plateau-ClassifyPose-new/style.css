@@ -17,6 +17,14 @@ canvas {
   font-size: 3em;
 }
 
+.confidence {
+  position: fixed;
+  top: 10vw;
+  left: 10vh;
+  font-size: 5em;
+  color: red;
+}
+
 #resultDisplay {
   position: fixed;
   top: 0;
