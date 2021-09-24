@@ -15,7 +15,7 @@ let prediction;
 // Recording rate
 let rate = 250;
 
-const LABELS = ['DFr', 'DRt', 'DLt', 'DFo'];
+const LABELS = ['F', 'R', 'L', 'Fo', 'HH', 'Ch'];
 
 // bounding box
 let pose;
