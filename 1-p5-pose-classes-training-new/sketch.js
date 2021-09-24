@@ -267,9 +267,9 @@ function gotResults(err, result) {
     }
 
     for (let c in classes) {
-      if (!confidences[c.label]) continue;
-      let confidence = nfs(confidences[c.label] * 100, 0, 2);
-      c.score(confidence + '%')
+      if (!confidences[c]) continue;
+      let confidence = nfs(confidences[c] * 100, 0, 2);
+      classes[c].score(confidence + '%')
     }
   }
 
