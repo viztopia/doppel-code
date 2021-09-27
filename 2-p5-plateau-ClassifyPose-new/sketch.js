@@ -48,14 +48,24 @@ let joint, jointPrev;
 let jointNumber = 0;
 let jointThreshold = 0.6;
 
+
+//------------------normalization & calibration-------------------
 // bounding box
 let pose;
+let poseNorm;
 let minX, minY, maxX, maxY, bboxW, bboxH;
 // normalization
 let nx, ny;
-
 // Have we calibrated?
 let calibrated = false;
+
+//-----------------for graphing-------------------------
+let currentClassConfidence = 0;
+let confidenceCache = [0];
+let stats = new Stats();
+let cPanel = stats.addPanel(new Stats.Panel('conf', '#ff8', '#221'));
+stats.showPanel(3);
+document.body.appendChild(stats.dom);
 
 function preload() { //used for video mode
   // video = createVideo('https://player.vimeo.com/external/591790914.hd.mp4?s=5423196882ed55a554896959f602c265d48c0af4&profile_id=175');
@@ -173,7 +183,7 @@ function draw() {
       }
     }
 
-    //---------------for plateau de-basedlay, send over classification & plateau data----------------
+    //---------------for plateau-based delay, send over classification & plateau data----------------
     [maxClass, maxCount] = getMaxClass(classCache);
 
     if (maxClass) {
@@ -213,8 +223,13 @@ function draw() {
       }
     }
   }
+
+  //--------graph current confidence---------
+  let confidenceAvg = confidenceCache.reduce((a, b) => a + b) / confidenceCache.length;
+  cPanel.update(confidenceAvg, 100);
 }
 
+//---------calibration & normalization----------
 function keyPressed() {
   if (key == 'c') {
     calibrated = !calibrated;
@@ -231,31 +246,39 @@ function normalizePoints(x, y) {
   ny = nf((y - minY) / bboxH, 1, 2);
 }
 
+function normalizePointByNose(x, y) {
+  minX = pose.keypoints[0].x - (0.5 * bboxW);
+  minY = pose.keypoints[0].y;
+  let xNorm = nf((x - minX) / bboxW, 1, 2);
+  let yNorm = nf((y - minY) / bboxH, 1, 2);
+  return [xNorm, yNorm];
+}
+
 function findKeypoints(pose) {
   minX = Math.min.apply(
     Math,
-    pose.keypoints.map(function(p) {
+    pose.keypoints.map(function (p) {
       return p.x;
     })
   );
 
   minY = Math.min.apply(
     Math,
-    pose.keypoints.map(function(p) {
+    pose.keypoints.map(function (p) {
       return p.y;
     })
   );
 
   maxX = Math.max.apply(
     Math,
-    pose.keypoints.map(function(p) {
+    pose.keypoints.map(function (p) {
       return p.x;
     })
   );
 
   maxY = Math.max.apply(
     Math,
-    pose.keypoints.map(function(p) {
+    pose.keypoints.map(function (p) {
       maxY = p.y;
       return p.y;
     })
@@ -271,7 +294,7 @@ function findKeypoints(pose) {
 function loadCalibration() {
   let calibration = JSON.parse(localStorage.getItem('calibration'));
   console.log("C: ", calibration);
-  if(calibration) {
+  if (calibration) {
     bboxW = calibration.width;
     bboxH = calibration.height;
   }
@@ -318,7 +341,9 @@ async function classify() {
 
 
 
-  const poseArray = poses[0].keypoints.map(p => [p.score, nx, ny]);
+  // const poseArray = poses[0].keypoints.map(p => [p.score, nx, ny]);
+  const poseArray = poseNorm.keypoints.map(p => [p.score, p.x, p.y]);
+
 
   const example = tf.tensor(poseArray);
   const result = await classifier.predictClass(example);
@@ -339,7 +364,7 @@ function gotResults(err, result) {
     // result.label is the label that has the highest confidence
     const confidences = result.confidences;
     const label = result.label;
-    const confidence = round(confidences[label]*100);
+    const confidence = round(confidences[label] * 100);
 
     select('#result').html(label);
     select('#confidence').html(confidence + '%');
@@ -349,6 +374,13 @@ function gotResults(err, result) {
       classCache.shift();
     }
     //}
+
+    //----------track current confidence for ending a plateau and graphing-------------
+    currentClassConfidence = confidence;
+    confidenceCache.push(currentClassConfidence);
+    while (confidenceCache.length >= cacheLength) {
+      confidenceCache.shift();
+    }
   }
 
   if (isClassifying) {
@@ -425,23 +457,34 @@ function drawKeypoints() {
     rect(pose.keypoints[0].x - (0.5 * bboxW), pose.keypoints[0].y, bboxW, bboxH);
     stroke(255, 0, 0);
 
+    //------------prepare for normalization based on Nose-------------------
+     poseNorm = {keypoints:[], score:pose.score};
 
 
     for (let j = 0; j < pose.keypoints.length; j++) {
       // A keypoint is an object describing a body part (like rightArm or leftShoulder)
       let keypoint = pose.keypoints[j];
 
-      // Only draw an ellipse is the pose probability is bigger than 0.2
-      if (keypoint.score > 0.2) {
+      // Only draw an ellipse is the pose probability is bigger than 0.2 -------------> Should probably NOT do this so that it won't affect classification confidence trakcing!
+      // if (keypoint.score > 0.2) {
         fill(255, 0, 0);
         noStroke();
-        normalizePoints(keypoint.x, keypoint.y);
+        // normalizePoints(keypoint.x, keypoint.y);
 
+        let [xNorm, yNorm] = normalizePointByNose(keypoint.x, keypoint.y);
+        poseNorm.keypoints.push({
+          x: xNorm,
+          y: yNorm,
+          score: keypoint.score
+        });
 
         ellipse(keypoint.x, keypoint.y, 10, 10);
-        text(" x: " + nx + " y:" + ny, keypoint.x, keypoint.y);
-      }
+        // text(" x: " + nx + " y:" + ny, keypoint.x, keypoint.y);
+        text(" x: " + poseNorm.keypoints[j].x + " y:" + poseNorm.keypoints[j].y, keypoint.x, keypoint.y);
+      // }
     }
+
+    // console.log(poseNorm);
   }
 }
 
@@ -451,20 +494,20 @@ function setupSocket() {
     port: port,
     rememberTransport: false
   });
-  socket.on('connect', function() {
+  socket.on('connect', function () {
     socket.emit('plateauOn', false);
   });
 
-  socket.on('disconnect', function() {
+  socket.on('disconnect', function () {
     socket.emit('plateauOn', false);
   });
 
   //-------------In Progress: used for video mode-------------
-  socket.on('playVideo', function(msg) {
+  socket.on('playVideo', function (msg) {
 
   });
 
-  socket.on('scrubVideo', function(msg) {
+  socket.on('scrubVideo', function (msg) {
 
   });
 }
