@@ -15,8 +15,9 @@ const MANUAL = 1;
 const SPEED = 2;
 const PLATEAU = 3;
 const BOOKMARK = 4;
+const FLASHING = 5;
 // Mode names
-const MODENAMES = ['PRESET', 'MANUAL', 'SPEED', 'PLATEAU', 'BOOKMARK'];
+const MODENAMES = ['PRESET', 'MANUAL', 'SPEED', 'PLATEAU', 'BOOKMARK','FLASHING'];
 const MODEBGS =  [[140, 226, 238], [147, 186, 225], [137, 132, 214], [114, 81, 178], [164, 188, 188]];
 
 const PRESETS = [4, 4.5, 6, 10];
