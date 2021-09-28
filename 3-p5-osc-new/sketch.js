@@ -254,6 +254,9 @@ function keyPressed() {
     case 52: //----4------
       mode = BOOKMARK;
       break;
+    case 53: //----5------
+      mode = FLASHING;
+      break;
     case UP_ARROW: //arrow up
       if (mode == MANUAL) modes[MANUAL].update(-1);
       if (mode == BOOKMARK) modes[BOOKMARK].update(-1);
