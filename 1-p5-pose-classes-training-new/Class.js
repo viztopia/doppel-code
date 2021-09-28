@@ -22,7 +22,7 @@ class Class {
           clearInterval(this.interval);
         }
       }
-    }, 1000);
+    }, 1000/fps);
 
     // Reset button
     this.reset = this.el.getElementsByClassName('reset')[0];
@@ -37,11 +37,11 @@ class Class {
   start() {
     this.interval = setInterval(() => {
       addExample(this.label);
-    }, rate);
+    }, 1000/fps);
   }
 
   // Change the recording rate
-  updateRate() {
+  updateInterval() {
     if (!this.on) return;
     clearInterval(this.interval);
     this.start();
