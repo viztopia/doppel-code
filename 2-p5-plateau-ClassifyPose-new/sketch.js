@@ -346,7 +346,7 @@ async function classify() {
 
 
   const example = tf.tensor(poseArray);
-  const result = await classifier.predictClass(example);
+  const result = await classifier.predictClass(example, 20);
   gotResults(undefined, result);
 
 }
