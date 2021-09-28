@@ -91,7 +91,7 @@ let plateau = { //-------------plateau-based----------------
         // this.currentClipFinished = false;
 
         // console.log(pStartTime, pLength);
-        if (pStartTime != undefined && pLength != undefined ) {
+        if (pStartTime != undefined && pLength != undefined) {
           this.targetClass = this.currentClass; //TODO: target class is a place holder for interuption logic
           this.targetClassInPlateaus = true;
           this.currentClipStartTime = Date.now();
@@ -106,8 +106,8 @@ let plateau = { //-------------plateau-based----------------
           this.currentClipFinished = false;
 
           // Clear the current timer if there is one
-          if(this.timer) clearTimeout(this.timer);
-          
+          if (this.timer) clearTimeout(this.timer);
+
           //wait for pLength milliseconds to ask for a new clip
           this.timer = setTimeout(() => {
             this.currentClipFinished = true;
@@ -127,7 +127,7 @@ let plateau = { //-------------plateau-based----------------
       }
 
       text("Current class is: " + this.currentClass, INFOX, INFOY + 50);
-      if (!this.targetClassInPlateaus) text("We need at least one plateau finished " + RECORDINGSECONDS +" seconds ago to pull from the recording.", INFOX, INFOY + 75);
+      if (!this.targetClassInPlateaus) text("We need at least one plateau finished " + RECORDINGSECONDS + " seconds ago to pull from the recording.", INFOX, INFOY + 75);
       if (this.targetClassInPlateaus) text("Current pulling " + this.targetClass + ", method is: Random. Finishing in: " + (this.currentClipLength - (Date.now() - this.currentClipStartTime)) / 1000, INFOX, INFOY + 100);
 
     } else {
@@ -148,21 +148,29 @@ let plateau = { //-------------plateau-based----------------
 let bookmark = { //------------bookmark---------------------
   //-------------------mode 4: bookmark stuff-----------------------
   // TODO: Implement multiple bookmarks
-  ts: undefined,
-  lastJumpedFrameIdx: undefined,
+  // ts: undefined,
+  bookmarks: [],
+  idx: 0,
   run: function () {
-    if (this.ts) {
-      text("Current bookmark is:" + this.ts / 1000 + " seconds", INFOX, INFOY + 25);
+    if (this.bookmarks.length > 0) {
+      text("Current bookmark is:" + this.bookmarks[this.idx] / 1000 + " seconds", INFOX, INFOY + 25);
     } else {
-      text("No bookmarks available yet. Press Q to save a bookmark.", INFOX, INFOY + 25);
+      text("No bookmarks available yet. Press Q to add a bookmark.", INFOX, INFOY + 25);
     }
-    text("Press W to jump, press Q to overwrite the current.", INFOX, INFOY + 50);
+    text("Press W to jump, press Q to add a new bookmark.", INFOX, INFOY + 50);
+    let bookmarksString = "";
+    this.bookmarks.forEach((bm)=>{bookmarksString += (bm / 1000) + "  "});
+    text("Available bookmarks are:" + bookmarksString, INFOX, INFOY + 75, 450);
+  },
+  update: function (step) {
+    // Update current bookmark
+    this.idx += step;
+    this.idx = constrain(this.idx, 0, this.bookmarks.length - 1);
   },
   jump: function () {
-    if (!this.ts) return;
+    if (!this.bookmarks[this.idx]) return;
 
-    delayFrameIdx = floor((Date.now() - startTime - this.ts) / 1000 * CAMFPS);
-    this.lastJumpedFrameIdx = delayFrameIdx;
+    delayFrameIdx = floor((Date.now() - startTime - this.bookmarks[this.idx]) / 1000 * CAMFPS);
   }
 }
 

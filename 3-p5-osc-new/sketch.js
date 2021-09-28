@@ -156,7 +156,11 @@ function savePerformance() {
   })
   // console.log(plateausToSave);
   //3. clear extra bookmark beyond the last second
-  let bookmarkToSave = bookmark.ts <= lastSecondMillis ? bookmark.ts : undefined;
+  let bookmarksToSave = [];
+  for (let bm of bookmark.bookmarks) {
+    if (bm > lastSecondMillis) continue;
+    bookmarksToSave.push(bm);
+  }
 
   let showData = {
     mode: mode,
@@ -182,8 +186,7 @@ function savePerformance() {
     plateau_currentClipFinished: plateau.currentClipFinished,  //should we clear this?
     plateau_currentClipLength: plateau.currentClipLength, //should we clear this?
     plateau_initialDelayFrameIdx: plateau.initialDelayFrameIdx, //should we clear this?
-    bookmark_ts: bookmarkToSave, //replace with cleared bookmark
-    bookmark_lastJumpedFrameIdx: bookmark.lastJumpedFrameIdx
+    bookmark_bookmarks: bookmarksToSave, //replace with cleared bookmarks
   };
 
   console.log("saving the following show data: ");
@@ -217,12 +220,7 @@ function recoverPerformance(jsonPath) {
     // plateau.currentClipFinished = data.plateau_currentClipFinished;
     // plateau.currentClipLength = data.plateau_currentClipLength;
     // plateau.initialDelayFrameIdx = data.plateau_initialDelayFrameIdx;
-    bookmark.ts = data.bookmark_ts;
-    bookmark.lastJumpedFrameIdx = data.bookmark_lastJumpedFrameIdx;
-
-
-    //start recording
-    // socket.emit("record", 1);
+    bookmark.bookmarks = data.bookmark_bookmarks;
 
     //resume recording
     //socket msg should be the file idx to start recording with. no need for +1 bc file idx starts with 0
@@ -253,11 +251,16 @@ function keyPressed() {
     case 51: //----3------
       mode = PLATEAU;
       break;
-    case UP_ARROW: //arrow left
-      if (mode == MANUAL) modes[MANUAL].update(-1);
+    case 52: //----4------
+      mode = BOOKMARK;
       break;
-    case DOWN_ARROW: //arrow right
+    case UP_ARROW: //arrow up
+      if (mode == MANUAL) modes[MANUAL].update(-1);
+      if (mode == BOOKMARK) modes[BOOKMARK].update(-1);
+      break;
+    case DOWN_ARROW: //arrow down
       if (mode == MANUAL) modes[MANUAL].update(1);
+      if (mode == BOOKMARK) modes[BOOKMARK].update(1);
       break;
     case LEFT_ARROW: //arrow left
       if (mode == PRESET) modes[PRESET].update(-1);
@@ -266,7 +269,8 @@ function keyPressed() {
       preset.idx < PRESETS.length - 1 ? preset.idx++ : preset.idx = PRESETS.length - 1;
       break;
     case 81: //-----------Q: bookmark a time
-      bookmark.ts = Date.now() - startTime;
+      // bookmark.ts = Date.now() - startTime;
+      bookmark.bookmarks.push(Date.now() - startTime);
       break;
     case 87: //-----------W: jump to bookmark
       bookmark.jump();
@@ -320,17 +324,17 @@ function connect() {
 
     if (started) {
 
-      if (acceptingNewPlateau){
+      if (acceptingNewPlateau) {
         console.log("received a new plateau of class " + p.className + ". it'll be available after " + RECORDINGSECONDS + " seconds.");
 
         setTimeout(() => { //delay RECORDINGSECONDS so that plateau playback won't bleed into cache
-  
+
           console.log("new plateau available: ");
           console.log(p);
-  
+
           //for each plateau, record its start time relative to the show's start time, i.e., how many milli seconds after the show starts.
           let st = p.start - startTime > 0 ? p.start - startTime : 0;
-  
+
           if (!plateau.plateaus.has(p.className)) {
             plateau.plateaus.set(p.className, [{
               start: st,
@@ -344,7 +348,7 @@ function connect() {
           }
           // console.log(plateaus);
           // plateaus.push({ className: p.className, start: p.start - startTime, length: p.end - p.start }); //save plateaus with timestamps in relation to recording start time
-  
+
         }, RECORDINGSECONDS * 1000);
       } else {
         console.log("received a new plateau of class " + p.className + " but acceptance is closed. skipped.");
