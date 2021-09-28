@@ -13,9 +13,9 @@ let predict = false;
 let prediction;
 
 // Recording rate
-let rate = 250;
+let fps = 10;
 
-const LABELS = ['F', 'R', 'L', 'Fo', 'HH', 'Ch'];
+let LABELS = ['F', 'R', 'L', 'Fo', 'HH', 'Ch'];
 
 // bounding box
 let pose;
@@ -73,19 +73,19 @@ function keyPressed() {
   }
 
   switch (keyCode) {
-    case RIGHT_ARROW:
-      rate += 100;
-      break;
     case LEFT_ARROW:
-      rate -= 100;
+      fps++;
+      break;
+    case RIGHT_ARROW:
+      fps--;
       break;
   }
 
   // Update rate
-  updateRate();
+  updateFPS();
 
   // Constrain the rate
-  rate = constrain(rate, 10, 1000);
+  fps = constrain(fps, 1, 60);
 }
 
 function normalizePoints(x, y) {
@@ -137,29 +137,36 @@ function findKeypoints(pose) {
 }
 
 
-function updateRate() {
+function updateFPS() {
   // Update the rate input
-  select('#rate').value(rate);
+  select('#fps').value(fps);
   // Reset all the timers
   for(let c in classes) {
-    classes[c].updateRate();
+    classes[c].updateInterval();
   }
 }
-// A util function to create UI buttons
-function buildUI() {
 
+// Clear all classes
+function clearClasses() {
+  LABELS = [];
+  selectAll(".class").forEach((el)=>{
+    if(el.id() != 'template') el.remove() });
+}
+
+// Create UI for new class
+function createClass(l, label) {
   // Clone the template
   let container = document.getElementById('classes');
+  let el = document.getElementById('template').cloneNode(true);
+  container.append(el);
+  let idx = l || Object.keys(classes).length;
+  let name = label || select('#name').value();
+  let id = idx + '-' + name;
+  classes[id] = new Class(id, el);
+}
 
-  // Create UI for new class
-  function createClass(l, label) {
-    let el = document.getElementById('template').cloneNode(true);
-    container.append(el);
-    let idx = l || classes.length;
-    let name = label || select('#name').value();
-    let id = idx + '-' + name;
-    classes[id] = new Class(id, el);
-  }
+// A util function to create UI buttons
+function buildUI() {
 
   // Auto-generate first 10
   for (let l in LABELS) {
@@ -168,10 +175,10 @@ function buildUI() {
   }
 
   // Rate feedback
-  select('#rate').input(function() {
+  select('#fps').input(function() {
     rate = this.value();
   });
-  updateRate();
+  updateFPS();
   // Add a class
   select('#add').mousePressed(createClass);
 
@@ -223,7 +230,6 @@ function addExample(label) {
   // const poseArray = poses[0].pose.keypoints.map(p => [p.score, p.position.x, p.position.y]);
   // const poseArray = poses[0].keypoints.map(p => [p.score, nx, ny]);
   const poseArray = poseNorm.keypoints.map(p => [p.score, p.x, p.y]);
-  console.log(poseArray);
 
   // Add an example with a label to the classifier
   const example = tf.tensor(poseArray);
@@ -251,7 +257,7 @@ async function classify() {
   const poseArray = poseNorm.keypoints.map(p => [p.score, p.x, p.y]);
 
   const example = tf.tensor(poseArray);
-  const result = await classifier.predictClass(example);
+  const result = await classifier.predictClass(example, 40);
   gotResults(undefined, result);
 
 }
@@ -273,13 +279,14 @@ function gotResults(err, result) {
     if (result.label) {
       prediction = result.label;
       select('#result').html(result.label);
-      let confidence = nfs(confidences[result.label] * 100, 0, 2);
+      let confidence = nfs(confidences[result.label] * 100, 0, 0);
       select('#confidence').html(confidence + '%');
     }
 
+    console.log("ALL", confidences);
     for (let c in classes) {
-      if (!confidences[c]) continue;
-      let confidence = nfs(confidences[c] * 100, 0, 2);
+      if (!(c in confidences)) continue;
+      let confidence = nfs(confidences[c] * 100, 0, 0);
       classes[c].score(confidence + '%')
     }
   }
@@ -322,10 +329,14 @@ function loadClassesJSON(data) {
 
 
     let tensorsData = {};
+    //Empty out LABELS
+    clearClasses();
     Object.keys(dataset).forEach((key) => {
       // const tensor =
       const values = Object.keys(tensors[key]).map(v => tensors[key][v]);
       tensorsData[key] = tf.tensor(values, dataset[key].shape, dataset[key].dtype);
+      LABELS.push(key);
+      createClass(key);
     })
     classifier.setClassifierDataset(tensorsData);
     console.log(tensorsData);

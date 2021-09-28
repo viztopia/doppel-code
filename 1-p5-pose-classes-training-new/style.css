@@ -35,7 +35,7 @@ canvas {
   min-width: 600px;
 }
 
-#classes #template {
+#template, #template * {
   width: 0px;
   min-width: 0px;
 }
@@ -68,13 +68,13 @@ input {
   width: 10em;
 }
 
-#rate {
+#fps {
   text-align: right;
-  width: 2.75em;
+  width: 2em;
   margin: 0 0 0 2em;
 }
 
-#fps {
+#fps-label {
   margin: 0 0 0 0.5em;
 }
 
