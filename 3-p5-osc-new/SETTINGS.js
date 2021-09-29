@@ -1,8 +1,8 @@
 // Display
 const W = 600;
 const H = 500;
-const INFOX = W/2 - 250;
-const INFOY = H/2;
+const INFOX = W / 2 - 250;
+const INFOY = H / 2;
 
 const VIDEOPATH = 'https://player.vimeo.com/external/591790914.hd.mp4?s=5423196882ed55a554896959f602c265d48c0af4&profile_id=175';
 
@@ -17,8 +17,8 @@ const PLATEAU = 3;
 const BOOKMARK = 4;
 const FLASHING = 5;
 // Mode names
-const MODENAMES = ['PRESET', 'MANUAL', 'SPEED', 'PLATEAU', 'BOOKMARK','FLASHING'];
-const MODEBGS =  [[140, 226, 238], [147, 186, 225], [137, 132, 214], [114, 81, 178], [164, 188, 188]];
+const MODENAMES = ['PRESET', 'MANUAL', 'SPEED', 'PLATEAU', 'BOOKMARK', 'FLASHING'];
+const MODEBGS = [[140, 226, 238], [147, 186, 225], [137, 132, 214], [114, 81, 178], [164, 188, 188], [200, 200, 200]];
 
 const PRESETS = [4, 4.5, 6, 10];
 
@@ -31,6 +31,7 @@ const SOCKETPORT = 8081;
 // //--------------TD config-------------
 const CACHE = 0;
 const RECORDINGS = 1;
+const VIDEO = 2;
 
 const RECORDINGFPS = 30;
 const RECORDINGSECONDS = 30; //length of each OBS recording clip in seconds

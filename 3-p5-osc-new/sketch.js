@@ -298,6 +298,8 @@ function keyPressed() {
       socket.emit("blackoutleft", false);
       socket.emit("blackoutright", false);
       break;
+    case 80: //-----------P: play flashing video
+    if (mode == FLASHING) socket.emit("source", VIDEO);
   }
 
 }

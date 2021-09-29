@@ -1,25 +1,25 @@
 {
-  "mode": 4,
-  "startTime": 1632850837550,
-  "recordedSeconds": 32,
-  "delayFrameIdx": 120,
-  "pDelayFrameIdx": 120,
+  "mode": 3,
+  "startTime": 1631681036720,
+  "recordedSeconds": 889,
+  "delayFrameIdx": 14501,
+  "pDelayFrameIdx": 14501,
   "preset_idx": 0,
   "preset_currentDelayFrameIdx": 120,
   "manual_TH": 6000,
-  "speed_jointDist": 0,
+  "speed_jointDist": 2.9556736493330424,
   "speed_mappedFrames": [],
   "speed_avgFrame": 0,
-  "plateau_plateauOn": false,
-  "plateau_plateaus": "[]",
+  "plateau_plateauOn": true,
+  "plateau_plateaus": "[[1,[{\"start\":0,\"length\":22023},{\"start\":24829,\"length\":13932},{\"start\":66449,\"length\":6016},{\"start\":78015,\"length\":3081},{\"start\":104867,\"length\":19898},{\"start\":130164,\"length\":1419},{\"start\":132772,\"length\":1269},{\"start\":134305,\"length\":8955},{\"start\":144371,\"length\":1514},{\"start\":174317,\"length\":3821},{\"start\":196627,\"length\":4681},{\"start\":202268,\"length\":12986},{\"start\":221192,\"length\":1016},{\"start\":228723,\"length\":2590},{\"start\":236264,\"length\":15161},{\"start\":276950,\"length\":4442},{\"start\":286894,\"length\":1128},{\"start\":307389,\"length\":10595},{\"start\":319885,\"length\":20138},{\"start\":347870,\"length\":3429},{\"start\":480160,\"length\":5187},{\"start\":504466,\"length\":1239},{\"start\":510934,\"length\":1306},{\"start\":521105,\"length\":1271},{\"start\":555805,\"length\":1126},{\"start\":569804,\"length\":8362},{\"start\":588138,\"length\":2766},{\"start\":812194,\"length\":2617},{\"start\":827932,\"length\":1978}]],[5,[{\"start\":40702,\"length\":12182},{\"start\":54033,\"length\":1651},{\"start\":81929,\"length\":14854},{\"start\":98047,\"length\":5061},{\"start\":152031,\"length\":10512},{\"start\":166083,\"length\":1139},{\"start\":180391,\"length\":6227},{\"start\":187650,\"length\":1783},{\"start\":190630,\"length\":1354},{\"start\":253204,\"length\":9563},{\"start\":290991,\"length\":9510},{\"start\":303331,\"length\":2392},{\"start\":840044,\"length\":1738}]],[3,[{\"start\":125916,\"length\":2538},{\"start\":232158,\"length\":3379},{\"start\":342379,\"length\":4725},{\"start\":377138,\"length\":2328},{\"start\":412431,\"length\":1431},{\"start\":486513,\"length\":2567},{\"start\":513330,\"length\":2372},{\"start\":546477,\"length\":1575},{\"start\":559655,\"length\":1311},{\"start\":566600,\"length\":1498},{\"start\":857504,\"length\":2689}]],[6,[{\"start\":352688,\"length\":23408},{\"start\":387351,\"length\":12791},{\"start\":400656,\"length\":11053},{\"start\":417712,\"length\":12242},{\"start\":431803,\"length\":12386},{\"start\":451154,\"length\":3876},{\"start\":467483,\"length\":9874},{\"start\":582544,\"length\":3374}]],[2,[{\"start\":592095,\"length\":18532},{\"start\":612239,\"length\":10275},{\"start\":623573,\"length\":8029},{\"start\":633493,\"length\":10805},{\"start\":646961,\"length\":1268},{\"start\":649017,\"length\":24536},{\"start\":675110,\"length\":4252},{\"start\":682399,\"length\":21210},{\"start\":704398,\"length\":2745},{\"start\":708505,\"length\":5847},{\"start\":720448,\"length\":1026},{\"start\":722002,\"length\":9020},{\"start\":732785,\"length\":1404},{\"start\":737035,\"length\":3292},{\"start\":741232,\"length\":1994},{\"start\":745584,\"length\":5742},{\"start\":752150,\"length\":10400},{\"start\":767336,\"length\":1068},{\"start\":777549,\"length\":1835},{\"start\":787124,\"length\":5035},{\"start\":793771,\"length\":3819},{\"start\":800903,\"length\":2565},{\"start\":817184,\"length\":3238},{\"start\":823408,\"length\":3774},{\"start\":843379,\"length\":6889},{\"start\":851999,\"length\":4580}]]]",
   "plateau_haveNewClass": false,
   "plateau_targetClassInPlateaus": false,
   "plateau_currentClipFinished": true,
   "bookmark_bookmarks": [
     4201,
-    6277,
-    6837,
-    7287,
-    7851
+    26277,
+    46837,
+    67287,
+    88851
   ]
 }
