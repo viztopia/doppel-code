@@ -68,13 +68,13 @@ input {
   width: 10em;
 }
 
-#fps {
+#fps, #kvalue{
   text-align: right;
   width: 2em;
   margin: 0 0 0 2em;
 }
 
-#fps-label {
+#fps-label, #kvalue-label{
   margin: 0 0 0 0.5em;
 }
 

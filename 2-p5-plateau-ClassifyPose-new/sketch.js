@@ -39,6 +39,7 @@ let moveNet;
 let netReady = false;
 let poses = [];
 let classifier;
+let kvalue = 40;
 let isClassifying = false;
 let loadKNNBtn, classifyBtn;
 let classIndexOffset = 0;
@@ -107,6 +108,10 @@ function setup() {
   });
   downloadBtn.parent('controlsDiv');
 
+  // Dynamic K value
+  select('#kvalue').input(function () {
+    kvalue = this.value();
+  });
 
   //------------MoveNet & KNN----------------------
   let constraints = {
@@ -346,7 +351,7 @@ async function classify() {
 
 
   const example = tf.tensor(poseArray);
-  const result = await classifier.predictClass(example, 20);
+  const result = await classifier.predictClass(example, kvalue);
   gotResults(undefined, result);
 
 }
@@ -458,7 +463,7 @@ function drawKeypoints() {
     stroke(255, 0, 0);
 
     //------------prepare for normalization based on Nose-------------------
-     poseNorm = {keypoints:[], score:pose.score};
+    poseNorm = { keypoints: [], score: pose.score };
 
 
     for (let j = 0; j < pose.keypoints.length; j++) {
@@ -467,20 +472,20 @@ function drawKeypoints() {
 
       // Only draw an ellipse is the pose probability is bigger than 0.2 -------------> Should probably NOT do this so that it won't affect classification confidence trakcing!
       // if (keypoint.score > 0.2) {
-        fill(255, 0, 0);
-        noStroke();
-        // normalizePoints(keypoint.x, keypoint.y);
+      fill(255, 0, 0);
+      noStroke();
+      // normalizePoints(keypoint.x, keypoint.y);
 
-        let [xNorm, yNorm] = normalizePointByNose(keypoint.x, keypoint.y);
-        poseNorm.keypoints.push({
-          x: xNorm,
-          y: yNorm,
-          score: keypoint.score
-        });
+      let [xNorm, yNorm] = normalizePointByNose(keypoint.x, keypoint.y);
+      poseNorm.keypoints.push({
+        x: xNorm,
+        y: yNorm,
+        score: keypoint.score
+      });
 
-        ellipse(keypoint.x, keypoint.y, 10, 10);
-        // text(" x: " + nx + " y:" + ny, keypoint.x, keypoint.y);
-        text(" x: " + poseNorm.keypoints[j].x + " y:" + poseNorm.keypoints[j].y, keypoint.x, keypoint.y);
+      ellipse(keypoint.x, keypoint.y, 10, 10);
+      // text(" x: " + nx + " y:" + ny, keypoint.x, keypoint.y);
+      text(" x: " + poseNorm.keypoints[j].x + " y:" + poseNorm.keypoints[j].y, keypoint.x, keypoint.y);
       // }
     }
 

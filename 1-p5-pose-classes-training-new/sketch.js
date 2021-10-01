@@ -3,6 +3,7 @@
 let video;
 // Create a KNN classifier
 let classifier;
+let kvalue = 40;
 
 let moveNet;
 let netReady = false;
@@ -26,6 +27,14 @@ let nx, ny;
 
 // Have we calibrated?
 let calibrated = false;
+
+//-----------------for graphing-------------------------
+let currentClassConfidence = 0;
+let confidenceCache = [0];
+let stats = new Stats();
+let cPanel = stats.addPanel(new Stats.Panel('conf', '#ff8', '#221'));
+stats.showPanel(3);
+document.body.appendChild(stats.dom);
 
 function setup() {
   video = createCapture(VIDEO, () => {
@@ -62,6 +71,10 @@ function draw() {
       }
     }
   }
+
+  //--------graph current confidence---------
+  let confidenceAvg = confidenceCache.reduce((a, b) => a + b) / confidenceCache.length;
+  cPanel.update(confidenceAvg, 100);
 }
 
 function keyPressed() {
@@ -106,28 +119,28 @@ function normalizePointByNose(x, y) {
 function findKeypoints(pose) {
   minX = Math.min.apply(
     Math,
-    pose.keypoints.map(function(p) {
+    pose.keypoints.map(function (p) {
       return p.x;
     })
   );
 
   minY = Math.min.apply(
     Math,
-    pose.keypoints.map(function(p) {
+    pose.keypoints.map(function (p) {
       return p.y;
     })
   );
 
   maxX = Math.max.apply(
     Math,
-    pose.keypoints.map(function(p) {
+    pose.keypoints.map(function (p) {
       return p.x;
     })
   );
 
   maxY = Math.max.apply(
     Math,
-    pose.keypoints.map(function(p) {
+    pose.keypoints.map(function (p) {
       maxY = p.y;
       return p.y;
     })
@@ -141,7 +154,7 @@ function updateFPS() {
   // Update the rate input
   select('#fps').value(fps);
   // Reset all the timers
-  for(let c in classes) {
+  for (let c in classes) {
     classes[c].updateInterval();
   }
 }
@@ -149,8 +162,9 @@ function updateFPS() {
 // Clear all classes
 function clearClasses() {
   LABELS = [];
-  selectAll(".class").forEach((el)=>{
-    if(el.id() != 'template') el.remove() });
+  selectAll(".class").forEach((el) => {
+    if (el.id() != 'template') el.remove()
+  });
 }
 
 // Create UI for new class
@@ -175,10 +189,14 @@ function buildUI() {
   }
 
   // Rate feedback
-  select('#fps').input(function() {
+  select('#fps').input(function () {
     rate = this.value();
   });
   updateFPS();
+  // Dynamic K value
+  select('#kvalue').input(function () {
+    kvalue = this.value();
+  });
   // Add a class
   select('#add').mousePressed(createClass);
 
@@ -189,7 +207,7 @@ function buildUI() {
   select('#load').mousePressed(loadLabels);
 
   // Predict button
-  select('#predict').mousePressed(function() {
+  select('#predict').mousePressed(function () {
     // Toggle predict
     predict = !predict;
     this.html(predict ? 'Stop' : 'Predict');
@@ -241,7 +259,7 @@ function addExample(label) {
 // Predict the current frame.
 async function classify() {
   // Don't bother if we're not predicting
-  if(!predict) {
+  if (!predict) {
     select('#result').html('');
     return;
   }
@@ -257,7 +275,7 @@ async function classify() {
   const poseArray = poseNorm.keypoints.map(p => [p.score, p.x, p.y]);
 
   const example = tf.tensor(poseArray);
-  const result = await classifier.predictClass(example, 40);
+  const result = await classifier.predictClass(example, kvalue);
   gotResults(undefined, result);
 
 }
@@ -279,8 +297,16 @@ function gotResults(err, result) {
     if (result.label) {
       prediction = result.label;
       select('#result').html(result.label);
-      let confidence = nfs(confidences[result.label] * 100, 0, 0);
+      // let confidence = nfs(confidences[result.label] * 100, 0, 0);
+      let confidence = round(confidences[result.label] * 100);
       select('#confidence').html(confidence + '%');
+
+      //----------track current confidence for ending a plateau and graphing-------------
+      currentClassConfidence = confidence;
+      confidenceCache.push(currentClassConfidence);
+      while (confidenceCache.length >= 30) {
+        confidenceCache.shift();
+      }
     }
 
     console.log("ALL", confidences);
@@ -387,7 +413,7 @@ function drawKeypoints() {
     stroke(255, 0, 0);
 
     //------------prepare for normalization based on Nose-------------------
-    poseNorm = {keypoints:[], score:pose.score};
+    poseNorm = { keypoints: [], score: pose.score };
 
     for (let j = 0; j < pose.keypoints.length; j++) {
       // A keypoint is an object describing a body part (like rightArm or leftShoulder)
@@ -395,20 +421,20 @@ function drawKeypoints() {
 
       // Only draw an ellipse is the pose probability is bigger than 0.2
       // if (keypoint.score > 0.2) {
-        fill(255, 0, 0);
-        noStroke();
-        // normalizePoints(keypoint.x, keypoint.y);
+      fill(255, 0, 0);
+      noStroke();
+      // normalizePoints(keypoint.x, keypoint.y);
 
-        let [xNorm, yNorm] = normalizePointByNose(keypoint.x, keypoint.y);
-        poseNorm.keypoints.push({
-          x: xNorm,
-          y: yNorm,
-          score: keypoint.score
-        });
+      let [xNorm, yNorm] = normalizePointByNose(keypoint.x, keypoint.y);
+      poseNorm.keypoints.push({
+        x: xNorm,
+        y: yNorm,
+        score: keypoint.score
+      });
 
-        ellipse(keypoint.x, keypoint.y, 10, 10);
-        // text(" x: " + nx + " y:" + ny, keypoint.x, keypoint.y);
-        text(" x: " + poseNorm.keypoints[j].x + " y:" + poseNorm.keypoints[j].y, keypoint.x, keypoint.y);
+      ellipse(keypoint.x, keypoint.y, 10, 10);
+      // text(" x: " + nx + " y:" + ny, keypoint.x, keypoint.y);
+      text(" x: " + poseNorm.keypoints[j].x + " y:" + poseNorm.keypoints[j].y, keypoint.x, keypoint.y);
       // }
     }
   }
