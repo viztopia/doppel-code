@@ -15,9 +15,9 @@ const MANUAL = 1;
 const SPEED = 2;
 const PLATEAU = 3;
 const BOOKMARK = 4;
-const FLASHING = 5;
+const OTHER = 5;
 // Mode names
-const MODENAMES = ['PRESET', 'MANUAL', 'SPEED', 'PLATEAU', 'BOOKMARK', 'FLASHING'];
+const MODENAMES = ['PRESET', 'MANUAL', 'SPEED', 'PLATEAU', 'BOOKMARK', 'OTHER'];
 const MODEBGS = [[140, 226, 238], [147, 186, 225], [137, 132, 214], [114, 81, 178], [164, 188, 188], [200, 200, 200]];
 
 const PRESETS = [4, 4.5, 6, 10];
@@ -32,6 +32,8 @@ const SOCKETPORT = 8081;
 const CACHE = 0;
 const RECORDINGS = 1;
 const VIDEO = 2;
+const JOKE1 = 3;
+const JOKE2 = 4;
 
 const RECORDINGFPS = 30;
 const RECORDINGSECONDS = 30; //length of each OBS recording clip in seconds

@@ -174,16 +174,17 @@ let bookmark = { //------------bookmark---------------------
   }
 }
 
-let flashing = {
+let other = {
   run: function () {
-    text("Press P to play FLASHING video.", INFOX, INFOY + 25);
-    text("If needed, press G/H to blackout / un-blackout all.", INFOX, INFOY + 50);
+    text("Press I to show JOKE 1 text.", INFOX, INFOY + 25);
+    text("Press O to show JOKE 2 text.", INFOX, INFOY + 50);
+    text("Press P to play FLASHING video.", INFOX, INFOY + 75);
   },
 }
 
 
 // Store all the modes in an array
-let modes = [preset, manual, speed, plateau, bookmark, flashing];
+let modes = [preset, manual, speed, plateau, bookmark, other];
 
 //------------helper functions to get delay frame in TD-----------------------
 function getStartTimeAndLengthFirstMatch(_plateaus) {

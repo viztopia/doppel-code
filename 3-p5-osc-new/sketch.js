@@ -37,8 +37,6 @@ let pDelayFrameIdx = 0;
 //-------------recover settings
 let acceptingNewPlateau = true;
 
-
-
 function setup() {
   createCanvas(W, H);
   connect(); //ports for OBS In / Out, TD In / Out
@@ -255,7 +253,7 @@ function keyPressed() {
       mode = BOOKMARK;
       break;
     case 53: //----5------
-      mode = FLASHING;
+      mode = OTHER;
       break;
     case UP_ARROW: //arrow up
       if (mode == MANUAL) modes[MANUAL].update(-1);
@@ -280,26 +278,42 @@ function keyPressed() {
       break;
     case 65: //-----------A: black out left on
       socket.emit("blackoutleft", true);
+      cue.blackoutLeft = true;
       break;
     case 83: //-----------S: black out left off
       socket.emit("blackoutleft", false);
+      cue.blackoutLeft = false;
       break;
     case 68: //-----------D: black out right on
       socket.emit("blackoutright", true);
+      cue.blackoutRight = true;
       break;
     case 70: //-----------F: black out right off
       socket.emit("blackoutright", false);
+      cue.blackoutRight = false;
       break;
     case 71: //-----------G: black out both on
       socket.emit("blackoutleft", true);
       socket.emit("blackoutright", true);
+      cue.blackoutLeft = true;
+      cue.blackoutRight = true;
       break;
     case 72: //-----------H: black out both off
       socket.emit("blackoutleft", false);
       socket.emit("blackoutright", false);
+      cue.blackoutLeft = false;
+      cue.blackoutRight = false;
+      break;
+    case 73: //-----------I: show joke 1 text
+      if (mode == OTHER) socket.emit("source", JOKE1);
+      break;
+    case 79: //-----------O: show joke 2 text
+      if (mode == OTHER) socket.emit("source", JOKE2);
       break;
     case 80: //-----------P: play flashing video
-    if (mode == FLASHING) socket.emit("source", VIDEO);
+      if (mode == OTHER) socket.emit("source", VIDEO);
+      break;
+
   }
 
 }

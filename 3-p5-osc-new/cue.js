@@ -3,6 +3,8 @@ let cue = {
   pfileIdx: undefined,
   cuePoint: 0,
   availableRecordingNum: 0,
+  blackoutLeft: false,
+  blackoutRight: false,
   run: function () {
 
     //----------------------1. first we calculate how many cached/recorded content is available-----------
@@ -19,6 +21,7 @@ let cue = {
     // Display current delay and file
     text("Delayed frame:" + delayFrameIdx, INFOX, INFOY + 125);
     text("File:" + this.fileIdx + " cuePoint: " + this.cuePoint, INFOX, INFOY + 150);
+    text("Blackout Left:" + this.blackoutLeft + "  Blackout Right: " + this.blackoutRight, INFOX, INFOY + 175);
   },
   update: function () {
     // Only update cue if something has changed
