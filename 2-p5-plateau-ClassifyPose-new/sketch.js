@@ -29,7 +29,7 @@ let plateauMinLength = 1000;
 let plateaus = [];
 
 let classCacheLengthSlider;
-let playVidBtn, recordBtn, downloadBtn;
+let recordBtn, downloadBtn;
 let clearBtn;
 
 //------------------movenet & KNN----------------------
@@ -83,15 +83,6 @@ function setup() {
     newClassCountBaseline = cacheLength * classThreshold; //recalculate the baseline for deciding how much we count as a new class
     select('#cacheLengthLabel').html(cacheLength);
   })
-
-  playVidBtn = createButton('Play Video'); //In Progress: used only for playing a video instead of capturing real NiNi via camera
-  playVidBtn.mousePressed(() => {
-    if (video) {
-      console.log("playyyy");
-      video.loop();
-    }
-  });
-  playVidBtn.parent('controlsDiv');
 
   clearBtn = createButton('Clear Plateaus Data');
   clearBtn.mousePressed(() => {
