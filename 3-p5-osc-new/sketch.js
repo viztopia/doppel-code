@@ -81,8 +81,11 @@ function draw() {
 
     //--------display show time------------------
     recordedSeconds = floor((Date.now() - startTime) / 1000);
+    let clockMin = floor(recordedSeconds / 60);
+    let clockSec = recordedSeconds % 60;
     textSize(14);
-    text("Performance & recording started for " + recordedSeconds + " seconds, " + recordedSeconds * RECORDINGFPS + " frames", width / 2 - 250, height / 2 - 75);
+    // text("Show clock is: " + clockMin + ":" + clockSec + "  recorded " + recordedSeconds * RECORDINGFPS + " frames", width / 2 - 250, height / 2 - 75);
+    text("Show clock is: " + clockMin + ":" + clockSec, width / 2 - 250, height / 2 - 75);
 
     // Run the current mode
     modes[mode].run();
