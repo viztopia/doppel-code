@@ -75,10 +75,7 @@ function preload() { //used for video mode
 }
 
 function setup() {
-  cnv = createCanvas(1920, 1080);
-  // cnv = createCanvas(1440, 1080);
-  // cnv = createCanvas(960, 540);
-  cnv.parent('cnvDiv');
+
   classCacheLengthSlider = createSlider(10, 180, cacheLength, 10);
   classCacheLengthSlider.parent('controlsDiv');
   classCacheLengthSlider.input(() => {
@@ -123,10 +120,13 @@ function setup() {
     }
   };
   video = createCapture(constraints, () => {
+    cnv = createCanvas(video.width, video.height);
+    // cnv = createCanvas(1440, 1080);
+    // cnv = createCanvas(960, 540);
+    cnv.parent('cnvDiv');
     loadMoveNet();
     loadKNN();
   });
-  video.size(width, height);
   video.hide();
 
 
@@ -156,7 +156,7 @@ function draw() {
   // background(200);
 
   if (netReady) estimatePose();
-  image(video, 0, 0, width, height);
+  image(video, 0, 0, video.width, video.height);
   if (poses.length > 0) {
     drawKeypoints();
     // Find the bounding box anchored on the nose
