@@ -334,21 +334,21 @@ function keyPressed(e) {
       cue.showDoppel = !cue.showDoppel;
       socket.emit("showdoppel", cue.showDoppel);
       break;
-    case 83: //-----------S: black out left off
+    case 83: //-----------S: toggle black out left
       cue.blackoutLeft = !cue.blackoutLeft;
       socket.emit("blackoutleft", cue.blackoutLeft);
       break;
-    case 68: //-----------D: black out right on
+    case 68: //-----------D: toggle black out right
       cue.blackoutRight = !cue.blackoutRight;
       socket.emit("blackoutright", cue.blackoutRight);
       break;
-    case 70: //-----------F: black out right off
+    case 70: //-----------F: black out both on
       socket.emit("blackoutleft", true);
       socket.emit("blackoutright", true);
       cue.blackoutLeft = true;
       cue.blackoutRight = true;
       break;
-    case 71: //-----------G: black out both on
+    case 71: //-----------G: black out both off
       socket.emit("blackoutleft", false);
       socket.emit("blackoutright", false);
       cue.blackoutLeft = false;
