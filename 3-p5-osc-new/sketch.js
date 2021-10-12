@@ -109,9 +109,10 @@ function draw() {
           let nextAction = autopilotData.actions[nextActionIdx];
           let actionMin = floor(nextAction.time / 60);
           let actionSec = nextAction.time % 60;
-          text("Autopilot is On. Next action: at " + nf(actionMin, 2, 0) + ":" + nf(actionSec, 2, 0) + " press " + String.fromCharCode(nextAction.keyCode), INFOX, INFOY - 75);
+          text("Autopilot is On. Next action: at " + nf(actionMin, 2, 0) + ":" + nf(actionSec, 2, 0) + " press " + nextAction.key, INFOX, INFOY - 75);
           if (recordedSeconds == nextAction.time) {
-            window.dispatchEvent(new KeyboardEvent('keydown', { keyCode: nextAction.keyCode, which: nextAction.keyCode }));
+            let kc = nextAction.key.charCodeAt(0);
+            window.dispatchEvent(new KeyboardEvent('keydown', { keyCode: kc, which: kc }));
             nextActionIdx++;
           }
         } else {
