@@ -1,0 +1,10 @@
+{
+    "version" : 1,
+    "actions" : [
+        {"time":3, "keyCode": 48},
+        {"time":4, "keyCode": 49},
+        {"time":5, "keyCode": 50},
+        {"time":6, "keyCode": 51}
+    ]
+}
+

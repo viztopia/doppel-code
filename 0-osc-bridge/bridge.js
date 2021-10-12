@@ -131,6 +131,11 @@ io.sockets.on('connection', function (socket) {
 		// socket.broadcast.emit("message1", 1234);
 		console.log("resume recording starting from: " + msg);
 	});
+	socket.on('showdoppel', function (msg) {
+		socket.broadcast.emit("showdoppel", msg);
+		// socket.broadcast.emit("message1", 1234);
+		console.log("show doppel: " + msg);
+	});
 
 
 

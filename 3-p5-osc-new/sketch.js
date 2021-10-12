@@ -1,9 +1,4 @@
-// Multiple bookmarks
 // MIDI controller
-// Video playing mode
-// Writing state values to file and reload
-
-
 
 // choreography logic, updated 08/24:
 // 0: PRESET interval mode: PRESET interval looping btw 4s, 4.5s, 6s and 10s
@@ -34,8 +29,13 @@ let recordedSeconds;
 let delayFrameIdx = 0;
 let pDelayFrameIdx = 0;
 
-//-------------recover settings
+//-------------recover settings-----------
 let acceptingNewPlateau = true;
+
+//-------------autopilot-------------
+let isAutopilot = false;
+let autopilotData;
+let nextActionIdx = undefined;
 
 function setup() {
   createCanvas(W, H);
@@ -62,6 +62,10 @@ function setup() {
 
   textAlign(LEFT, CENTER);
 
+  loadJSON("autopilot.json", (data) => { autopilotData = data });
+  // window.addEventListener('keydown', (e) => {
+  //   console.log(e)
+  // })
 }
 
 function draw() {
@@ -69,9 +73,17 @@ function draw() {
   if (!started) {
     background(255, 0, 255);
     textSize(14);
-    text("If you wanna recover show:", width / 2 - 225, height / 2 - 25);
-    text("Please make sure TD window is active and NOT minimized FIRST!", width / 2 - 225, height / 2 + 25);
-    text("Then make sure showData.json is updated.", width / 2 - 225, height / 2 + 50);
+    text("If you wanna recover show:", INFOX, INFOY - 25);
+    text("Please make sure TD window is active and NOT minimized FIRST!", INFOX, INFOY + 25);
+    text("Then make sure showData.json is updated.", INFOX, INFOY + 50);
+    if (autopilotData) {
+      text("Autopilot is: " + (isAutopilot ? "On" : "Off") + ", press M to toggle.", INFOX, INFOY + 100);
+    } else {
+      text("Autopilot data is not available. Please check autopilot.json", INFOX, INFOY + 100);
+    }
+    text("Doppel: " + (cue.showDoppel ? "On" : "Off"), INFOX, INFOY + 175)
+    text("Blackout:" + (cue.blackoutLeft ? " Left" : "") + (cue.blackoutRight? " Right" : ""), INFOX, INFOY + 200);
+
   } else {
 
     //--------display mode-----------------------
@@ -84,8 +96,31 @@ function draw() {
     let clockMin = floor(recordedSeconds / 60);
     let clockSec = recordedSeconds % 60;
     textSize(14);
-    // text("Show clock is: " + clockMin + ":" + clockSec + "  recorded " + recordedSeconds * RECORDINGFPS + " frames", width / 2 - 250, height / 2 - 75);
-    text("Show clock is: " + clockMin + ":" + clockSec, width / 2 - 250, height / 2 - 75);
+    text("Show clock is: " + nf(clockMin, 2, 0) + ":" + nf(clockSec, 2, 0), INFOX, INFOY - 100);
+
+    //--------autopilot------------------
+    if (autopilotData && isAutopilot) {
+      if (nextActionIdx == undefined) {
+        nextActionIdx = findNextActionIdx(recordedSeconds);
+        // console.log(nextActionIdx);
+      } else {
+
+        if (nextActionIdx <= autopilotData.actions.length - 1) {
+          let nextAction = autopilotData.actions[nextActionIdx];
+          let actionMin = floor(nextAction.time / 60);
+          let actionSec = nextAction.time % 60;
+          text("Autopilot is On. Next action: at " + nf(actionMin, 2, 0) + ":" + nf(actionSec, 2, 0) + " press " + String.fromCharCode(nextAction.keyCode), INFOX, INFOY - 75);
+          if (recordedSeconds == nextAction.time) {
+            window.dispatchEvent(new KeyboardEvent('keydown', { keyCode: nextAction.keyCode, which: nextAction.keyCode }));
+            nextActionIdx++;
+          }
+        } else {
+          text("Autopilot is On. No more actions", INFOX, INFOY - 75);
+        }
+      }
+    } else {
+      text("Autopilot is Off. Press M to toggle.", INFOX, INFOY - 75);
+    }
 
     // Run the current mode
     modes[mode].run();
@@ -127,6 +162,10 @@ function stopPerformance() {
 
   //reset mode
   mode = 0;
+
+  //reset autopilot
+  // isAutopilot = false;
+  nextActionIdx = undefined;
 
   //we don't reset startTime, recordedSeconds, delayFrameIdx, pleateaus, and bookmarks just so we can save them if needed
 }
@@ -236,8 +275,19 @@ function recoverPerformance(jsonPath) {
   });
 }
 
+//----------------------autopilot helper-------------------
+function findNextActionIdx(currentShowTime) {
+  let nextIdx = 0;
+  for (let action of autopilotData.actions) {
+    if (currentShowTime > action.time) { nextIdx++; }
+    else break;
+  }
+  return nextIdx;
+}
+
 //----------------------Mode Select--------------------------
-function keyPressed() {
+function keyPressed(e) {
+  // console.log(e);
   // console.log(keyCode);
   switch (keyCode) {
     case 48: //----0------
@@ -279,29 +329,25 @@ function keyPressed() {
     case 87: //-----------W: jump to bookmark
       bookmark.jump();
       break;
-    case 65: //-----------A: black out left on
-      socket.emit("blackoutleft", true);
-      cue.blackoutLeft = true;
+    case 65: //-----------A: toggle show doppel
+      cue.showDoppel = !cue.showDoppel;
+      socket.emit("showdoppel", cue.showDoppel);
       break;
     case 83: //-----------S: black out left off
-      socket.emit("blackoutleft", false);
-      cue.blackoutLeft = false;
+      cue.blackoutLeft = !cue.blackoutLeft;
+      socket.emit("blackoutleft", cue.blackoutLeft);
       break;
     case 68: //-----------D: black out right on
-      socket.emit("blackoutright", true);
-      cue.blackoutRight = true;
+      cue.blackoutRight = !cue.blackoutRight;
+      socket.emit("blackoutright", cue.blackoutRight);
       break;
     case 70: //-----------F: black out right off
-      socket.emit("blackoutright", false);
-      cue.blackoutRight = false;
-      break;
-    case 71: //-----------G: black out both on
       socket.emit("blackoutleft", true);
       socket.emit("blackoutright", true);
       cue.blackoutLeft = true;
       cue.blackoutRight = true;
       break;
-    case 72: //-----------H: black out both off
+    case 71: //-----------G: black out both on
       socket.emit("blackoutleft", false);
       socket.emit("blackoutright", false);
       cue.blackoutLeft = false;
@@ -316,7 +362,10 @@ function keyPressed() {
     case 80: //-----------P: play flashing video
       if (mode == OTHER) socket.emit("source", VIDEO);
       break;
-
+    case 77:
+      isAutopilot = !isAutopilot;
+      nextActionIdx = findNextActionIdx(recordedSeconds); //recalculate next action
+      break;
   }
 
 }

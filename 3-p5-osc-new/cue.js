@@ -3,6 +3,7 @@ let cue = {
   pfileIdx: undefined,
   cuePoint: 0,
   availableRecordingNum: 0,
+  showDoppel: true,
   blackoutLeft: false,
   blackoutRight: false,
   run: function () {
@@ -19,9 +20,10 @@ let cue = {
     }
 
     // Display current delay and file
-    text("Delayed frame:" + delayFrameIdx, INFOX, INFOY + 125);
-    text("File:" + this.fileIdx + " cuePoint: " + this.cuePoint, INFOX, INFOY + 150);
-    text("Blackout Left:" + this.blackoutLeft + "  Blackout Right: " + this.blackoutRight, INFOX, INFOY + 175);
+    text("Delayed frame: " + delayFrameIdx, INFOX, INFOY + 125);
+    text("File: " + this.fileIdx + " cuePoint: " + this.cuePoint, INFOX, INFOY + 150);
+    text("Doppel: " + (this.showDoppel ? "On" : "Off"), INFOX, INFOY + 175)
+    text("Blackout:" + (this.blackoutLeft ? " Left" : "") + (this.blackoutRight? " Right" : ""), INFOX, INFOY + 200);
   },
   update: function () {
     // Only update cue if something has changed
@@ -66,20 +68,11 @@ let cue = {
         // socket.emit("cuePulse", 1);
         // setTimeout(() => { socket.emit("cuePulse", 1); }, pulseDelay);
         // TODO: Turn off pulse
-
       }
-
     } else {
       text("No available delay frames yet. Showing TD current frame", INFOX, INFOY + 125);
       socket.emit("source", CACHE);
       socket.emit("frameIdx", 0);
     }
-
-
   }
 }
-
-//-----------------To-do: video mode--------------------
-//1. tell pose estimation & classification sketch to scrub to a specific time
-//2. tell TD to srub movie file in to a specific time
-//3. scrubbing method: TBD
