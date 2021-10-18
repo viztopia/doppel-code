@@ -1,8 +1,10 @@
 let preset = {
-  idx: 0,
+  idx: 1, //default to 4 sec.
   currentDelayFrameIdx: 0,
+  easingThreshold: 5,
   run: function () {
     text("Current delay interval is: " + PRESETS[this.idx] + " seconds", INFOX, INFOY + 25);
+    text("Note: jumps larger than " + this.easingThreshold + " seconds will NOT be eased.", INFOX, INFOY + 50);
     this.updateCurrentFrame();
   },
   update: function (step) {
@@ -11,10 +13,14 @@ let preset = {
     this.idx = constrain(this.idx, 0, PRESETS.length - 1);
   },
   updateCurrentFrame: function () {
-    // Easing
-    if (this.currentDelayFrameIdx < PRESETS[this.idx] * RECORDINGFPS) this.currentDelayFrameIdx++;
-    else if (this.currentDelayFrameIdx > PRESETS[this.idx] * RECORDINGFPS) this.currentDelayFrameIdx--;
-    // delayFrameIdx = PRESETS[fixedIntervalIdx] * RECORDINGFPS;
+    if (abs(this.currentDelayFrameIdx - PRESETS[this.idx] * RECORDINGFPS) > this.easingThreshold * RECORDINGFPS) { //if jump greater than easing threshold
+      this.currentDelayFrameIdx = PRESETS[this.idx] * RECORDINGFPS;
+    } else { // Easing
+      if (this.currentDelayFrameIdx < PRESETS[this.idx] * RECORDINGFPS) this.currentDelayFrameIdx++;
+      else if (this.currentDelayFrameIdx > PRESETS[this.idx] * RECORDINGFPS) this.currentDelayFrameIdx--;
+      // delayFrameIdx = PRESETS[fixedIntervalIdx] * RECORDINGFPS;
+    }
+
     delayFrameIdx = this.currentDelayFrameIdx;
   }
 }
@@ -38,15 +44,15 @@ let manual = {
 
 
 let speed = { //------------speed-based--------------------------
-  //-------------------mode 2: speed-based delay stuff-----------------------
   jointDist: 0,
   FRAMESTOCACHE: 600, //caching 10 seconds for testing, so 10 * 60 = 600 frames
   mappedFrames: [],
   avgFrame: 0,
+  maxJointDistIdx: 1,  //default value is 2
   run: function () {
 
     //map the jointDist amount to a frame index between 0 and framesToCache
-    let mappedFrame = constrain(map(this.jointDist, 0, MAXJOINTDIST, 0, CACHEFRAMES - 1), 0, CACHEFRAMES - 1); //currently using only TD cache for performance considerations
+    let mappedFrame = constrain(map(this.jointDist, 0, MAXJOINTDIST[this.maxJointDistIdx], 0, CACHEFRAMES - 1), 0, CACHEFRAMES - 1); //currently using only TD cache for performance considerations
     // console.log(mappedFrame);
 
     //save the mapped frame into an array to get avg frame
@@ -59,7 +65,13 @@ let speed = { //------------speed-based--------------------------
       delayFrameIdx = floor(getAvg1d(this.mappedFrames));
       text("Current joint dist is: " + this.jointDist, INFOX, INFOY + 25);
       text("Averaged delay frame is: " + delayFrameIdx, INFOX, INFOY + 50);
+      text("Current Max Joint Dist is: " + MAXJOINTDIST[this.maxJointDistIdx], INFOX, INFOY + 75);
     }
+  },
+  update: function (step) {
+    // Update current preset
+    this.maxJointDistIdx += step;
+    this.maxJointDistIdx = constrain(this.maxJointDistIdx, 0, MAXJOINTDIST.length - 1);
   }
 }
 
@@ -159,7 +171,7 @@ let bookmark = { //------------bookmark---------------------
     }
     text("Press W to jump, press Q to add a new bookmark.", INFOX, INFOY + 50);
     let bookmarksString = "";
-    this.bookmarks.forEach((bm)=>{bookmarksString += (bm / 1000) + "  "});
+    this.bookmarks.forEach((bm) => { bookmarksString += (bm / 1000) + "  " });
     text("Available bookmarks are:" + bookmarksString, INFOX, INFOY + 75, 450);
   },
   update: function (step) {

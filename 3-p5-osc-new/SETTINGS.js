@@ -20,10 +20,10 @@ const OTHER = 5;
 const MODENAMES = ['PRESET', 'MANUAL', 'SPEED', 'PLATEAU', 'BOOKMARK', 'OTHER'];
 const MODEBGS = [[140, 226, 238], [147, 186, 225], [137, 132, 214], [114, 81, 178], [164, 188, 188], [200, 200, 200]];
 
-const PRESETS = [4, 4.5, 6, 10];
+const PRESETS = [50, 4, 4.5, 6, 10];
 
 // Speed mapping
-const MAXJOINTDIST = W / 20;
+const MAXJOINTDIST = [1, 2]; //assuming the sent distance is normalized
 
 // Sockets
 const SOCKETPORT = 8081;

@@ -6,6 +6,7 @@ let cue = {
   showDoppel: true,
   blackoutLeft: false,
   blackoutRight: false,
+  isPlayingSound: false,
   run: function () {
 
     //----------------------1. first we calculate how many cached/recorded content is available-----------
@@ -22,7 +23,7 @@ let cue = {
     // Display current delay and file
     text("Delayed frame: " + delayFrameIdx, INFOX, INFOY + 125);
     text("File: " + this.fileIdx + " cuePoint: " + this.cuePoint, INFOX, INFOY + 150);
-    text("Doppel: " + (this.showDoppel ? "On" : "Off"), INFOX, INFOY + 175)
+    text("Doppel: " + (this.showDoppel ? "On" : "Off") + "    Sound: " + (this.isPlayingSound ? "On" : "Off"), INFOX, INFOY + 175)
     text("Blackout:" + (this.blackoutLeft ? " Left" : "") + (this.blackoutRight? " Right" : ""), INFOX, INFOY + 200);
   },
   update: function () {

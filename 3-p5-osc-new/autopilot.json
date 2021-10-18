@@ -1,12 +1,116 @@
 {
     "version" : 1,
     "actions" : [
-        {"time":3, "key": "0"},
-        {"time":4, "key": "1"},
-        {"time":5, "key": "2"},
-        {"time":6, "key": "3"},
-        {"time":7, "key": "A"},
-        {"time":8, "key": "A"}
+        {
+            "time": 4,
+            "key": "0",
+            "note": "(hi hat sound, this is the beginning of nini video. it is used as reference to calculate offset)"
+        },
+        {
+            "time": 34,
+            "key": "ArrowLeft",
+            "note": "go to preset 50 sec (from 4 sec default) (will update presets as: 50, 4, 4.5, 6, 10)"
+        },
+        {
+            "time": 34,
+            "key": "A",
+            "note": "show doppel"
+        },
+        {
+            "time": 272,
+            "key": "F",
+            "note": "blackout all (waiting room 1 -> therapist 1, nini bends over)"
+        },
+        {
+            "time": 272,
+            "key": "ArrowRight",
+            "note": "go to preset 4 sec to get ready"
+        },
+        {
+            "time": 276,
+            "key": "G",
+            "note": "unblackout all (voice: the moment)"
+        },
+        {
+            "time": 298,
+            "key": "ArrowRight",
+            "note": "go to preset 4.5 sec"
+        },
+        {
+            "time": 338,
+            "key": "ArrowRight",
+            "note": "go to preset 6 sec"
+        },
+        {
+            "time": 362,
+            "key": "ArrowRight",
+            "note": "go to preset 10 sec"
+        },
+        {
+            "time": 396,
+            "key": "F",
+            "note": "blackout all (right before voice: my first apartment)"
+        },
+        {
+            "time": 396,
+            "key": "ArrowLeft",
+            "note": "go to preset 6 sec (to get prepared)"
+        },
+        {
+            "time": 396,
+            "key": "ArrowLeft",
+            "note": "go to preset 4.5 sec (to get prepared)"
+        },
+        {
+            "time": 396,
+            "key": "ArrowLeft",
+            "note": "go to preset 4 sec (to get prepared)"
+        },
+        {
+            "time": 404,
+            "key": "2",
+            "note": "switch to speed"
+        },
+        {
+            "time": 404,
+            "key": "G",
+            "note": "unblackout all"
+        },
+        {
+            "time": 498,
+            "key": "0",
+            "note": "switch to preset 4 sec (voice: when ppl leave)"
+        },
+        {
+            "time": 504,
+            "key": "Q",
+            "note": "mark real nini stands up"
+        },
+        {
+            "time": 733,
+            "key": "2",
+            "note": "switch to speed"
+        },
+        {
+            "time": 831,
+            "key": "0",
+            "note": "switch to preset 4 sec (running start, voice: bc I have that feeling)"
+        },
+        {
+            "time": 847,
+            "key": "2",
+            "note": "switch to speed"
+        },
+        {
+            "time": 982,
+            "key": "5",
+            "note": "switch to other mode to get ready to play video"
+        },
+        {
+            "time": 982,
+            "key": "P",
+            "note": "play flashing video"
+        }
     ]
 }
 

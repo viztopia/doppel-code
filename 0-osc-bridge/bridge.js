@@ -136,6 +136,11 @@ io.sockets.on('connection', function (socket) {
 		// socket.broadcast.emit("message1", 1234);
 		console.log("show doppel: " + msg);
 	});
+	socket.on('playsound', function (msg) {
+		socket.broadcast.emit("playsound", msg);
+		// socket.broadcast.emit("message1", 1234);
+		console.log("playing sound: " + msg);
+	});
 
 
 

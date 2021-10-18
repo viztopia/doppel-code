@@ -81,8 +81,8 @@ function draw() {
     } else {
       text("Autopilot data is not available. Please check autopilot.json", INFOX, INFOY + 100);
     }
-    text("Doppel: " + (cue.showDoppel ? "On" : "Off"), INFOX, INFOY + 175)
-    text("Blackout:" + (cue.blackoutLeft ? " Left" : "") + (cue.blackoutRight? " Right" : ""), INFOX, INFOY + 200);
+    text("Doppel: " + (cue.showDoppel ? "On" : "Off") + "    Sound: " + (cue.isPlayingSound ? "On" : "Off"), INFOX, INFOY + 175);
+    text("Blackout:" + (cue.blackoutLeft ? " Left" : "") + (cue.blackoutRight ? " Right" : ""), INFOX, INFOY + 200);
 
   } else {
 
@@ -111,7 +111,12 @@ function draw() {
           let actionSec = nextAction.time % 60;
           text("Autopilot is On. Next action: at " + nf(actionMin, 2, 0) + ":" + nf(actionSec, 2, 0) + " press " + nextAction.key, INFOX, INFOY - 75);
           if (recordedSeconds == nextAction.time) {
-            let kc = nextAction.key.charCodeAt(0);
+            let kc;
+            if (nextAction.key == "ArrowLeft") kc = 37;
+            else if (nextAction.key == "ArrowUp") kc = 38;
+            else if (nextAction.key == "ArrowRight") kc = 39;
+            else if (nextAction.key == "ArrowDown") kc = 40;
+            else kc = nextAction.key.charCodeAt(0);
             window.dispatchEvent(new KeyboardEvent('keydown', { keyCode: kc, which: kc }));
             nextActionIdx++;
           }
@@ -319,9 +324,11 @@ function keyPressed(e) {
       break;
     case LEFT_ARROW: //arrow left
       if (mode == PRESET) modes[PRESET].update(-1);
+      if (mode == SPEED) modes[SPEED].update(-1);
       break;
     case RIGHT_ARROW: //arrow right
-      preset.idx < PRESETS.length - 1 ? preset.idx++ : preset.idx = PRESETS.length - 1;
+      if (mode == PRESET) modes[PRESET].update(1);
+      if (mode == SPEED) modes[SPEED].update(1);
       break;
     case 81: //-----------Q: bookmark a time
       // bookmark.ts = Date.now() - startTime;
@@ -363,9 +370,13 @@ function keyPressed(e) {
     case 80: //-----------P: play flashing video
       if (mode == OTHER) socket.emit("source", VIDEO);
       break;
-    case 77:
+    case 77: //-----------M: toggle autopilot
       isAutopilot = !isAutopilot;
       nextActionIdx = findNextActionIdx(recordedSeconds); //recalculate next action
+      break;
+    case 76: //-----------L: toggle play/stop sound.mp3
+      cue.isPlayingSound = !cue.isPlayingSound
+      socket.emit("playsound", cue.isPlayingSound);
       break;
   }
 
