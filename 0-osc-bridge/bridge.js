@@ -126,8 +126,8 @@ io.sockets.on('connection', function (socket) {
 		// socket.broadcast.emit("message1", 1234);
 		console.log("record is: " + msg);
 	});
-	socket.on('resumeRecord', function (msg) {
-		socket.broadcast.emit("resumeRecord", msg);
+	socket.on('resumerecord', function (msg) {
+		socket.broadcast.emit("resumerecord", msg);
 		// socket.broadcast.emit("message1", 1234);
 		console.log("resume recording starting from: " + msg);
 	});
@@ -140,6 +140,11 @@ io.sockets.on('connection', function (socket) {
 		socket.broadcast.emit("playsound", msg);
 		// socket.broadcast.emit("message1", 1234);
 		console.log("playing sound: " + msg);
+	});
+	socket.on('cuesound', function (msg) {
+		socket.broadcast.emit("cuesound", msg);
+		// socket.broadcast.emit("message1", 1234);
+		console.log("cue sound at: " + msg);
 	});
 
 

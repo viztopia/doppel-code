@@ -8,8 +8,8 @@
 
 //------------------socket--------------------
 let socket;
-let ip = "10.23.10.11";
-// let ip = "127.0.0.1"; //the IP of the machine that runs bridge.js
+// let ip = "10.23.10.11"; //the IP of the machine that runs bridge.js
+let ip = "127.0.0.1"; //or local host
 let port = 8081; //the port of the machine that runs bridge.js
 
 //--------simple UI--------------------
@@ -18,7 +18,7 @@ let waiting = 180;
 
 let classResult = 0;
 let classCache = [];
-let cacheLength = 60; //classification window size
+let cacheLength = 20; //classification window size
 
 let maxClass, maxCount;
 let classThreshold = 0.8;

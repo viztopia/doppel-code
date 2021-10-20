@@ -96,7 +96,7 @@ function draw() {
     let clockMin = floor(recordedSeconds / 60);
     let clockSec = recordedSeconds % 60;
     textSize(14);
-    text("Show clock is: " + nf(clockMin, 2, 0) + ":" + nf(clockSec, 2, 0), INFOX, INFOY - 100);
+    text("Show clock is: " + nf(clockMin, 2, 0) + ":" + nf(clockSec, 2, 0), INFOX, INFOY - 125);
 
     //--------autopilot------------------
     if (autopilotData && isAutopilot) {
@@ -109,8 +109,9 @@ function draw() {
           let nextAction = autopilotData.actions[nextActionIdx];
           let actionMin = floor(nextAction.time / 60);
           let actionSec = nextAction.time % 60;
-          text("Autopilot is On. Next action: at " + nf(actionMin, 2, 0) + ":" + nf(actionSec, 2, 0) + " press " + nextAction.key, INFOX, INFOY - 75);
+          text("Autopilot is On. Next action: at " + nf(actionMin, 2, 0) + ":" + nf(actionSec, 2, 0) + " press " + nextAction.key + "-" + nextAction.note, INFOX, INFOY - 100, W - 50);
           if (recordedSeconds == nextAction.time) {
+            // console.log("executing: " + nextAction.time + ", " + nextAction.key + ", " + nextAction.note);
             let kc;
             if (nextAction.key == "ArrowLeft") kc = 37;
             else if (nextAction.key == "ArrowUp") kc = 38;
@@ -119,6 +120,7 @@ function draw() {
             else kc = nextAction.key.charCodeAt(0);
             window.dispatchEvent(new KeyboardEvent('keydown', { keyCode: kc, which: kc }));
             nextActionIdx++;
+
           }
         } else {
           text("Autopilot is On. No more actions", INFOX, INFOY - 75);
@@ -166,8 +168,21 @@ function stopPerformance() {
   socket.emit("record", 0)
   console.log("Show and recording stopped at: " + (Date.now() - startTime));
 
+  //stop sound
+  cue.isPlayingSound = false;
+  socket.emit("playsound", cue.isPlayingSound)
+
+  //reset cue
+  cue.showDoppel = false;
+  socket.emit("showdoppel", cue.showDoppel);
+  cue.blackoutLeft = false;
+  socket.emit("blackoutleft", cue.blackoutLeft);
+  cue.blackoutRight = false;
+  socket.emit("blackoutright", cue.blackoutRight);
+
   //reset mode
   mode = 0;
+  preset.idx = 2;
 
   //reset autopilot
   // isAutopilot = false;
@@ -209,11 +224,19 @@ function savePerformance() {
   }
 
   let showData = {
+    //control data
     mode: mode,
     startTime: startTime,
     recordedSeconds: recordedSeconds,
     delayFrameIdx: delayFrameIdx,
     pDelayFrameIdx: pDelayFrameIdx,
+    acceptingNewPlateau: acceptingNewPlateau,
+    isAutopilot:isAutopilot,
+
+    //cue data
+    showDoppel: cue.showDoppel,
+    blackoutLeft: cue.blackoutLeft,
+    blackoutRight: cue.blackoutRight,
 
     //also saving data for each mode
     preset_idx: preset.idx,
@@ -249,6 +272,12 @@ function recoverPerformance(jsonPath) {
     recordedSeconds = data.recordedSeconds - data.recordedSeconds % RECORDINGSECONDS;
     delayFrameIdx = data.delayFrameIdx;
     pDelayFrameIdx = data.pDelayFrameIdx;
+    acceptingNewPlateau = data.acceptingNewPlateau;
+    isAutopilot = data.isAutopilot;
+
+    cue.showDoppel = data.showDoppel;
+    cue.blackoutLeft = data.blackoutLeft;
+    cue.blackoutRight = data.blackoutRight;
 
     preset.idx = data.preset_idx;
     preset.currentDelayFrameIdx = data.preset_currentDelayFrameIdx;
@@ -268,9 +297,19 @@ function recoverPerformance(jsonPath) {
     // plateau.initialDelayFrameIdx = data.plateau_initialDelayFrameIdx;
     bookmark.bookmarks = data.bookmark_bookmarks;
 
+    //resuem cues
+    socket.emit("showdoppel", cue.showDoppel);
+    socket.emit("blackoutleft", cue.blackoutLeft);
+    socket.emit("blackoutright", cue.blackoutRight);
+
     //resume recording
     //socket msg should be the file idx to start recording with. no need for +1 bc file idx starts with 0
-    socket.emit("resumeRecord", floor(recordedSeconds / RECORDINGSECONDS));
+    socket.emit("resumerecord", floor(recordedSeconds / RECORDINGSECONDS));
+
+    //resume sound
+    socket.emit("cuesound", recordedSeconds);
+    if (cue.isPlayingSound == false) { cue.isPlayingSound = true; socket.emit("playsound", cue.isPlayingSound) };
+
 
     //start show
     started = true;

@@ -1,10 +1,10 @@
 let preset = {
-  idx: 1, //default to 4 sec.
+  idx: 2, //default to 4 sec.
   currentDelayFrameIdx: 0,
-  easingThreshold: 5,
+  jumpIdx: 2, //preset idx smaller than this idx will be jumped and not eased
   run: function () {
     text("Current delay interval is: " + PRESETS[this.idx] + " seconds", INFOX, INFOY + 25);
-    text("Note: jumps larger than " + this.easingThreshold + " seconds will NOT be eased.", INFOX, INFOY + 50);
+    text("Note: presets on the left of " + PRESETS[this.jumpIdx] + " seconds will NOT be eased.", INFOX, INFOY + 50);
     this.updateCurrentFrame();
   },
   update: function (step) {
@@ -13,7 +13,7 @@ let preset = {
     this.idx = constrain(this.idx, 0, PRESETS.length - 1);
   },
   updateCurrentFrame: function () {
-    if (abs(this.currentDelayFrameIdx - PRESETS[this.idx] * RECORDINGFPS) > this.easingThreshold * RECORDINGFPS) { //if jump greater than easing threshold
+    if (this.idx < this.jumpIdx) { //if preset idx smaller than jump idx, just jump
       this.currentDelayFrameIdx = PRESETS[this.idx] * RECORDINGFPS;
     } else { // Easing
       if (this.currentDelayFrameIdx < PRESETS[this.idx] * RECORDINGFPS) this.currentDelayFrameIdx++;
@@ -48,7 +48,7 @@ let speed = { //------------speed-based--------------------------
   FRAMESTOCACHE: 600, //caching 10 seconds for testing, so 10 * 60 = 600 frames
   mappedFrames: [],
   avgFrame: 0,
-  maxJointDistIdx: 1,  //default value is 2
+  maxJointDistIdx: 0,  //default value is 0.5
   run: function () {
 
     //map the jointDist amount to a frame index between 0 and framesToCache

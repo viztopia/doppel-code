@@ -3,7 +3,7 @@ let cue = {
   pfileIdx: undefined,
   cuePoint: 0,
   availableRecordingNum: 0,
-  showDoppel: true,
+  showDoppel: false,
   blackoutLeft: false,
   blackoutRight: false,
   isPlayingSound: false,
@@ -30,12 +30,13 @@ let cue = {
     // Only update cue if something has changed
     // if (abs(delayFrameIdx - pdelayFrameIdx) <= 0) return; 
 
-    if (delayFrameIdx) {
+    if (delayFrameIdx != undefined) {
 
       // If delay frame is within what is cached...
       if (delayFrameIdx <= CACHEFRAMES) {
         socket.emit("source", CACHE);
         this.fileIdx = -99;
+        this.pfileIdx = this.fileIdx;
         cuePoint = 1 - delayFrameIdx / RECORDINGFRAMES;
         socket.emit("frameIdx", delayFrameIdx);
 
