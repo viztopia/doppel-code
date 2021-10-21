@@ -8,8 +8,8 @@
 
 //------------------socket--------------------
 let socket;
-// let ip = "10.23.10.11"; //the IP of the machine that runs bridge.js
-let ip = "127.0.0.1"; //or local host
+let ip = "10.23.10.11"; //the IP of the machine that runs bridge.js
+//let ip = "127.0.0.1"; //or local host
 let port = 8081; //the port of the machine that runs bridge.js
 
 //--------simple UI--------------------
@@ -39,7 +39,7 @@ let moveNet;
 let netReady = false;
 let poses = [];
 let classifier;
-let kvalue = 40;
+let kvalue = 20;
 let isClassifying = false;
 let loadKNNBtn, classifyBtn;
 let classIndexOffset = 0;
@@ -97,6 +97,7 @@ function setup() {
   downloadBtn.parent('controlsDiv');
 
   // Dynamic K value
+  select('#kvalue').value(kvalue);
   select('#kvalue').input(function () {
     kvalue = this.value();
   });
@@ -140,6 +141,9 @@ function setup() {
 
   // Set calibration
   loadCalibration();
+
+  // Slow things down
+  frameRate(30);
 }
 
 //---------draw-----------------
@@ -230,7 +234,13 @@ function keyPressed() {
   if (key == 'c') {
     calibrated = !calibrated;
     let calibrateEl = select('#calibrate');
-    if (calibrated) calibrateEl.hide();
+    if (calibrated) {
+      // Store data
+      let calObj = { 'width': bboxW, 'height': bboxH };
+      localStorage.setItem('calibration', JSON.stringify(calObj));
+      console.log("STORED", calObj);
+      calibrateEl.hide();
+    }
     else calibrateEl.show();
   }
 }
@@ -281,19 +291,16 @@ function findKeypoints(pose) {
   );
   bboxW = maxX - minX;
   bboxH = maxY - minY;
-
-  // Store data
-  let calObj = { 'width': bboxW, 'height': bboxH };
-  localStorage.setItem('calibration', JSON.stringify(calObj));
 }
 
 function loadCalibration() {
   let calibration = JSON.parse(localStorage.getItem('calibration'));
-  console.log("C: ", calibration);
   if (calibration) {
     bboxW = calibration.width;
     bboxH = calibration.height;
   }
+
+  console.log(bboxW, bboxH);
 }
 
 //----------moveNet stuff----------------
