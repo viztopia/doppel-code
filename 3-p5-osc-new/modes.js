@@ -48,11 +48,13 @@ let speed = { //------------speed-based--------------------------
   FRAMESTOCACHE: 600, //caching 10 seconds for testing, so 10 * 60 = 600 frames
   mappedFrames: [],
   avgFrame: 0,
-  maxJointDistIdx: 0,  //default value is 0.5
+  maxJointDistsDefaults: [0.75, 0.5, 0.3875, 0.3875], //default max joint dist used for preset recovery
+  maxJointDists: [0.75, 0.5, 0.3875, 0.3875], //speed cue values based on 10/20 testing
+  maxJointDistIdx: 0,  //the current idx used for speed cue
   run: function () {
 
     //map the jointDist amount to a frame index between 0 and framesToCache
-    let mappedFrame = constrain(map(this.jointDist, 0, MAXJOINTDIST[this.maxJointDistIdx], 0, CACHEFRAMES - 1), 0, CACHEFRAMES - 1); //currently using only TD cache for performance considerations
+    let mappedFrame = constrain(map(this.jointDist, 0, this.maxJointDists[this.maxJointDistIdx], 0, CACHEFRAMES - 1), 0, CACHEFRAMES - 1); //currently using only TD cache for performance considerations
     // console.log(mappedFrame);
 
     //save the mapped frame into an array to get avg frame
@@ -65,13 +67,18 @@ let speed = { //------------speed-based--------------------------
       delayFrameIdx = floor(getAvg1d(this.mappedFrames));
       text("Current joint dist is: " + this.jointDist, INFOX, INFOY + 25);
       text("Averaged delay frame is: " + delayFrameIdx, INFOX, INFOY + 50);
-      text("Current Max Joint Dist is: " + MAXJOINTDIST[this.maxJointDistIdx], INFOX, INFOY + 75);
+      text("Current Max Joint Dist is: " + this.maxJointDists[this.maxJointDistIdx] + ", Z to reset.", INFOX, INFOY + 75);
     }
   },
   update: function (step) {
-    // Update current preset
+    // Update current speed max joint dist preset
     this.maxJointDistIdx += step;
-    this.maxJointDistIdx = constrain(this.maxJointDistIdx, 0, MAXJOINTDIST.length - 1);
+    this.maxJointDistIdx = constrain(this.maxJointDistIdx, 0, this.maxJointDists.length - 1);
+  },
+  adjust: function(step) {
+    // manual adjust current max joint dist
+    this.maxJointDists[this.maxJointDistIdx] += step * 0.05;
+    this.maxJointDists[this.maxJointDistIdx] = constrain(this.maxJointDists[this.maxJointDistIdx], 0.05, 2); //constrain joint dist btw 0.05 & 2
   }
 }
 
@@ -158,31 +165,38 @@ let plateau = { //-------------plateau-based----------------
 }
 
 let bookmark = { //------------bookmark---------------------
-  //-------------------mode 4: bookmark stuff-----------------------
-  // TODO: Implement multiple bookmarks
-  // ts: undefined,
   bookmarks: [],
   idx: 0,
+  bookmark1: undefined,
+  bookmark2: undefined,
+  bookmark3: undefined,
   run: function () {
-    if (this.bookmarks.length > 0) {
-      text("Current bookmark is:" + this.bookmarks[this.idx] / 1000 + " seconds", INFOX, INFOY + 25);
+    if (this.bookmark1 || this.bookmark2 || this.bookmark3) {
+      let bookmarkTime1 = this.bookmark1 == undefined ? "empty" : (nf(floor(this.bookmark1/1000/60), 2, 0) + ":" + nf(floor(this.bookmark1/1000 % 60), 2, 0));
+      let bookmarkTime2 = this.bookmark2 == undefined ? "empty" : (nf(floor(this.bookmark2/1000/60), 2, 0) + ":" + nf(floor(this.bookmark2/1000 % 60), 2, 0));
+      let bookmarkTime3 = this.bookmark3 == undefined ? "empty" : (nf(floor(this.bookmark3/1000/60), 2, 0) + ":" + nf(floor(this.bookmark3/1000 % 60), 2, 0));
+      text("Current bookmarks:  " + bookmarkTime1 + ",  "  + bookmarkTime2 + ",  " + bookmarkTime3, INFOX, INFOY + 25);
     } else {
-      text("No bookmarks available yet. Press Q to add a bookmark.", INFOX, INFOY + 25);
+      text("No bookmarks available yet.", INFOX, INFOY + 25);
     }
-    text("Press W to jump, press Q to add a new bookmark.", INFOX, INFOY + 50);
-    let bookmarksString = "";
-    this.bookmarks.forEach((bm) => { bookmarksString += (bm / 1000) + "  " });
-    text("Available bookmarks are:" + bookmarksString, INFOX, INFOY + 75, 450);
+    text("Press Q, W, E to add/overwrite, press R, T, Y to jump.", INFOX, INFOY + 50);
+    // let bookmarksString = "";
+    // this.bookmarks.forEach((bm) => { bookmarksString += (bm / 1000) + "  " });
+    // text("Available bookmarks are:" + bookmarksString, INFOX, INFOY + 75, 450);
   },
-  update: function (step) {
-    // Update current bookmark
-    this.idx += step;
-    this.idx = constrain(this.idx, 0, this.bookmarks.length - 1);
-  },
-  jump: function () {
-    if (!this.bookmarks[this.idx]) return;
-
-    delayFrameIdx = floor((Date.now() - startTime - this.bookmarks[this.idx]) / 1000 * CAMFPS);
+  // update: function (step) {
+  //   // Update current bookmark
+  //   this.idx += step;
+  //   this.idx = constrain(this.idx, 0, this.bookmarks.length - 1);
+  // },
+  jump: function (bmNum) {
+    let bmToJump;
+    if (bmNum == 1) {bmToJump = this.bookmark1;}
+    else if (bmNum == 2) {bmToJump = this.bookmark2;}
+    else if (bmNum == 3) {bmToJump = this.bookmark3;}
+    if (!bmToJump) return;
+    console.log("jump to: " + bmToJump);
+    delayFrameIdx = floor((Date.now() - startTime - bmToJump) / 1000 * CAMFPS);
   }
 }
 

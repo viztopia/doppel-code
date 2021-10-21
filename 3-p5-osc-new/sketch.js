@@ -231,7 +231,7 @@ function savePerformance() {
     delayFrameIdx: delayFrameIdx,
     pDelayFrameIdx: pDelayFrameIdx,
     acceptingNewPlateau: acceptingNewPlateau,
-    isAutopilot:isAutopilot,
+    isAutopilot: isAutopilot,
 
     //cue data
     showDoppel: cue.showDoppel,
@@ -354,27 +354,43 @@ function keyPressed(e) {
       mode = OTHER;
       break;
     case UP_ARROW: //arrow up
-      if (mode == MANUAL) modes[MANUAL].update(-1);
-      if (mode == BOOKMARK) modes[BOOKMARK].update(-1);
+      if (mode == MANUAL) modes[MANUAL].update(1);
+      if (mode == SPEED) modes[SPEED].adjust(1);
       break;
     case DOWN_ARROW: //arrow down
-      if (mode == MANUAL) modes[MANUAL].update(1);
-      if (mode == BOOKMARK) modes[BOOKMARK].update(1);
+      if (mode == MANUAL) modes[MANUAL].update(-1);
+      if (mode == SPEED) modes[SPEED].adjust(-1);
       break;
     case LEFT_ARROW: //arrow left
       if (mode == PRESET) modes[PRESET].update(-1);
+      if (mode == BOOKMARK) modes[BOOKMARK].update(-1);
       if (mode == SPEED) modes[SPEED].update(-1);
       break;
     case RIGHT_ARROW: //arrow right
       if (mode == PRESET) modes[PRESET].update(1);
+      if (mode == BOOKMARK) modes[BOOKMARK].update(1);
       if (mode == SPEED) modes[SPEED].update(1);
       break;
-    case 81: //-----------Q: bookmark a time
+    case 81: //-----------Q: save bookmark 1
       // bookmark.ts = Date.now() - startTime;
-      bookmark.bookmarks.push(Date.now() - startTime);
+      bookmark.bookmark1 = Date.now() - startTime;
       break;
-    case 87: //-----------W: jump to bookmark
-      bookmark.jump();
+    case 87: //-----------W: save bookmark 2
+      bookmark.bookmark2 = Date.now() - startTime;
+      break;
+    case 69: //-----------E: save bookmark 3
+      // bookmark.ts = Date.now() - startTime;
+      bookmark.bookmark3 = Date.now() - startTime;
+      break;
+    case 82: //-----------R: jump to bookmark 1
+      bookmark.jump(1);
+      break;
+    case 84: //-----------T: jump to bookmark 1
+      // bookmark.ts = Date.now() - startTime;
+      bookmark.jump(2);
+      break;
+    case 89: //-----------Y: jump to bookmark 1
+      bookmark.jump(3);
       break;
     case 65: //-----------A: toggle show doppel
       cue.showDoppel = !cue.showDoppel;
@@ -416,6 +432,9 @@ function keyPressed(e) {
     case 76: //-----------L: toggle play/stop sound.mp3
       cue.isPlayingSound = !cue.isPlayingSound
       socket.emit("playsound", cue.isPlayingSound);
+      break;
+    case 90: //-----------Z: reset max joint dists to their defaults
+      speed.maxJointDists.splice(0, speed.maxJointDists.length, ...speed.maxJointDistsDefaults);
       break;
   }
 
