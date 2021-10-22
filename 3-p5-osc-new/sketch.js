@@ -385,14 +385,14 @@ function keyPressed(e) {
     case 82: //-----------R: jump to bookmark 1
       bookmark.jump(1);
       break;
-    case 84: //-----------T: jump to bookmark 1
+    case 84: //-----------T: jump to bookmark 2
       // bookmark.ts = Date.now() - startTime;
       bookmark.jump(2);
       break;
-    case 89: //-----------Y: jump to bookmark 1
+    case 89: //-----------Y: jump to bookmark 3
       bookmark.jump(3);
       break;
-    case 65: //-----------A: toggle show doppel
+    case 65: //-----------A: toggle show doppel / (un-)white out
       cue.showDoppel = !cue.showDoppel;
       socket.emit("showdoppel", cue.showDoppel);
       break;
