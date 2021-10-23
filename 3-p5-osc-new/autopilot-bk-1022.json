@@ -102,9 +102,19 @@
             "note": "unblackout all"
         },
         {
-            "time": 730,
+            "time": 496,
             "key": "0",
             "note": "switch to preset 4 sec (voice: when ppl leave)"
+        },
+        {
+            "time": 726,
+            "key": "S",
+            "note": "blackout real nini"
+        },
+        {
+            "time": 730,
+            "key": "S",
+            "note": "unblackout real nini"
         },
         {
             "time": 734,
@@ -122,29 +132,39 @@
             "note": "mark real nini about to stands up"
         },
         {
-            "time": 828,
-            "key": "F",
-            "note": "blackout all"
+            "time": 827,
+            "key": "S",
+            "note": "blackout real nini"
         },
         {
-            "time": 828,
-            "key": "0",
-            "note": "hide doppel (do nothing)"
+            "time": 827,
+            "key": "4",
+            "note": "switch to bookmark"
         },
         {
-            "time": 828,
+            "time": 827,
+            "key": "R",
+            "note": "jump to nini about to stand up"
+        },
+        {
+            "time": 831,
             "key": "0",
             "note": "switch to preset 4 sec (running start, voice: bc I have that feeling)"
         },
         {
-            "time": 832,
-            "key": "G",
-            "note": "unblackout all"
+            "time": 831,
+            "key": "ArrowLeft",
+            "note": "go to preset 0 sec"
         },
         {
-            "time": 837,
-            "key": "A",
-            "note": "show doppel"
+            "time": 831,
+            "key": "S",
+            "note": "un-blackout real nini"
+        },
+        {
+            "time": 836,
+            "key": "ArrowRight",
+            "note": "go to preset 4 sec"
         },
         {
             "time": 843,
@@ -258,13 +278,23 @@
         },
         {
             "time": 1066,
+            "key": "S",
+            "note": "blackout left (which is real nini)"
+        },
+        {
+            "time": 1066,
             "key": "R",
             "note": "jump to bookmark Q (which is about to stand up)"
         },
         {
-            "time": 1071,
-            "key": "0",
-            "note": "hide doppel (do nothing)"
+            "time": 1069,
+            "key": "S",
+            "note": "unblackout left (which is real nini)"
+        },
+        {
+            "time": 1069,
+            "key": "D",
+            "note": "blackout right (which is doppel)"
         },
         {
             "time": 1100,
@@ -273,18 +303,48 @@
         },
         {
             "time": 1100,
+            "key": "D",
+            "note": "unblackout right (which is doppel)"
+        },
+        {
+            "time": 1100,
             "key": "P",
             "note": "play flashing video"
         },
         {
-            "time": 1288,
+            "time": 1283,
             "key": "0",
             "note": "switch to preset 4 sec (this is the start of second half)"
         },
         {
-            "time": 1293,
-            "key": "1",
+            "time": 1365,
+            "key": "F",
+            "note": "blackout all"
+        },
+        {
+            "time": 1368,
+            "key": "G",
+            "note": "unblackout until end of running"
+        },
+        {
+            "time": 1484,
+            "key": "F",
+            "note": "blackout all"
+        },
+        {
+            "time": 1486,
+            "key": "0",
+            "note": "switch to preset 4 sec"
+        },
+        {
+            "time": 1486,
+            "key": "0",
             "note": "show doppel (do nothing)"
+        },
+        {
+            "time": 1486,
+            "key": "G",
+            "note": "unblackout all"
         },
         {
             "time": 1531,
@@ -322,34 +382,29 @@
             "note": "mark real nini standing"
         },
         {
-            "time": 1816,
+            "time": 1823,
             "key": "4",
             "note": "switch to bookmark"
         },
         {
-            "time": 1816,
+            "time": 1823,
             "key": "Y",
             "note": "jump to bookmark E (which is standing)"
         },
         {
-            "time": 1820,
+            "time": 1827,
             "key": "Y",
             "note": "jump to bookmark E (which is standing)"
         },
         {
-            "time": 1824,
+            "time": 1831,
             "key": "Y",
             "note": "jump to bookmark E (which is standing)"
         },
         {
-            "time": 1828,
-            "key": "Y",
-            "note": "jump to bookmark E (which is standing)"
-        },
-        {
-            "time": 1832,
-            "key": "Y",
-            "note": "jump to bookmark E (which is standing)"
+            "time": 1835,
+            "key": "S",
+            "note": "blackout left (which is real nini)"
         },
         {
             "time": 1835,
@@ -357,14 +412,24 @@
             "note": "jump to bookmark E (which is standing)"
         },
         {
-            "time": 1838,
-            "key": "0",
-            "note": "hide doppel"
+            "time": 1839,
+            "key": "F",
+            "note": "full blackout"
         },
         {
             "time": 1839,
-            "key": "F",
-            "note": "blackout all"
+            "key": "0",
+            "note": "switch to preset to get ready (currently at 4 sec)"
+        },
+        {
+            "time": 1841,
+            "key": "ArrowLeft",
+            "note": "go to preset 0 sec"
+        },
+        {
+            "time": 1841,
+            "key": "G",
+            "note": "un-full blackout"
         },
         {
             "time": 1884,
@@ -372,19 +437,24 @@
             "note": "switch to plateau"
         },
         {
-            "time": 1884,
+            "time": 2090,
             "key": "A",
-            "note": "show doppel"
-        },
-        {
-            "time": 1884,
-            "key": "G",
-            "note": "un-full blackout"
-        },
-        {
-            "time": 2172,
-            "key": "0",
             "note": "hide doppel"
+        },
+        {
+            "time": 2090,
+            "key": "5",
+            "note": "switch to other mode to get ready for second joke"
+        },
+        {
+            "time": 2090,
+            "key": "O",
+            "note": "show second joke"
+        },
+        {
+            "time": 2150,
+            "key": "F",
+            "note": "blackout all (end of show) (should be at 35:54 for latest nini video, and 35:50 when offset is cleared)"
         }
     ]
 }

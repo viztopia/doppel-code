@@ -48,8 +48,8 @@ let speed = { //------------speed-based--------------------------
   FRAMESTOCACHE: 600, //caching 10 seconds for testing, so 10 * 60 = 600 frames
   mappedFrames: [],
   avgFrame: 0,
-  maxJointDistsDefaults: [0.75, 0.5, 0.3875, 0.3875], //default max joint dist used for preset recovery
-  maxJointDists: [0.75, 0.5, 0.3875, 0.3875], //speed cue values based on 10/20 testing
+  maxJointDistsDefaults: [1, 1, 1, 1], //default max joint dist used for preset recovery
+  maxJointDists: [1, 1, 1, 1], //speed cue values based on 10/20 testing
   maxJointDistIdx: 0,  //the current idx used for speed cue
   run: function () {
 

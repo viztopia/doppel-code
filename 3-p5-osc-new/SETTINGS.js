@@ -23,7 +23,7 @@ const MODEBGS = [[140, 226, 238], [147, 186, 225], [137, 132, 214], [114, 81, 17
 const PRESETS = [60, 0, 4, 4.5, 6, 10];
 
 // Speed mapping
-const MAXJOINTDIST = [0.3875, 0.5, 0.67, 0.75, 1, 1.5, 2]; //assuming the sent distance is normalized
+const MAXJOINTDIST = []; //no longer using presets for max joint dists. (variables inside mode speed now)
 
 // Sockets
 const SOCKETPORT = 8081;
