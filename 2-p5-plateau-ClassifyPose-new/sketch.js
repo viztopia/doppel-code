@@ -8,8 +8,8 @@
 
 //------------------socket--------------------
 let socket;
-let ip = "10.23.10.11"; //the IP of the machine that runs bridge.js
-//let ip = "127.0.0.1"; //or local host
+//let ip = "10.23.10.11"; //the IP of the machine that runs bridge.js
+let ip = "127.0.0.1"; //or local host
 let port = 8081; //the port of the machine that runs bridge.js
 
 //--------simple UI--------------------
@@ -43,6 +43,9 @@ let kvalue = 20;
 let isClassifying = false;
 let loadKNNBtn, classifyBtn;
 let classIndexOffset = 0;
+let frameOfLastPose = 0;
+let itsBeenAWhile = false;
+const NOBODY = 60*0.5;
 
 //-----------------speed-based delay----------------------
 let joint, jointPrev;
@@ -141,9 +144,6 @@ function setup() {
 
   // Set calibration
   loadCalibration();
-
-  // Slow things down
-  frameRate(30);
 }
 
 //---------draw-----------------
@@ -207,10 +207,10 @@ function draw() {
     }
 
     //whenever the plateau ends, mark its end time and send it over to part 3.
-    if (plateauStarted && maxCount < newClassCountBaseline) {
+    if (plateauStarted && (itsBeenAWhile || maxCount < newClassCountBaseline)) {
       console.log(maxClass + " ended at frame " + frameCount);
       plateauStarted = false;
-      plateauEndTime = Date.now();
+      plateauEndTime = Date.now() - itsBeenAWhile ? 0 : NOBODY * 1000;
 
       if ((plateauEndTime - plateauStartTime) > plateauMinLength) {
         let newPlat = {
@@ -221,6 +221,16 @@ function draw() {
         socket.emit('plateauNew', newPlat);
         plateaus.push(newPlat);
       }
+    }
+
+    // Clear poses if it's been a while
+    if(frameCount - frameOfLastPose > NOBODY) {
+      poses = [];
+      itsBeenAWhile = true;
+      console.log("Nothing to see here!");
+    }
+    else {
+      itsBeenAWhile = false;
     }
   }
 
@@ -319,6 +329,7 @@ async function estimatePose() {
   if (poseEstimation.length > 0) {
     poses = poseEstimation;
     joint = poses[0].keypoints[jointNumber]
+    frameOfLastPose = frameCount;
   };
 }
 
@@ -333,6 +344,9 @@ async function loadKNN() {
 
 
 async function classify() {
+  // Any poses to classify?
+  if(!poseNorm) return;
+
   // Get the total number of labels from knnClassifier
   const numLabels = classifier.getNumClasses();
   if (numLabels <= 0) {
@@ -340,9 +354,6 @@ async function classify() {
     return;
   }
   // Convert poses results to a 2d array [[score0, x0, y0],...,[score16, x16, y16]]
-
-
-
 
   // const poseArray = poses[0].keypoints.map(p => [p.score, nx, ny]);
   const poseArray = poseNorm.keypoints.map(p => [p.score, p.x, p.y]);
