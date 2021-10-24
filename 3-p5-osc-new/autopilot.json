@@ -3,21 +3,6 @@
     "actions" : [
         {
             "time": 0,
-            "key": "5",
-            "note": "switch to other mode to get ready to show first joke"
-        },
-        {
-            "time": 0,
-            "key": "5",
-            "note": "show first joke (this is considered real start of the show) (do noting. no longer display text)"
-        },
-        {
-            "time": 0,
-            "key": "L",
-            "note": "play sound.wav (sound.wav should start with hi hat sound, and offset should match to video)"
-        },
-        {
-            "time": 0,
             "key": "0",
             "note": "switching to preset 4 sec & get ready for doppel (doppel is hidden at this time)"
         },
@@ -102,7 +87,7 @@
             "note": "unblackout all"
         },
         {
-            "time": 730,
+            "time": 498,
             "key": "0",
             "note": "switch to preset 4 sec (voice: when ppl leave)"
         },
@@ -128,7 +113,7 @@
         },
         {
             "time": 828,
-            "key": "0",
+            "key": "A",
             "note": "hide doppel (do nothing)"
         },
         {
@@ -147,12 +132,12 @@
             "note": "show doppel"
         },
         {
-            "time": 843,
+            "time": 868,
             "key": "2",
             "note": "switch to speed (currently at 0.5)"
         },
         {
-            "time": 862,
+            "time": 868,
             "key": "ArrowRight",
             "note": "change speed to 0.3875"
         },
@@ -193,6 +178,26 @@
         },
         {
             "time": 929,
+            "key": "T",
+            "note": "jump to bookmark W (which is sitting)"
+        },
+        {
+            "time": 932,
+            "key": "T",
+            "note": "jump to bookmark W (which is sitting)"
+        },
+        {
+            "time": 935,
+            "key": "T",
+            "note": "jump to bookmark W (which is sitting)"
+        },
+        {
+            "time": 938,
+            "key": "T",
+            "note": "jump to bookmark W (which is sitting)"
+        },
+        {
+            "time": 941,
             "key": "2",
             "note": "switch to speed (currently at 0.3875)"
         },
@@ -263,7 +268,7 @@
         },
         {
             "time": 1071,
-            "key": "0",
+            "key": "A",
             "note": "hide doppel (do nothing)"
         },
         {
@@ -283,7 +288,17 @@
         },
         {
             "time": 1293,
-            "key": "1",
+            "key": "A",
+            "note": "show doppel (do nothing)"
+        },
+        {
+            "time": 1488,
+            "key": "A",
+            "note": "hide doppel"
+        },
+        {
+            "time": 1491,
+            "key": "A",
             "note": "show doppel (do nothing)"
         },
         {
@@ -310,11 +325,6 @@
             "time": 1628,
             "key": "ArrowRight",
             "note": "go to preset 4 sec"
-        },
-        {
-            "time": 1734,
-            "key": "0",
-            "note": "hide doppel (do nothing)"
         },
         {
             "time": 1806,
@@ -358,7 +368,7 @@
         },
         {
             "time": 1838,
-            "key": "0",
+            "key": "A",
             "note": "hide doppel"
         },
         {
@@ -383,7 +393,7 @@
         },
         {
             "time": 2172,
-            "key": "0",
+            "key": "A",
             "note": "hide doppel"
         }
     ]

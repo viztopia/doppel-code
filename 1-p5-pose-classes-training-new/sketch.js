@@ -16,7 +16,7 @@ let prediction;
 // Recording rate
 let fps = 10;
 
-let LABELS = ['F', 'R', 'L', 'Fo', 'HH', 'Ch'];
+let LABELS = ['Front', 'BodyLeft', 'RightFoward', 'HandFace', 'LeanForward', 'HandSides', 'FaceLeft','FaceRight','Mistake'];
 
 // bounding box
 let pose;
