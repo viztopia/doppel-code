@@ -8,8 +8,8 @@
 
 //------------------socket--------------------
 let socket;
-//let ip = "10.23.10.11"; //the IP of the machine that runs bridge.js
-let ip = "127.0.0.1"; //or local host
+let ip = "10.18.145.245"; //the IP of the machine that runs bridge.js
+// let ip = "127.0.0.1"; //or local host
 let port = 8081; //the port of the machine that runs bridge.js
 
 //--------simple UI--------------------
@@ -106,15 +106,15 @@ function setup() {
   });
 
   //------------MoveNet & KNN----------------------
-  let constraints = {
-    video: {
-      mandatory: {
-        minWidth: 960,
-        minHeight: 540
-      }
-    }
-  };
-  video = createCapture(constraints, () => {
+  // let constraints = {
+  //   video: {
+  //     mandatory: {
+  //       minWidth: 960,
+  //       minHeight: 540
+  //     }
+  //   }
+  // };
+  video = createCapture(VIDEO, () => {
     cnv = createCanvas(video.width, video.height);
     // cnv = createCanvas(1440, 1080);
     // cnv = createCanvas(960, 540);
@@ -438,6 +438,7 @@ function toggleClassification() {
 
 //------------load KNN classes---------------
 function loadClassesJSON(data) {
+  console.log(data);
   if (data) {
     const {
       dataset,
