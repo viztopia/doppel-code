@@ -6,6 +6,7 @@ let cue = {
   showDoppel: false,
   blackoutLeft: false,
   blackoutRight: false,
+  fadeints: -1,
   isPlayingSound: false,
   run: function () {
 
@@ -28,7 +29,7 @@ let cue = {
   },
   update: function () {
     // Only update cue if something has changed
-    // if (abs(delayFrameIdx - pdelayFrameIdx) <= 0) return; 
+    // if (abs(delayFrameIdx - pdelayFrameIdx) <= 0) return;
 
     if (delayFrameIdx != undefined) {
 

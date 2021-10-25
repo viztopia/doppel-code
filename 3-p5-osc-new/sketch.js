@@ -54,15 +54,23 @@ function setup() {
 
   btnRecoverShow = createButton('RECOVER'); //
   btnRecoverShow.position(240, 0);
-  btnRecoverShow.mousePressed(() => { acceptingNewPlateau = true; recoverPerformance("showData.json") }); //make sure to change json name to showData.json
+  btnRecoverShow.mousePressed(() => {
+    acceptingNewPlateau = true;
+    recoverPerformance("showData.json")
+  }); //make sure to change json name to showData.json
 
   btnRecoverOhCrap = createButton('RECOVER Oh Crap'); //
   btnRecoverOhCrap.position(240, 25);
-  btnRecoverOhCrap.mousePressed(() => { acceptingNewPlateau = false; recoverPerformance("showData.json") }); //make sure to change json name to showData.json
+  btnRecoverOhCrap.mousePressed(() => {
+    acceptingNewPlateau = false;
+    recoverPerformance("showData.json")
+  }); //make sure to change json name to showData.json
 
   textAlign(LEFT, CENTER);
 
-  loadJSON("autopilot.json", (data) => { autopilotData = data });
+  loadJSON("autopilot.json", (data) => {
+    autopilotData = data
+  });
   // window.addEventListener('keydown', (e) => {
   //   console.log(e)
   // })
@@ -83,7 +91,7 @@ function draw() {
     }
     text("Doppel: " + (cue.showDoppel ? "On" : "Off") + "    Sound: " + (cue.isPlayingSound ? "On" : "Off"), INFOX, INFOY + 175);
     text("Blackout:" + (cue.blackoutLeft ? " Left" : "") + (cue.blackoutRight ? " Right" : ""), INFOX, INFOY + 200);
-
+    text("Fadein: " + cue.fadeints, INFOX, INFOY + 225);
   } else {
 
     //--------display mode-----------------------
@@ -118,7 +126,10 @@ function draw() {
             else if (nextAction.key == "ArrowRight") kc = 39;
             else if (nextAction.key == "ArrowDown") kc = 40;
             else kc = nextAction.key.charCodeAt(0);
-            window.dispatchEvent(new KeyboardEvent('keydown', { keyCode: kc, which: kc }));
+            window.dispatchEvent(new KeyboardEvent('keydown', {
+              keyCode: kc,
+              which: kc
+            }));
             nextActionIdx++;
 
           }
@@ -210,7 +221,9 @@ function savePerformance() {
     // console.log(uncleanedPlateaus);
     let cleanedPlateaus = [];
     uncleanedPlateaus.forEach((p) => {
-      if (p.start <= lastSecondMillis) { cleanedPlateaus.push(p) } //using only start or start + length?
+      if (p.start <= lastSecondMillis) {
+        cleanedPlateaus.push(p)
+      } //using only start or start + length?
       // console.log(cleanedPlateaus);
     })
     plateausToSave.set(key, cleanedPlateaus);
@@ -256,7 +269,7 @@ function savePerformance() {
     plateau_targetClass: plateau.targetClass, //should we clear this?
     plateau_targetClassInPlateaus: plateau.targetClassInPlateaus, //should we clear this?
     plateau_currentClipStartTime: plateau.currentClipStartTime, //should we clear this?
-    plateau_currentClipFinished: plateau.currentClipFinished,  //should we clear this?
+    plateau_currentClipFinished: plateau.currentClipFinished, //should we clear this?
     plateau_currentClipLength: plateau.currentClipLength, //should we clear this?
     plateau_initialDelayFrameIdx: plateau.initialDelayFrameIdx, //should we clear this?
     bookmark_bookmarks: bookmarksToSave, //replace with cleared bookmarks
@@ -318,7 +331,10 @@ function recoverPerformance(jsonPath) {
 
     //resume sound
     socket.emit("cuesound", recordedSeconds);
-    if (cue.isPlayingSound == false) { cue.isPlayingSound = true; socket.emit("playsound", cue.isPlayingSound) };
+    if (cue.isPlayingSound == false) {
+      cue.isPlayingSound = true;
+      socket.emit("playsound", cue.isPlayingSound)
+    };
 
 
     //start show
@@ -334,8 +350,9 @@ function recoverPerformance(jsonPath) {
 function findNextActionIdx(currentShowTime) {
   let nextIdx = 0;
   for (let action of autopilotData.actions) {
-    if (currentShowTime > action.time) { nextIdx++; }
-    else break;
+    if (currentShowTime > action.time) {
+      nextIdx++;
+    } else break;
   }
   return nextIdx;
 }
@@ -426,6 +443,10 @@ function keyPressed(e) {
       cue.blackoutLeft = false;
       cue.blackoutRight = false;
       break;
+    case 72: //-----------H: black out both off
+      socket.emit("fadeinleft");
+      cue.fadeints = Date.now();
+      break;
     case 73: //-----------I: show joke 1 text
       if (mode == OTHER) socket.emit("source", JOKE1);
       break;
@@ -459,19 +480,19 @@ function connect() {
     port: SOCKETPORT,
     rememberTransport: false
   });
-  socket.on('connect', function () {
+  socket.on('connect', function() {
     console.log("Connected!");
     if (!started) socket.emit("fileIdx", 0);
   });
 
   //---socket msg from part 2 classification sketch------------------
-  socket.on('plateauOn', function (msg) {
+  socket.on('plateauOn', function(msg) {
     console.log("plateau classification is: " + (msg ? "On" : "Off"));
     plateau.plateauOn = msg;
   });
 
   // socket.on('plateauNew222222', function (p) {  //black out all plateaus, for testing only
-  socket.on('plateauNew', function (p) {
+  socket.on('plateauNew', function(p) {
 
     if (started) {
 
