@@ -33,7 +33,7 @@ let pDelayFrameIdx = 0;
 let acceptingNewPlateau = true;
 
 //-------------autopilot-------------
-let isAutopilot = false;
+let isAutopilot = true;
 let autopilotData;
 let nextActionIdx = undefined;
 
@@ -223,6 +223,10 @@ function savePerformance() {
     bookmarksToSave.push(bm);
   }
 
+  let bm1ToSave = bookmark.bookmark1 > lastSecondMillis ? bookmark.bookmark1 : undefined;
+  let bm2ToSave = bookmark.bookmark2 > lastSecondMillis ? bookmark.bookmark2 : undefined;
+  let bm3ToSave = bookmark.bookmark3 > lastSecondMillis ? bookmark.bookmark3 : undefined;
+
   let showData = {
     //control data
     mode: mode,
@@ -256,6 +260,9 @@ function savePerformance() {
     plateau_currentClipLength: plateau.currentClipLength, //should we clear this?
     plateau_initialDelayFrameIdx: plateau.initialDelayFrameIdx, //should we clear this?
     bookmark_bookmarks: bookmarksToSave, //replace with cleared bookmarks
+    bookmark_bookmark1: bm1ToSave,
+    bookmark_bookmark2: bm2ToSave,
+    bookmark_bookmark3: bm3ToSave,
   };
 
   console.log("saving the following show data: ");
@@ -296,6 +303,9 @@ function recoverPerformance(jsonPath) {
     // plateau.currentClipLength = data.plateau_currentClipLength;
     // plateau.initialDelayFrameIdx = data.plateau_initialDelayFrameIdx;
     bookmark.bookmarks = data.bookmark_bookmarks;
+    bookmark.bookmark1 = data.bookmark_bookmark1;
+    bookmark.bookmark2 = data.bookmark_bookmark2;
+    bookmark.bookmark2 = data.bookmark_bookmark3;
 
     //resuem cues
     socket.emit("showdoppel", cue.showDoppel);

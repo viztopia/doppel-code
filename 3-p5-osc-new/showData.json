@@ -1,7 +1,7 @@
 {
-  "mode": 0,
+  "mode": 2,
   "startTime": 1634679808378,
-  "recordedSeconds": 33,
+  "recordedSeconds": 1580,
   "delayFrameIdx": 0,
   "pDelayFrameIdx": 0,
   "acceptingNewPlateau": true,
@@ -9,7 +9,7 @@
   "showDoppel": false,
   "blackoutLeft": false,
   "blackoutRight": false,
-  "preset_idx": 1,
+  "preset_idx": 2,
   "preset_currentDelayFrameIdx": 0,
   "manual_TH": 6000,
   "speed_jointDist": 0,
