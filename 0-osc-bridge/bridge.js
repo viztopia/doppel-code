@@ -126,26 +126,6 @@ io.sockets.on('connection', function (socket) {
 		// socket.broadcast.emit("message1", 1234);
 		console.log("record is: " + msg);
 	});
-	socket.on('resumerecord', function (msg) {
-		socket.broadcast.emit("resumerecord", msg);
-		// socket.broadcast.emit("message1", 1234);
-		console.log("resume recording starting from: " + msg);
-	});
-	socket.on('showdoppel', function (msg) {
-		socket.broadcast.emit("showdoppel", msg);
-		// socket.broadcast.emit("message1", 1234);
-		console.log("show doppel: " + msg);
-	});
-	socket.on('playsound', function (msg) {
-		socket.broadcast.emit("playsound", msg);
-		// socket.broadcast.emit("message1", 1234);
-		console.log("playing sound: " + msg);
-	});
-	socket.on('cuesound', function (msg) {
-		socket.broadcast.emit("cuesound", msg);
-		// socket.broadcast.emit("message1", 1234);
-		console.log("cue sound at: " + msg);
-	});
 
 
 
