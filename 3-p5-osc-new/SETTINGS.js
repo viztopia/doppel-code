@@ -19,8 +19,8 @@ const OTHER = 5;
 // Mode names
 const MODENAMES = ['PRESET', 'MANUAL', 'SPEED', 'PLATEAU', 'BOOKMARK', 'OTHER'];
 const MODEBGS = [[140, 226, 238], [147, 186, 225], [137, 132, 214], [114, 81, 178], [164, 188, 188], [200, 200, 200]];
-
-const PRESETS = [60, 0, 4, 4.5, 6, 10];
+// Delay presets
+const PRESETS = [50, 0, 4, 4.5, 6, 10];
 
 // Speed mapping
 const MAXJOINTDIST = []; //no longer using presets for max joint dists. (variables inside mode speed now)
