@@ -27,6 +27,7 @@ let plateauStarted = false;
 let plateauStartTime, plateauEndTime;
 let plateauMinLength = 1000;
 let plateaus = [];
+let endPlateau = false;
 
 let classCacheLengthSlider;
 let recordBtn, downloadBtn;
@@ -209,16 +210,15 @@ function draw() {
     }
 
     //whenever there's a new plateau start, given the current window length & baseline, mark its start time and send new class over.
-    if (maxClass && maxCount > newClassCountBaseline && !plateauStarted) {
+    if (isClassifying && !plateauStarted && maxClass && maxCount > newClassCountBaseline) {
       console.log(maxClass + " started at frame " + frameCount);
       plateauStarted = true;
       plateauStartTime = Date.now();
-
+      
       socket.emit("classNew", maxClass);
     }
-
     //whenever the plateau ends, mark its end time and send it over to part 3.
-    if (plateauStarted && (itsBeenAWhile || maxCount < newClassCountBaseline)) {
+    else if (plateauStarted && (endPlateau || itsBeenAWhile || maxCount < newClassCountBaseline)) {
       console.log(maxClass + " ended at frame " + frameCount);
       plateauStarted = false;
       plateauEndTime = Date.now() - (itsBeenAWhile ? 0 : NOBODY);
@@ -233,6 +233,9 @@ function draw() {
         socket.emit("plateauNew", newPlat);
         plateaus.push(newPlat);
       }
+
+      // Reset end plateau
+      endPlateau = false;
     }
 
     // Clear poses if it's been a while
@@ -433,13 +436,14 @@ function toggleClassification() {
   if (!isClassifying) {
     classifyBtn.html("Stop classifying");
     isClassifying = true;
+    endPlateau = false;
     classify();
 
     socket.emit("plateauOn", true); //tells the controller sketch that plateau analysis is ready
   } else {
     classifyBtn.html("Start classifying");
     isClassifying = false;
-
+    endPlateau = true;
     socket.emit("plateauOn", false); //tells the controller sketch that plateau analysis is off
   }
 }

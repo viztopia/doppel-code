@@ -25,6 +25,10 @@ canvas {
   color: red;
 }
 
+#buttonClassify {
+  font-size: 2em;
+}
+
 #resultDisplay {
   position: fixed;
   top: 0;
