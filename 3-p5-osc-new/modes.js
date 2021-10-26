@@ -49,7 +49,7 @@ let speed = { //------------speed-based--------------------------
   mappedFrames: [],
   avgFrame: 0,
   maxJointDistsDefaults: [1, 1, 1, 1], //default max joint dist used for preset recovery
-  maxJointDists: [1, 1, 1, 1], //speed cue values based on 10/20 testing
+  maxJointDists: [0.5, 0.5, 0.5, 0.5], //speed cue values based on 10/20 testing
   maxJointDistIdx: 0,  //the current idx used for speed cue
   run: function () {
 
