@@ -89,9 +89,10 @@ function draw() {
     } else {
       text("Autopilot data is not available. Please check autopilot.json", INFOX, INFOY + 100);
     }
-    text("Doppel: " + (cue.showDoppel ? "On" : "Off") + "    Sound: " + (cue.isPlayingSound ? "On" : "Off"), INFOX, INFOY + 175);
-    text("Blackout:" + (cue.blackoutLeft ? " Left" : "") + (cue.blackoutRight ? " Right" : ""), INFOX, INFOY + 200);
-    text("Fadein: " + cue.fadeints, INFOX, INFOY + 225);
+    text("Doppel: " + (cue.showDoppel ? "On" : "Off") + "    Sound: " + (cue.isPlayingSound ? "On" : "Off"), INFOX, INFOY + 150);
+    text("Blackout:" + (cue.blackoutLeft ? " Left" : "") + (cue.blackoutRight ? " Right" : ""), INFOX, INFOY + 175);
+    text("Fadein: " + cue.fadeints, INFOX, INFOY + 200);
+    text("Classify: " + cue.toggleclassifier + "      Send: " + cue.togglesendclass, INFOX, INFOY + 225);
   } else {
 
     //--------display mode-----------------------
@@ -449,6 +450,14 @@ function keyPressed(e) {
       break;
     case 73: //-----------I: show joke 1 text
       if (mode == OTHER) socket.emit("source", JOKE1);
+      break;
+    case 74: //-----------J: black out both off
+      socket.emit("toggleclassifier");
+      cue.toggleclassifier++;
+      break;
+    case 75: //-----------K: black out both off
+      socket.emit("togglesendclass");
+      cue.togglesendclass++;
       break;
     case 79: //-----------O: show joke 2 text
       if (mode == OTHER) socket.emit("source", JOKE2);

@@ -7,6 +7,8 @@ let cue = {
   blackoutLeft: false,
   blackoutRight: false,
   fadeints: -1,
+  toggleclassifier: 0,
+  togglesendclass: 0,
   isPlayingSound: false,
   run: function () {
 
@@ -22,10 +24,11 @@ let cue = {
     }
 
     // Display current delay and file
-    text("Delayed frame: " + delayFrameIdx, INFOX, INFOY + 125);
-    text("File: " + this.fileIdx + " cuePoint: " + this.cuePoint, INFOX, INFOY + 150);
-    text("Doppel: " + (this.showDoppel ? "On" : "Off") + "    Sound: " + (this.isPlayingSound ? "On" : "Off"), INFOX, INFOY + 175)
-    text("Blackout:" + (this.blackoutLeft ? " Left" : "") + (this.blackoutRight? " Right" : ""), INFOX, INFOY + 200);
+    text("Delayed frame: " + delayFrameIdx + "      File: " + this.fileIdx + " cuePoint: " + this.cuePoint, INFOX, INFOY + 125);
+    text("Doppel: " + (cue.showDoppel ? "On" : "Off") + "    Sound: " + (cue.isPlayingSound ? "On" : "Off"), INFOX, INFOY + 150);
+    text("Blackout:" + (cue.blackoutLeft ? " Left" : "") + (cue.blackoutRight ? " Right" : ""), INFOX, INFOY + 175);
+    text("Fadein: " + cue.fadeints, INFOX, INFOY + 200);
+    text("Classify: " + cue.toggleclassifier + "      Send: " + cue.togglesendclass , INFOX, INFOY + 225);
   },
   update: function () {
     // Only update cue if something has changed
