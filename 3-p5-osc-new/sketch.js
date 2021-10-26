@@ -558,6 +558,9 @@ function connect() {
     };
   });
 
+  socket.on('classOn', (sc)=>{
+    plateau.classOn = sc;
+  })
   socket.on('jointDist', (jd) => {
     speed.jointDist = jd;
   });

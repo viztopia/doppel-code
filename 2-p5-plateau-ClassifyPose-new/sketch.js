@@ -466,6 +466,7 @@ function toggleSendingClass() {
   sendClass = !sendClass;
   console.log("Sending Class: ", sendClass);
   console.log("Sending Plateau: ", !sendClass);
+  socket.emit("classOn", sendClass); // inform controller whether sending class or not
 }
 
 //------------load KNN classes---------------

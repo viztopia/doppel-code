@@ -95,8 +95,14 @@ let plateau = { //-------------plateau-based----------------
   currentClipLength: undefined,
   initialDelayFrameIdx: undefined,
   timer: undefined,
+  classOn: undefined,
   run: function () {
-    text("Plateau classification is: " + (this.plateauOn ? "On." : "Off."), INFOX, INFOY + 25);
+    if (this.classOn != undefined){
+      text("Plateau classification is: " + (this.plateauOn ? "On." : "Off.") + " Sending Class: " + (this.classOn  ? "On." : "Off."), INFOX, INFOY + 25);
+    } else {
+      text("Plateau classification is: " + (this.plateauOn ? "On." : "Off.") + " Sending Class: unknow. (Should be off by default).", INFOX, INFOY + 25);
+    }
+    
 
     if (this.plateauOn) { //-----------------------if plateau classification is on, we calculate the number of frames to be delayed automatically
       if (!this.currentClass) { console.log("querying class"); socket.emit("queryClass"); }

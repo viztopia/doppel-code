@@ -190,6 +190,11 @@ io.sockets.on('connection', function(socket) {
     // socket.broadcast.emit("message1", 1234);
     console.log("new plateau data: " + msg);
   });
+  socket.on('classOn', function(msg) {
+    socket.broadcast.emit("classOn", msg);
+    // socket.broadcast.emit("message1", 1234);
+    console.log("send class: " + msg);
+  });
   socket.on('classNew', function(msg) {
     socket.broadcast.emit("classNew", msg);
     // socket.broadcast.emit("message1", 1234);
