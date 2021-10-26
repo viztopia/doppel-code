@@ -3,7 +3,7 @@ let cue = {
   pfileIdx: undefined,
   cuePoint: 0,
   availableRecordingNum: 0,
-  showDoppel: false,
+  showDoppel: true,
   blackoutLeft: false,
   blackoutRight: false,
   fadeints: -1,
