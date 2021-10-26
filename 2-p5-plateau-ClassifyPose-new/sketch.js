@@ -43,15 +43,14 @@ let kvalue = 20;
 let isClassifying = false;
 let loadKNNBtn, classifyBtn;
 let classIndexOffset = 0;
-let frameOfLastPose = 0;
+let timeOfLastPose = 0;
 let itsBeenAWhile = false;
-const NOBODY = 60*0.5;
+const NOBODY = 500;
 
 //-----------------speed-based delay----------------------
 let joint, jointPrev;
 let jointNumber = 0;
 let jointThreshold = 0.6;
-
 
 //------------------normalization & calibration-------------------
 // bounding box
@@ -67,41 +66,54 @@ let calibrated = false;
 let currentClassConfidence = 0;
 let confidenceCache = [0];
 let stats = new Stats();
-let cPanel = stats.addPanel(new Stats.Panel('conf', '#ff8', '#221'));
+let cPanel = stats.addPanel(new Stats.Panel("conf", "#ff8", "#221"));
 stats.showPanel(3);
 document.body.appendChild(stats.dom);
 
-function preload() { //used for video mode
+function preload() {
+  //used for video mode
   // video = createVideo('https://player.vimeo.com/external/591790914.hd.mp4?s=5423196882ed55a554896959f602c265d48c0af4&profile_id=175');
   // video = createVideo('dp.mp4');
   // video.loop();
 }
 
 function setup() {
-
   classCacheLengthSlider = createSlider(10, 180, cacheLength, 10);
-  classCacheLengthSlider.parent('controlsDiv');
+  classCacheLengthSlider.parent("controlsDiv");
   classCacheLengthSlider.input(() => {
     cacheLength = classCacheLengthSlider.value();
     newClassCountBaseline = cacheLength * classThreshold; //recalculate the baseline for deciding how much we count as a new class
-    select('#cacheLengthLabel').html(cacheLength);
-  })
+    select("#cacheLengthLabel").html(cacheLength);
+  });
 
-  clearBtn = createButton('Clear Plateaus Data');
+  clearBtn = createButton("Clear Plateaus Data");
   clearBtn.mousePressed(() => {
     plateaus = [];
   });
-  clearBtn.parent('controlsDiv');
+  clearBtn.parent("controlsDiv");
 
-  downloadBtn = createButton('Download Plateau JSON');
+  downloadBtn = createButton("Download Plateau JSON");
   downloadBtn.mousePressed(() => {
-    saveJSON(plateaus, 'plateaus-' + month() + '-' + day() + '-' + hour() + '-' + minute() + '-' + second() + '.json')
+    saveJSON(
+      plateaus,
+      "plateaus-" +
+        month() +
+        "-" +
+        day() +
+        "-" +
+        hour() +
+        "-" +
+        minute() +
+        "-" +
+        second() +
+        ".json"
+    );
   });
-  downloadBtn.parent('controlsDiv');
+  downloadBtn.parent("controlsDiv");
 
   // Dynamic K value
-  select('#kvalue').value(kvalue);
-  select('#kvalue').input(function () {
+  select("#kvalue").value(kvalue);
+  select("#kvalue").input(function () {
     kvalue = this.value();
   });
 
@@ -118,25 +130,24 @@ function setup() {
     cnv = createCanvas(video.width, video.height);
     // cnv = createCanvas(1440, 1080);
     // cnv = createCanvas(960, 540);
-    cnv.parent('cnvDiv');
+    cnv.parent("cnvDiv");
     loadMoveNet();
     loadKNN();
   });
   video.hide();
 
-
-  loadKNNBtn = select('#buttonLoad');
+  loadKNNBtn = select("#buttonLoad");
   loadKNNBtn.mousePressed(() => {
     loadJSON("classes.json", loadClassesJSON);
   });
 
-  classifyBtn = select('#buttonClassify');
+  classifyBtn = select("#buttonClassify");
   classifyBtn.mousePressed(toggleClassification);
 
   //----------speed-based delay setup----------------
   jointPrev = {
     x: width / 2,
-    y: height / 2
+    y: height / 2,
   };
 
   //----------setup socket communication---------------------
@@ -161,25 +172,26 @@ function draw() {
       let firstNose = firstPose.keypoints[0] || null;
       if (firstNose) {
         let noseX = nf((firstNose.x - minX) / bboxW, 1, 2);
-        select('#nose').html("noseX: " + noseX)
+        select("#nose").html("noseX: " + noseX);
       }
     }
   }
 
   if (frameCount < waiting) {
-    text("Pose analysis will begin in " + waiting + " frames", width / 2 - 100, height / 2);
+    text(
+      "Pose analysis will begin in " + waiting + " frames",
+      width / 2 - 100,
+      height / 2
+    );
   } else {
-
     //---------------for speed-based delay, send over joint dist----------------
     if (joint && joint.score > jointThreshold) {
-
       let jointDist = dist(joint.x, joint.y, jointPrev.x, jointPrev.y);
       jointPrev = joint;
 
       if (jointDist > 0) {
         // select('#jointDist').elt.innerText = jointDist;
-        socket.emit('jointDist', jointDist/bboxW);
-
+        socket.emit("jointDist", jointDist / bboxW);
       }
     }
 
@@ -187,14 +199,13 @@ function draw() {
     [maxClass, maxCount] = getMaxClass(classCache);
 
     if (maxClass) {
-      select('#resultDisplay').html(maxClass);
-      let resultCon = round(maxCount / cacheLength * 100);
+      select("#resultDisplay").html(maxClass);
+      let resultCon = round((maxCount / cacheLength) * 100);
       // resultCon = nf(resultCon,3,3);
-      select('#resultCon').html("confidence: " + resultCon + "%");
+      select("#resultCon").html("confidence: " + resultCon + "%");
       // console.log(round(resultCon));
       // text("current class is: " + maxClass, width / 2 - 50, height / 2 - 50);
       // text("class count is: " + maxCount, width / 2 - 50, height / 2 + 50);
-
     }
 
     //whenever there's a new plateau start, given the current window length & baseline, mark its start time and send new class over.
@@ -203,67 +214,67 @@ function draw() {
       plateauStarted = true;
       plateauStartTime = Date.now();
 
-      socket.emit('classNew', maxClass);
+      socket.emit("classNew", maxClass);
     }
 
     //whenever the plateau ends, mark its end time and send it over to part 3.
     if (plateauStarted && (itsBeenAWhile || maxCount < newClassCountBaseline)) {
       console.log(maxClass + " ended at frame " + frameCount);
       plateauStarted = false;
-      plateauEndTime = Date.now() - itsBeenAWhile ? 0 : NOBODY * 1000;
+      plateauEndTime = Date.now() - (itsBeenAWhile ? 0 : NOBODY);
 
-      if ((plateauEndTime - plateauStartTime) > plateauMinLength) {
+      if (plateauEndTime - plateauStartTime > plateauMinLength) {
+        console.log("SENDING");
         let newPlat = {
           className: maxClass,
           start: plateauStartTime,
-          end: plateauEndTime
+          end: plateauEndTime,
         };
-        socket.emit('plateauNew', newPlat);
+        socket.emit("plateauNew", newPlat);
         plateaus.push(newPlat);
       }
     }
 
     // Clear poses if it's been a while
-    if(frameCount - frameOfLastPose > NOBODY) {
+    if (millis() - timeOfLastPose > NOBODY) {
       poses = [];
       itsBeenAWhile = true;
       console.log("Nothing to see here!");
-    }
-    else {
+    } else {
       itsBeenAWhile = false;
     }
   }
 
   //--------graph current confidence---------
-  let confidenceAvg = confidenceCache.reduce((a, b) => a + b) / confidenceCache.length;
+  let confidenceAvg =
+    confidenceCache.reduce((a, b) => a + b) / confidenceCache.length;
   cPanel.update(confidenceAvg, 100);
 }
 
 //---------calibration & normalization----------
 function keyPressed() {
-  if (key == 'c') {
+  if (key == "c") {
     calibrated = !calibrated;
-    let calibrateEl = select('#calibrate');
+    let calibrateEl = select("#calibrate");
     if (calibrated) {
       // Store data
-      let calObj = { 'width': bboxW, 'height': bboxH };
-      localStorage.setItem('calibration', JSON.stringify(calObj));
+      let calObj = { width: bboxW, height: bboxH };
+      localStorage.setItem("calibration", JSON.stringify(calObj));
       console.log("STORED", calObj);
       calibrateEl.hide();
-    }
-    else calibrateEl.show();
+    } else calibrateEl.show();
   }
 }
 
 function normalizePoints(x, y) {
-  minX = pose.keypoints[0].x - (0.5 * bboxW);
+  minX = pose.keypoints[0].x - 0.5 * bboxW;
   minY = pose.keypoints[0].y;
   nx = nf((x - minX) / bboxW, 1, 2);
   ny = nf((y - minY) / bboxH, 1, 2);
 }
 
 function normalizePointByNose(x, y) {
-  minX = pose.keypoints[0].x - (0.5 * bboxW);
+  minX = pose.keypoints[0].x - 0.5 * bboxW;
   minY = pose.keypoints[0].y;
   let xNorm = nf((x - minX) / bboxW, 1, 2);
   let yNorm = nf((y - minY) / bboxH, 1, 2);
@@ -304,7 +315,7 @@ function findKeypoints(pose) {
 }
 
 function loadCalibration() {
-  let calibration = JSON.parse(localStorage.getItem('calibration'));
+  let calibration = JSON.parse(localStorage.getItem("calibration"));
   if (calibration) {
     bboxW = calibration.width;
     bboxH = calibration.height;
@@ -316,53 +327,51 @@ function loadCalibration() {
 //----------moveNet stuff----------------
 async function loadMoveNet() {
   const detectorConfig = {
-    modelType: poseDetection.movenet.modelType.SINGLEPOSE_LIGHTNING
+    modelType: poseDetection.movenet.modelType.SINGLEPOSE_LIGHTNING,
   };
-  moveNet = await poseDetection.createDetector(poseDetection.SupportedModels.MoveNet, detectorConfig);
+  moveNet = await poseDetection.createDetector(
+    poseDetection.SupportedModels.MoveNet,
+    detectorConfig
+  );
 
   netReady = true;
-  select('#status').html('MoveNet Loaded. ', true);
+  select("#status").html("MoveNet Loaded. ", true);
 }
 
 async function estimatePose() {
   const poseEstimation = await moveNet.estimatePoses(video.elt);
   if (poseEstimation.length > 0) {
     poses = poseEstimation;
-    joint = poses[0].keypoints[jointNumber]
-    frameOfLastPose = frameCount;
-  };
+    joint = poses[0].keypoints[jointNumber];
+    timeOfLastPose = millis();
+  }
 }
 
 //---------KNN stuff------------
 async function loadKNN() {
-
   classifier = knnClassifier.create();
 
-  select('#status').html('KNN Loaded. ', true);
+  select("#status").html("KNN Loaded. ", true);
 }
-
-
 
 async function classify() {
   // Any poses to classify?
-  if(!poseNorm) return;
+  if (!poseNorm) return;
 
   // Get the total number of labels from knnClassifier
   const numLabels = classifier.getNumClasses();
   if (numLabels <= 0) {
-    console.error('There is no examples in any label');
+    console.error("There is no examples in any label");
     return;
   }
   // Convert poses results to a 2d array [[score0, x0, y0],...,[score16, x16, y16]]
 
   // const poseArray = poses[0].keypoints.map(p => [p.score, nx, ny]);
-  const poseArray = poseNorm.keypoints.map(p => [p.score, p.x, p.y]);
-
+  const poseArray = poseNorm.keypoints.map((p) => [p.score, p.x, p.y]);
 
   const example = tf.tensor(poseArray);
   const result = await classifier.predictClass(example, kvalue);
   gotResults(undefined, result);
-
 }
 
 // handler of the classification
@@ -380,8 +389,8 @@ function gotResults(err, result) {
     const label = result.label;
     const confidence = round(confidences[label] * 100);
 
-    select('#result').html(label);
-    select('#confidence').html(confidence + '%');
+    select("#result").html(label);
+    select("#confidence").html(confidence + "%");
     //if (confidence > 0.8) {
     classCache.push(label);
     while (classCache.length >= cacheLength) {
@@ -422,17 +431,16 @@ function getMaxClass(array) {
 //---------------------Classification Helpers----------------------
 function toggleClassification() {
   if (!isClassifying) {
-    classifyBtn.html('Stop classifying');
+    classifyBtn.html("Stop classifying");
     isClassifying = true;
     classify();
 
-    socket.emit('plateauOn', true); //tells the controller sketch that plateau analysis is ready
-
+    socket.emit("plateauOn", true); //tells the controller sketch that plateau analysis is ready
   } else {
-    classifyBtn.html('Start classifying');
+    classifyBtn.html("Start classifying");
     isClassifying = false;
 
-    socket.emit('plateauOn', false); //tells the controller sketch that plateau analysis is off
+    socket.emit("plateauOn", false); //tells the controller sketch that plateau analysis is off
   }
 }
 
@@ -440,18 +448,18 @@ function toggleClassification() {
 function loadClassesJSON(data) {
   console.log(data);
   if (data) {
-    const {
-      dataset,
-      tensors
-    } = data;
-
+    const { dataset, tensors } = data;
 
     let tensorsData = {};
     Object.keys(dataset).forEach((key) => {
       // const tensor =
-      const values = Object.keys(tensors[key]).map(v => tensors[key][v]);
-      tensorsData[key] = tf.tensor(values, dataset[key].shape, dataset[key].dtype);
-    })
+      const values = Object.keys(tensors[key]).map((v) => tensors[key][v]);
+      tensorsData[key] = tf.tensor(
+        values,
+        dataset[key].shape,
+        dataset[key].dtype
+      );
+    });
     classifier.setClassifierDataset(tensorsData);
     console.log(tensorsData);
   }
@@ -469,12 +477,11 @@ function drawKeypoints() {
     stroke(255, 0, 0);
     textSize(10);
     // pose.keypoints[0] is the nose
-    rect(pose.keypoints[0].x - (0.5 * bboxW), pose.keypoints[0].y, bboxW, bboxH);
+    rect(pose.keypoints[0].x - 0.5 * bboxW, pose.keypoints[0].y, bboxW, bboxH);
     stroke(255, 0, 0);
 
     //------------prepare for normalization based on Nose-------------------
     poseNorm = { keypoints: [], score: pose.score };
-
 
     for (let j = 0; j < pose.keypoints.length; j++) {
       // A keypoint is an object describing a body part (like rightArm or leftShoulder)
@@ -490,12 +497,16 @@ function drawKeypoints() {
       poseNorm.keypoints.push({
         x: xNorm,
         y: yNorm,
-        score: keypoint.score
+        score: keypoint.score,
       });
 
       ellipse(keypoint.x, keypoint.y, 10, 10);
       // text(" x: " + nx + " y:" + ny, keypoint.x, keypoint.y);
-      text(" x: " + poseNorm.keypoints[j].x + " y:" + poseNorm.keypoints[j].y, keypoint.x, keypoint.y);
+      text(
+        " x: " + poseNorm.keypoints[j].x + " y:" + poseNorm.keypoints[j].y,
+        keypoint.x,
+        keypoint.y
+      );
       // }
     }
 
@@ -505,24 +516,20 @@ function drawKeypoints() {
 
 //---------------------socket stuff------------------------------
 function setupSocket() {
-  socket = io.connect('http://' + ip + ':' + port, {
+  socket = io.connect("http://" + ip + ":" + port, {
     port: port,
-    rememberTransport: false
+    rememberTransport: false,
   });
-  socket.on('connect', function () {
-    socket.emit('plateauOn', false);
+  socket.on("connect", function () {
+    socket.emit("plateauOn", false);
   });
 
-  socket.on('disconnect', function () {
-    socket.emit('plateauOn', false);
+  socket.on("disconnect", function () {
+    socket.emit("plateauOn", false);
   });
 
   //-------------In Progress: used for video mode-------------
-  socket.on('playVideo', function (msg) {
+  socket.on("playVideo", function (msg) {});
 
-  });
-
-  socket.on('scrubVideo', function (msg) {
-
-  });
+  socket.on("scrubVideo", function (msg) {});
 }
