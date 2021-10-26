@@ -460,7 +460,7 @@ function keyPressed(e) {
       isAutopilot = !isAutopilot;
       nextActionIdx = findNextActionIdx(recordedSeconds); //recalculate next action
       break;
-    case 76: //-----------L: toggle play/stop sound.mp3
+    case 76: //-----------L: toggle play/stop sound.wav
       cue.isPlayingSound = !cue.isPlayingSound
       socket.emit("playsound", cue.isPlayingSound);
       break;
