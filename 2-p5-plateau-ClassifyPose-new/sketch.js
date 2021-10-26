@@ -8,8 +8,8 @@
 
 //------------------socket--------------------
 let socket;
-let ip = "10.18.145.245"; //the IP of the machine that runs bridge.js
-// let ip = "127.0.0.1"; //or local host
+//let ip = "10.18.145.245"; //the IP of the machine that runs bridge.js
+let ip = "127.0.0.1"; //or local host
 let port = 8081; //the port of the machine that runs bridge.js
 
 //--------simple UI--------------------
@@ -28,6 +28,7 @@ let plateauStartTime, plateauEndTime;
 let plateauMinLength = 1000;
 let plateaus = [];
 let endPlateau = false;
+let sendClass = false;
 
 let classCacheLengthSlider;
 let recordBtn, downloadBtn;
@@ -212,10 +213,17 @@ function draw() {
     //whenever there's a new plateau start, given the current window length & baseline, mark its start time and send new class over.
     if (isClassifying && !plateauStarted && maxClass && maxCount > newClassCountBaseline) {
       console.log(maxClass + " started at frame " + frameCount);
-      plateauStarted = true;
-      plateauStartTime = Date.now();
-      
-      socket.emit("classNew", maxClass);
+
+      // Only send class when it's asked for
+      if(sendClass) {
+        console.log("Sending new class.");
+        socket.emit("classNew", maxClass);
+      }
+      // Don't do plateaus if we are sending classes
+      else {
+        plateauStarted = true;
+        plateauStartTime = Date.now();
+      }
     }
     //whenever the plateau ends, mark its end time and send it over to part 3.
     else if (plateauStarted && (endPlateau || itsBeenAWhile || maxCount < newClassCountBaseline)) {
@@ -224,7 +232,7 @@ function draw() {
       plateauEndTime = Date.now() - (itsBeenAWhile ? 0 : NOBODY);
 
       if (plateauEndTime - plateauStartTime > plateauMinLength) {
-        console.log("SENDING");
+        console.log("Sending new plateau.");
         let newPlat = {
           className: maxClass,
           start: plateauStartTime,
@@ -266,6 +274,13 @@ function keyPressed() {
       console.log("STORED", calObj);
       calibrateEl.hide();
     } else calibrateEl.show();
+  }
+  // Toggle Classification with Spacebar
+  else if(keyCode == 32) {
+    toggleClassification();
+  }
+  else if(keyCode == ENTER) {
+    toggleSendingClass();
   }
 }
 
@@ -434,18 +449,23 @@ function getMaxClass(array) {
 //---------------------Classification Helpers----------------------
 function toggleClassification() {
   if (!isClassifying) {
-    classifyBtn.html("Stop classifying");
+    classifyBtn.html("Stop");
     isClassifying = true;
     endPlateau = false;
     classify();
-
     socket.emit("plateauOn", true); //tells the controller sketch that plateau analysis is ready
   } else {
-    classifyBtn.html("Start classifying");
+    classifyBtn.html("Predict");
     isClassifying = false;
     endPlateau = true;
     socket.emit("plateauOn", false); //tells the controller sketch that plateau analysis is off
   }
+}
+
+function toggleSendingClass() {
+  sendClass = !sendClass;
+  console.log("Sending Class: ", sendClass);
+  console.log("Sending Plateau: ", !sendClass);
 }
 
 //------------load KNN classes---------------
@@ -536,4 +556,13 @@ function setupSocket() {
   socket.on("playVideo", function (msg) {});
 
   socket.on("scrubVideo", function (msg) {});
+
+  // Toggle whether to classify
+  socket.on("toggleclassifier", toggleClassification);
+
+  // Toggle whether to send new class
+  socket.on("togglesendclass", function(){
+    toggleSendingClass();
+  });
+
 }
