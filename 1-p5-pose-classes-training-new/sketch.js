@@ -48,7 +48,6 @@ function setup() {
 
   // Create the UI buttons
   buildUI();
-
 }
 
 //-------------------------------------------
@@ -162,20 +161,21 @@ function updateFPS() {
 // Clear all classes
 function clearClasses() {
   LABELS = [];
+  classes = {};
   selectAll(".class").forEach((el) => {
     if (el.id() != 'template') el.remove()
   });
 }
 
 // Create UI for new class
-function createClass(l, label) {
+function createClass(cls) {
   // Clone the template
   let container = document.getElementById('classes');
   let el = document.getElementById('template').cloneNode(true);
   container.append(el);
-  let idx = l || Object.keys(classes).length;
-  let name = label || select('#name').value();
-  let id = idx + '-' + name;
+  let idx = cls.idx || Object.keys(classes).length;
+  let name = cls.name || select('#name').value();
+  let id = cls.id || idx + '-' + name;
   classes[id] = new Class(id, el);
 }
 
@@ -185,7 +185,7 @@ function buildUI() {
   // Auto-generate first 10
   for (let l in LABELS) {
     let label = LABELS[l];
-    createClass(l, label);
+    createClass({ idx : l, name : label });
   }
 
   // Rate feedback
@@ -362,16 +362,19 @@ function loadClassesJSON(data) {
       const values = Object.keys(tensors[key]).map(v => tensors[key][v]);
       tensorsData[key] = tf.tensor(values, dataset[key].shape, dataset[key].dtype);
       LABELS.push(key);
-      createClass(key);
+      createClass({id : key});
     })
     classifier.setClassifierDataset(tensorsData);
     console.log(tensorsData);
+    console.log(classes);
+
+    // Update sample counts for each class
+    updateCounts();
   }
 }
 
 function loadLabels() {
   loadJSON("classes.json", loadClassesJSON);
-  updateCounts();
 }
 
 
