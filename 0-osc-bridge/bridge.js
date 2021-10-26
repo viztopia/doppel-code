@@ -157,6 +157,27 @@ io.sockets.on('connection', function(socket) {
 
 
   //-----------------broadcast classification plateau stuff-----------------
+
+  //control classification
+  socket.on('toggleclassifier', function() {
+    socket.broadcast.emit("toggleclassifier");
+    // socket.broadcast.emit("message1", 1234);
+    console.log("toggle classifier");
+  });
+
+  socket.on('togglesendclass', function() {
+    socket.broadcast.emit("togglesendclass");
+    // socket.broadcast.emit("message1", 1234);
+    console.log("toggle send class");
+  });
+  
+  //broadcast plateau stuff
+  socket.on('plateauOn', function(msg) {
+    socket.broadcast.emit("plateauOn", msg);
+    // socket.broadcast.emit("message1", 1234);
+    console.log("plateau classification is: " + (msg ? "On" : "Off"));
+    plateauStatus = msg;
+  });
   //broadcast plateau stuff
   socket.on('plateauOn', function(msg) {
     socket.broadcast.emit("plateauOn", msg);
