@@ -4,57 +4,83 @@
         {
             "time": 0,
             "key": "0",
-            "note": "switching to preset 4 sec & get ready for doppel (doppel is hidden at this time)"
+            "note": "switching to preset 4 sec & get ready for doppel (doppel is hidden at this time)",
+            "text": "sitting straight front"
         },
         {
-            "time": 0,
+            "time": 27,
+            "key": "S",
+            "note": "unblackout left",
+            "text": "sitting straight front"
+        },
+        {
+            "time": 27,
+            "key": "H",
+            "note": "fade in left",
+            "text": "sitting straight front\n0.42 \"a friend of mine once told me\""
+        },
+        {
+            "time": 56,
             "key": "ArrowLeft",
-            "note": "go to preset 0 sec (to get prepared)"
+            "note": "go to preset 0 sec (to get prepared)",
+            "text": "0.56 \"travel long distances of silence\"\n1.15 \"I'm always hearing echoes\""
         },
         {
             "time": 57,
             "key": "ArrowLeft",
-            "note": "go to preset 60 sec (will update presets as: 60, 0. 4, 4.5, 6, 10)"
+            "note": "go to preset 50 sec (will update presets as: 50, 0. 4, 4.5, 6, 10)",
+            "text": "NiNi turned left"
         },
         {
-            "time": 57,
-            "key": "A",
-            "note": "show doppel"
+            "time": 147,
+            "key": "D",
+            "note": "unblackout right",
+            "text": "rise up from bowing down"
         },
         {
-            "time": 268,
+            "time": 256,
             "key": "F",
-            "note": "blackout all (waiting room 1 -> therapist 1, nini bends over)"
+            "note": "blackout all (click, waiting room 1 -> therapist 1, nini bends over)",
+            "text": "CLICK"
         },
         {
-            "time": 268,
+            "time": 256,
             "key": "ArrowRight",
             "note": "go to preset 0 sec (to get prepared)"
         },
         {
-            "time": 268,
+            "time": 257,
             "key": "ArrowRight",
             "note": "go to preset 4 sec"
         },
         {
-            "time": 273,
-            "key": "G",
-            "note": "unblackout all (voice: the moment)"
+            "time": 267,
+            "key": "S",
+            "note": "unblackout left "
         },
         {
-            "time": 294,
-            "key": "ArrowRight",
-            "note": "go to preset 4.5 sec"
+            "time": 272,
+            "key": "D",
+            "note": "unblackout right",
+            "text": "the moment"
         },
         {
-            "time": 334,
+            "time": 323,
             "key": "ArrowRight",
-            "note": "go to preset 6 sec"
+            "note": "go to preset 4.5 sec",
+            "text": "praying - I see (very clearly)"
         },
         {
-            "time": 358,
+            "time": 332,
             "key": "ArrowRight",
-            "note": "go to preset 10 sec"
+            "note": "go to preset 6 sec",
+            "text": "CLICK bowing down, hands on face"
+        },
+        {
+            "time": 352,
+            "key": "ArrowRight",
+            "note": "go to preset 10 sec",
+            "text": "CLICK praying"
         },
         {
             "time": 394,
@@ -62,299 +88,347 @@
             "note": "blackout all (right before voice: my first apartment)"
         },
         {
-            "time": 394,
+            "time": 396,
             "key": "ArrowLeft",
             "note": "go to preset 6 sec (to get prepared)"
         },
         {
-            "time": 394,
+            "time": 396,
             "key": "ArrowLeft",
             "note": "go to preset 4.5 sec (to get prepared)"
         },
         {
-            "time": 394,
+            "time": 396,
             "key": "ArrowLeft",
             "note": "go to preset 4 sec (to get prepared)"
         },
         {
             "time": 398,
             "key": "2",
-            "note": "switch to speed 0.75"
+            "note": "switch to speed 1"
         },
         {
             "time": 398,
-            "key": "G",
-            "note": "unblackout all"
+            "key": "S",
+            "note": "unblackout left - collapsy down",
+            "text": "6.38 \"my first apartment\""
         },
         {
-            "time": 498,
+            "time": 403,
+            "key": "D",
+            "note": "unblackout right",
+            "text": "6.50 \"the first day\" --> I'm always having..."
+        },
+        {
+            "time": 495,
             "key": "0",
-            "note": "switch to preset 4 sec (voice: when ppl leave)"
+            "note": "switch to preset 4 sec (voice: when ppl leave)",
+            "text": "8.18 \"when people leave\""
         },
         {
-            "time": 734,
+            "time": 731,
             "key": "2",
-            "note": "switch to speed (currently at 0.75)"
+            "note": "switch to speed (currently at speed preset 1)",
+            "text": "12.11 \"the home sickness, it's just with me one day\""
         },
         {
-            "time": 734,
+            "time": 731,
             "key": "ArrowRight",
-            "note": "change speed to 0.5"
+            "note": "change to speed 2"
         },
         {
-            "time": 824,
+            "time": 821,
             "key": "Q",
-            "note": "mark real nini about to stands up"
+            "note": "mark real nini about to stands up (right before first walking - because it happened)"
         },
         {
-            "time": 828,
-            "key": "F",
-            "note": "blackout all"
-        },
-        {
-            "time": 828,
-            "key": "A",
-            "note": "hide doppel (do nothing)"
-        },
-        {
-            "time": 828,
+            "time": 821,
             "key": "0",
             "note": "switch to preset 4 sec (running start, voice: bc I have that feeling)"
         },
         {
-            "time": 832,
-            "key": "G",
-            "note": "unblackout all"
-        },
-        {
-            "time": 837,
-            "key": "A",
-            "note": "show doppel"
-        },
-        {
-            "time": 868,
-            "key": "2",
-            "note": "switch to speed (currently at 0.5)"
-        },
-        {
-            "time": 868,
+            "time": 821,
             "key": "ArrowRight",
-            "note": "change speed to 0.3875"
+            "note": "got to preset 4.5"
         },
         {
-            "time": 891,
+            "time": 821,
+            "key": "ArrowRight",
+            "note": "go to preset 6 sec "
+        },
+        {
+            "time": 865,
+            "key": "2",
+            "note": "switch to speed (currently at 0.5)",
+            "text": "14. 25 robot \"what else... when I was young\""
+        },
+        {
+            "time": 865,
+            "key": "ArrowRight",
+            "note": "change to speed 3"
+        },
+        {
+            "time": 888,
             "key": "W",
-            "note": "mark real nini sits"
+            "note": "mark real nini sits (I-I-so-so)",
+            "text": "14.48 \"i'm so shy\""
         },
         {
-            "time": 914,
+            "time": 915,
             "key": "4",
-            "note": "switch to bookmark"
+            "note": "switch to bookmark",
+            "text": "15.15 \"so scared\""
         },
         {
-            "time": 914,
+            "time": 915,
             "key": "T",
             "note": "jump to bookmark W (which is sitting)"
         },
         {
-            "time": 917,
+            "time": 918,
             "key": "T",
             "note": "jump to bookmark W (which is sitting)"
         },
         {
-            "time": 920,
+            "time": 921,
+            "key": "T",
+            "note": "jump to bookmark W (which is sitting)",
+            "text": "14.21 \"I cannot do this\""
+        },
+        {
+            "time": 924,
             "key": "T",
             "note": "jump to bookmark W (which is sitting)"
         },
         {
-            "time": 923,
+            "time": 927,
             "key": "T",
             "note": "jump to bookmark W (which is sitting)"
         },
         {
-            "time": 926,
+            "time": 930,
             "key": "T",
             "note": "jump to bookmark W (which is sitting)"
         },
         {
-            "time": 929,
+            "time": 933,
             "key": "T",
             "note": "jump to bookmark W (which is sitting)"
         },
         {
-            "time": 932,
+            "time": 936,
             "key": "T",
-            "note": "jump to bookmark W (which is sitting)"
+            "note": "jump to bookmark W (which is sitting)",
+            "text": "everytime"
         },
         {
-            "time": 935,
-            "key": "T",
-            "note": "jump to bookmark W (which is sitting)"
-        },
-        {
-            "time": 938,
-            "key": "T",
-            "note": "jump to bookmark W (which is sitting)"
-        },
-        {
-            "time": 941,
+            "time": 939,
             "key": "2",
             "note": "switch to speed (currently at 0.3875)"
         },
         {
-            "time": 981,
+            "time": 982,
             "key": "4",
-            "note": "switch to bookmark"
+            "note": "switch to bookmark",
+            "text": "NiNi do the left movement"
         },
         {
-            "time": 981,
+            "time": 982,
             "key": "T",
             "note": "jump to bookmark W (which is sitting)"
         },
         {
-            "time": 984,
+            "time": 985,
+            "key": "T",
+            "note": "jump to bookmark W (which is sitting)",
+            "text": "falling \"I'm so scared\""
+        },
+        {
+            "time": 988,
             "key": "T",
             "note": "jump to bookmark W (which is sitting)"
         },
         {
-            "time": 987,
+            "time": 991,
             "key": "T",
             "note": "jump to bookmark W (which is sitting)"
         },
         {
-            "time": 990,
+            "time": 994,
             "key": "T",
             "note": "jump to bookmark W (which is sitting)"
         },
         {
-            "time": 993,
+            "time": 997,
             "key": "T",
             "note": "jump to bookmark W (which is sitting)"
         },
         {
-            "time": 996,
+            "time": 1000,
             "key": "2",
-            "note": "switch to speed (currently at 0.3875)"
+            "note": "switch to speed (currently at 0.3875)",
+            "text": "\"why do I have to be that person\""
         },
         {
-            "time": 1054,
+            "time": 1055,
             "key": "4",
-            "note": "switch to bookmark"
+            "note": "switch to bookmark",
+            "text": "\"but I never cried\""
         },
         {
-            "time": 1054,
+            "time": 1055,
             "key": "T",
             "note": "jump to bookmark W (which is sitting)"
         },
         {
-            "time": 1057,
+            "time": 1058,
             "key": "T",
             "note": "jump to bookmark W (which is sitting)"
         },
         {
-            "time": 1060,
+            "time": 1061,
             "key": "T",
             "note": "jump to bookmark W (which is sitting)"
         },
         {
-            "time": 1063,
+            "time": 1064,
             "key": "T",
             "note": "jump to bookmark W (which is sitting)"
         },
         {
-            "time": 1066,
+            "time": 1067,
             "key": "R",
             "note": "jump to bookmark Q (which is about to stand up)"
         },
         {
-            "time": 1071,
-            "key": "A",
-            "note": "hide doppel (do nothing)"
+            "time": 1068,
+            "key": "D",
+            "note": "blackout right",
+            "text": "\"and I never cried after\""
         },
         {
-            "time": 1100,
+            "time": 1099,
             "key": "5",
-            "note": "switch to other mode to get ready to play video"
+            "note": "switch to other mode to get ready to play video",
+            "text": "\"the moment\""
         },
         {
-            "time": 1100,
+            "time": 1099,
             "key": "P",
             "note": "play flashing video"
         },
         {
-            "time": 1288,
-            "key": "0",
-            "note": "switch to preset 4 sec (this is the start of second half)"
+            "time": 1100,
+            "key": "D",
+            "note": "unblackout right",
+            "text": " "
         },
         {
-            "time": 1293,
-            "key": "A",
-            "note": "show doppel (do nothing)"
+            "time": 1286,
+            "key": "F",
+            "note": "blackout all",
+            "text": "\"keep spiraling in and out of orbit\" "
+        },
+        {
+            "time": 1289,
+            "key": "0",
+            "note": "switch to preset 4 sec (this is the start of second half)",
+            "text": "\"circling always returning, going round and round\" "
+        },
+        {
+            "time": 1290,
+            "key": "ArrowRight",
+            "note": "switch to preset 6 (echo circling)",
+            "text": "TALK ECHO HUMMING SECTION"
+        },
+        {
+            "time": 1351,
+            "key": "S",
+            "note": "unblackout left",
+            "text": "\"spiraling and crashing down into the void\""
+        },
+        {
+            "time": 1357,
+            "key": "D",
+            "note": "unblackout right",
+            "text": "\"our path is uncertain yet predetermined\" "
+        },
+        {
+            "time": 1445,
+            "key": "ArrowRight",
+            "note": "switch to preset 10 (humming)",
+            "text": "\"centrifuge in search of a gravitational center\" "
+        },
+        {
+            "time": 1485,
+            "key": "F",
+            "note": "blackout all",
+            "text": "\"our path is uncertain yet predetermined\" "
         },
         {
             "time": 1488,
-            "key": "A",
-            "note": "hide doppel"
+            "key": "S",
+            "note": "unblackout left",
+            "text": "\"when I was young\""
         },
         {
-            "time": 1491,
-            "key": "A",
-            "note": "show doppel (do nothing)"
+            "time": 1493,
+            "key": "D",
+            "note": "unblackout right"
         },
         {
-            "time": 1531,
+            "time": 1528,
             "key": "2",
-            "note": "switch to speed (currently at 0.3875)"
+            "note": "switch to speed (currently at 0.3875)",
+            "text": "\"you're so scared\""
         },
         {
-            "time": 1531,
+            "time": 1528,
             "key": "ArrowRight",
             "note": "change speed to the last preset which is also 0.3875"
         },
         {
-            "time": 1591,
+            "time": 1587,
             "key": "0",
-            "note": "switch to preset 4 sec to get ready"
+            "note": "switch to preset 4 sec to get ready",
+            "text": "\"will I remember this\" PIANO BANG"
         },
         {
-            "time": 1591,
-            "key": "ArrowLeft",
-            "note": "go to preset 0 sec"
-        },
-        {
-            "time": 1628,
-            "key": "ArrowRight",
-            "note": "go to preset 4 sec"
-        },
-        {
-            "time": 1806,
+            "time": 1809,
             "key": "E",
-            "note": "mark real nini standing"
+            "note": "mark real nini standing (gap right after people who leave are like...)",
+            "text": "NiNi stands up"
         },
         {
-            "time": 1816,
+            "time": 1813,
             "key": "4",
             "note": "switch to bookmark"
         },
         {
-            "time": 1816,
+            "time": 1813,
             "key": "Y",
             "note": "jump to bookmark E (which is standing)"
         },
         {
-            "time": 1820,
+            "time": 1817,
             "key": "Y",
             "note": "jump to bookmark E (which is standing)"
         },
         {
-            "time": 1824,
+            "time": 1821,
             "key": "Y",
             "note": "jump to bookmark E (which is standing)"
         },
         {
-            "time": 1828,
+            "time": 1825,
             "key": "Y",
             "note": "jump to bookmark E (which is standing)"
+        },
+        {
+            "time": 1829,
+            "key": "Y",
+            "note": "jump to bookmark E (which is standing)",
+            "text": "\"now looking back it's a little funny\" "
         },
         {
             "time": 1832,
@@ -362,39 +436,34 @@
             "note": "jump to bookmark E (which is standing)"
         },
         {
-            "time": 1835,
-            "key": "Y",
-            "note": "jump to bookmark E (which is standing)"
+            "time": 1849,
+            "key": "F",
+            "note": "blackout all (right before humming)"
         },
         {
-            "time": 1838,
-            "key": "A",
+            "time": 1849,
+            "key": "B",
             "note": "hide doppel"
         },
         {
-            "time": 1839,
-            "key": "F",
-            "note": "blackout all"
-        },
-        {
-            "time": 1884,
+            "time": 1885,
             "key": "3",
             "note": "switch to plateau"
         },
         {
-            "time": 1884,
+            "time": 1885,
+            "key": "G",
+            "note": "unblackout all"
+        },
+        {
+            "time": 1890,
             "key": "A",
             "note": "show doppel"
         },
         {
-            "time": 1884,
-            "key": "G",
-            "note": "un-full blackout"
-        },
-        {
-            "time": 2172,
-            "key": "A",
-            "note": "hide doppel"
+            "time": 2093,
+            "key": "F",
+            "note": "blackout all"
         }
     ]
 }

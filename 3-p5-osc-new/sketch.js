@@ -120,7 +120,7 @@ function draw() {
           let nextAction = autopilotData.actions[nextActionIdx];
           let actionMin = floor(nextAction.time / 60);
           let actionSec = nextAction.time % 60;
-          text("Autopilot is On. Next action: at " + nf(actionMin, 2, 0) + ":" + nf(actionSec, 2, 0) + " press " + nextAction.key + "-" + nextAction.note, INFOX, INFOY - 100, W - 50);
+          text("Autopilot is On. Next action: at " + nf(actionMin, 2, 0) + ":" + nf(actionSec, 2, 0) + " press " + nextAction.key + "-" + nextAction.note + (nextAction.text ? ", " + nextAction.text : ""), INFOX, INFOY - 100, W - 50);
           if (recordedSeconds == nextAction.time) {
             // console.log("executing: " + nextAction.time + ", " + nextAction.key + ", " + nextAction.note);
             let kc;
