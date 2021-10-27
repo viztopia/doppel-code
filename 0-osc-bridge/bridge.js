@@ -18,14 +18,16 @@ let tdSocketID;
 
 //------------used to maintain plateau classification status-------------
 let plateauStatus = false;
+let classStatus = false;
 let currentClass = undefined;
 
 
 io.sockets.on('connection', function(socket) {
   console.log('connection: ' + socket.id);
   setTimeout(() => {
-    console.log("broadcasting on/off");
+    console.log("broadcasting platuea / class status.");
     socket.emit("plateauOn", plateauStatus);
+    socket.emit("classOn", classStatus);
   }, 1000);
 
   //---OBS---
@@ -187,6 +189,7 @@ io.sockets.on('connection', function(socket) {
     socket.broadcast.emit("classOn", msg);
     // socket.broadcast.emit("message1", 1234);
     console.log("send class: " + msg);
+    classStatus = msg;
   });
   socket.on('classNew', function(msg) {
     socket.broadcast.emit("classNew", msg);
