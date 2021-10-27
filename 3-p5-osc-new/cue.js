@@ -28,7 +28,8 @@ let cue = {
     text("Doppel: " + (cue.showDoppel ? "On" : "Off") + "    Sound: " + (cue.isPlayingSound ? "On" : "Off"), INFOX, INFOY + 150);
     text("Blackout:" + (cue.blackoutLeft ? " Left" : "") + (cue.blackoutRight ? " Right" : ""), INFOX, INFOY + 175);
     text("Fadein: " + cue.fadeints, INFOX, INFOY + 200);
-    text("Classify: " + cue.toggleclassifier + "      Send: " + cue.togglesendclass , INFOX, INFOY + 225);
+    // text("Classify: " + cue.toggleclassifier + "      Send: " + cue.togglesendclass , INFOX, INFOY + 225);
+    text("Classify: " + (plateau.plateauOn ? "On" : "Off") + "      Send Class: " + (plateau.classOn ? "On" : "Off") , INFOX, INFOY + 225);
   },
   update: function () {
     // Only update cue if something has changed

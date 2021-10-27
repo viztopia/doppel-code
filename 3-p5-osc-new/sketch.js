@@ -84,8 +84,8 @@ function draw() {
     background(255, 0, 255);
     textSize(14);
     text("If you wanna recover show:", INFOX, INFOY - 25);
-    text("Please make sure TD window is active and NOT minimized FIRST!", INFOX, INFOY + 25);
-    text("Then make sure showData.json is updated.", INFOX, INFOY + 50);
+    text("Make sure TD window active, NOT minimized, showData updated.", INFOX, INFOY);
+    text("Top of Show: doppel ON, blackout ALL. Classify ON, Send Class OFF.", INFOX, INFOY + 50);
     if (autopilotData) {
       text("Autopilot is: " + (isAutopilot ? "On" : "Off") + ", press M to toggle.", INFOX, INFOY + 100);
     } else {
@@ -94,7 +94,8 @@ function draw() {
     text("Doppel: " + (cue.showDoppel ? "On" : "Off") + "    Sound: " + (cue.isPlayingSound ? "On" : "Off"), INFOX, INFOY + 150);
     text("Blackout:" + (cue.blackoutLeft ? " Left" : "") + (cue.blackoutRight ? " Right" : ""), INFOX, INFOY + 175);
     text("Fadein: " + cue.fadeints, INFOX, INFOY + 200);
-    text("Classify: " + cue.toggleclassifier + "      Send: " + cue.togglesendclass, INFOX, INFOY + 225);
+    // text("Classify: " + cue.toggleclassifier + "      Send: " + cue.togglesendclass, INFOX, INFOY + 225);
+    text("Classify: " + (plateau.plateauOn ? "On" : "Off") + "      Send Class: " + (plateau.classOn ? "On" : "Off") , INFOX, INFOY + 225);
   } else {
 
     //--------display mode-----------------------
@@ -187,12 +188,12 @@ function stopPerformance() {
   socket.emit("playsound", cue.isPlayingSound)
 
   //reset cue
-  cue.showDoppel = false;
-  socket.emit("showdoppel", cue.showDoppel);
-  cue.blackoutLeft = false;
-  socket.emit("blackoutleft", cue.blackoutLeft);
-  cue.blackoutRight = false;
-  socket.emit("blackoutright", cue.blackoutRight);
+  // cue.showDoppel = false;
+  // socket.emit("showdoppel", cue.showDoppel);
+  // cue.blackoutLeft = false;
+  // socket.emit("blackoutleft", cue.blackoutLeft);
+  // cue.blackoutRight = false;
+  // socket.emit("blackoutright", cue.blackoutRight);
 
   //reset mode
   mode = 0;

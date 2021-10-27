@@ -158,6 +158,11 @@
         },
         {
             "time": 865,
+            "key": "K",
+            "note": "[PLATEAU RECORDING: false]  NiNi begins crazy movement"
+        },
+        {
+            "time": 865,
             "key": "2",
             "note": "switch to speed (currently at 0.5)",
             "text": "14. 25 robot \"what else... when I was young\""
@@ -348,7 +353,7 @@
             "text": "\"spiraling and crashing down into the void\""
         },
         {
-            "time": 1357,
+            "time": 1360,
             "key": "D",
             "note": "unblackout right",
             "text": "\"our path is uncertain yet predetermined\" "
@@ -366,15 +371,35 @@
             "text": "\"our path is uncertain yet predetermined\" "
         },
         {
+            "time": 1486,
+            "key": "ArrowLeft",
+            "note": "go to preset 6 to get ready"
+        },
+        {
+            "time": 1487,
+            "key": "ArrowLeft",
+            "note": "go to preset 4.5 to get ready"
+        },
+        {
+            "time": 1487,
+            "key": "ArrowLeft",
+            "note": "go to preset 4 to get ready"
+        },
+        {
             "time": 1488,
             "key": "S",
             "note": "unblackout left",
             "text": "\"when I was young\""
         },
         {
-            "time": 1493,
+            "time": 1488,
+            "key": "K",
+            "note": "[PLATEAU RECORDING: true] start again, NiNi sits down"
+        },
+        {
+            "time": 1496,
             "key": "D",
-            "note": "unblackout right"
+            "note": "unblackout right (need to investigate why need 8 sec)"
         },
         {
             "time": 1528,
@@ -425,25 +450,15 @@
             "note": "jump to bookmark E (which is standing)"
         },
         {
-            "time": 1829,
-            "key": "Y",
-            "note": "jump to bookmark E (which is standing)",
+            "time": 1828,
+            "key": "F",
+            "note": "blackout all (right before humming)",
             "text": "\"now looking back it's a little funny\" "
         },
         {
-            "time": 1832,
-            "key": "Y",
-            "note": "jump to bookmark E (which is standing)"
-        },
-        {
-            "time": 1849,
-            "key": "F",
-            "note": "blackout all (right before humming)"
-        },
-        {
-            "time": 1849,
-            "key": "B",
-            "note": "hide doppel"
+            "time": 1885,
+            "key": "K",
+            "note": "[PLATEAU RECORDING: false] switch to send class only "
         },
         {
             "time": 1885,
@@ -454,11 +469,6 @@
             "time": 1885,
             "key": "G",
             "note": "unblackout all"
-        },
-        {
-            "time": 1890,
-            "key": "A",
-            "note": "show doppel"
         },
         {
             "time": 2093,
