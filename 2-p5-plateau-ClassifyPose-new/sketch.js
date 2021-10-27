@@ -21,6 +21,7 @@ let classCache = [];
 let cacheLength = 20; //classification window size
 
 let maxClass, maxCount;
+let pMaxClass;
 let classThreshold = 0.8;
 let newClassCountBaseline = cacheLength * classThreshold; //calculate the baseline for deciding how much % within the window we count as a new class
 let plateauStarted = false;
@@ -212,15 +213,19 @@ function draw() {
 
     //whenever there's a new plateau start, given the current window length & baseline, mark its start time and send new class over.
     if (isClassifying && !plateauStarted && maxClass && maxCount > newClassCountBaseline) {
-      console.log(maxClass + " started at frame " + frameCount);
+      
 
       // Only send class when it's asked for
       if (sendClass) {
-        console.log("Sending new class.");
-        socket.emit("classNew", maxClass);
+        if (maxClass != pMaxClass){
+          console.log("Sending new class: " + maxClass + " at " + frameCount);
+          socket.emit("classNew", maxClass);
+          pMaxClass = maxClass;
+        }
       }
       // Don't do plateaus if we are sending classes
       else {
+        console.log(maxClass + " started at frame " + frameCount);
         plateauStarted = true;
         plateauStartTime = Date.now();
       }
@@ -228,6 +233,7 @@ function draw() {
     //whenever the plateau ends, mark its end time and send it over to part 3.
     else if (plateauStarted && (endPlateau || itsBeenAWhile || maxCount < newClassCountBaseline)) {
       console.log(maxClass + " ended at frame " + frameCount);
+      console.log(endPlateau, itsBeenAWhile, maxCount < newClassCountBaseline );
       plateauStarted = false;
       plateauEndTime = Date.now() - (itsBeenAWhile ? 0 : NOBODY);
 
