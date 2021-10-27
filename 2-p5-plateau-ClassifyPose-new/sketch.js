@@ -99,16 +99,16 @@ function setup() {
     saveJSON(
       plateaus,
       "plateaus-" +
-        month() +
-        "-" +
-        day() +
-        "-" +
-        hour() +
-        "-" +
-        minute() +
-        "-" +
-        second() +
-        ".json"
+      month() +
+      "-" +
+      day() +
+      "-" +
+      hour() +
+      "-" +
+      minute() +
+      "-" +
+      second() +
+      ".json"
     );
   });
   downloadBtn.parent("controlsDiv");
@@ -215,7 +215,7 @@ function draw() {
       console.log(maxClass + " started at frame " + frameCount);
 
       // Only send class when it's asked for
-      if(sendClass) {
+      if (sendClass) {
         console.log("Sending new class.");
         socket.emit("classNew", maxClass);
       }
@@ -276,10 +276,10 @@ function keyPressed() {
     } else calibrateEl.show();
   }
   // Toggle Classification with Spacebar
-  else if(keyCode == 32) {
+  else if (keyCode == 32) {
     toggleClassification();
   }
-  else if(keyCode == ENTER) {
+  else if (keyCode == ENTER) {
     toggleSendingClass();
   }
 }
@@ -447,23 +447,46 @@ function getMaxClass(array) {
 }
 
 //---------------------Classification Helpers----------------------
-function toggleClassification() {
-  if (!isClassifying) {
-    classifyBtn.html("Stop");
-    isClassifying = true;
-    endPlateau = false;
-    classify();
-    socket.emit("plateauOn", true); //tells the controller sketch that plateau analysis is ready
+function toggleClassification(msg) {
+  console.log(msg);
+  if (msg == undefined){
+    if (!isClassifying) {
+      classifyBtn.html("Stop");
+      isClassifying = true;
+      endPlateau = false;
+      classify();
+      socket.emit("plateauOn", true); //tells the controller sketch that plateau analysis is ready
+    } else {
+      classifyBtn.html("Predict");
+      isClassifying = false;
+      endPlateau = true;
+      socket.emit("plateauOn", false); //tells the controller sketch that plateau analysis is off
+    }
   } else {
-    classifyBtn.html("Predict");
-    isClassifying = false;
-    endPlateau = true;
-    socket.emit("plateauOn", false); //tells the controller sketch that plateau analysis is off
+    if (msg == true) {
+      classifyBtn.html("Stop");
+      isClassifying = true;
+      endPlateau = false;
+      classify();
+      socket.emit("plateauOn", true); //tells the controller sketch that plateau analysis is ready
+    } else {
+      classifyBtn.html("Predict");
+      isClassifying = false;
+      endPlateau = true;
+      socket.emit("plateauOn", false); //tells the controller sketch that plateau analysis is off
+    }
   }
+
 }
 
-function toggleSendingClass() {
-  sendClass = !sendClass;
+function toggleSendingClass(msg) {
+
+  if (msg == undefined){
+    sendClass = !sendClass;
+  } else {
+    sendClass = msg;
+  }
+  
   console.log("Sending Class: ", sendClass);
   console.log("Sending Plateau: ", !sendClass);
   socket.emit("classOn", sendClass); // inform controller whether sending class or not
@@ -553,17 +576,21 @@ function setupSocket() {
     socket.emit("plateauOn", false);
   });
 
-  //-------------In Progress: used for video mode-------------
-  socket.on("playVideo", function (msg) {});
 
-  socket.on("scrubVideo", function (msg) {});
-
+  //-----------plateau classification-----------------
   // Toggle whether to classify
-  socket.on("toggleclassifier", toggleClassification);
-
-  // Toggle whether to send new class
-  socket.on("togglesendclass", function(){
-    toggleSendingClass();
+  socket.on("toggleclassifier", function (msg){
+    toggleClassification(msg);
   });
 
+  // Toggle whether to send new class
+  socket.on("togglesendclass", function (msg) {
+    toggleSendingClass(msg);
+  });
+
+
+  //-------------In Progress: used for video mode-------------
+  socket.on("playVideo", function (msg) { });
+
+  socket.on("scrubVideo", function (msg) { });
 }

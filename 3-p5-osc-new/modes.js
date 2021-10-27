@@ -84,7 +84,8 @@ let speed = { //------------speed-based--------------------------
 
 let plateau = { //-------------plateau-based----------------
   //-------------------mode 3: clasification plateau stuff----------------
-  plateauOn: false,
+  plateauOn: undefined, //whether plateau classification is on or off
+  classOn: undefined, //whether sending class is on or off
   plateaus: new Map(),
   currentClass: undefined,
   haveNewClass: false,
@@ -95,78 +96,89 @@ let plateau = { //-------------plateau-based----------------
   currentClipLength: undefined,
   initialDelayFrameIdx: undefined,
   timer: undefined,
-  classOn: undefined,
+  // receivingPlateau: true,
   run: function () {
+
+    // if we can't get plateau classification status, need to check if classifier is running and socket connection is ok.
+    if (this.plateauOn == undefined){
+      text("Plateau classification is unknown. PLEASE CHECK Classifier Connection.", INFOX, INFOY + 25);
+      return;
+    }
+
+    // run normal plateau logic
     if (this.classOn != undefined){
       text("Plateau classification is: " + (this.plateauOn ? "On." : "Off.") + " Sending Class: " + (this.classOn  ? "On." : "Off."), INFOX, INFOY + 25);
     } else {
       text("Plateau classification is: " + (this.plateauOn ? "On." : "Off.") + " Sending Class: unknow. (Should be off by default).", INFOX, INFOY + 25);
     }
     
+    if (!this.currentClass) {console.log("querying class"); socket.emit("queryClass"); }
 
-    if (this.plateauOn) { //-----------------------if plateau classification is on, we calculate the number of frames to be delayed automatically
-      if (!this.currentClass) { console.log("querying class"); socket.emit("queryClass"); }
-      //----------------------auto controlling TD using plateau data------------------------
+    //----------------------auto controlling TD using plateau data------------------------
+    // console.log(haveNewClass, currentClipFinished);
+    if (this.haveNewClass || this.currentClipFinished) {
+      //pick a plateau whenever there's a new class or the current clip is finished
+      let [pStartTime, pLength] = getStartTimeAndLengthRandom(this.plateaus, this.currentClass);
+      this.haveNewClass = false;
+      // this.currentClipFinished = false;
 
-      // console.log(haveNewClass, currentClipFinished);
-      if (this.haveNewClass || this.currentClipFinished) {
-        //pick a plateau whenever there's a new class or the current clip is finished
-        let [pStartTime, pLength] = getStartTimeAndLengthRandom(this.plateaus, this.currentClass);
-        this.haveNewClass = false;
-        // this.currentClipFinished = false;
+      // console.log(pStartTime, pLength);
+      if (pStartTime != undefined && pLength != undefined) {
+        this.targetClass = this.currentClass; //TODO: target class is a place holder for interuption logic
+        this.targetClassInPlateaus = true;
+        this.currentClipStartTime = Date.now();
+        this.currentClipLength = pLength;
+        console.log("target class " + this.currentClass + " in plateaus: " + this.targetClassInPlateaus);
+        console.log("start: " + pStartTime + " length: " + pLength);
+        let millisToDelay = Date.now() - startTime - pStartTime;
+        console.log("millis to delay: " + millisToDelay);
+        delayFrameIdx = floor((millisToDelay) / 1000 * CAMFPS); //convert plateau start time to how many frames we should go back from the present
+        this.initialDelayFrameIdx = delayFrameIdx;
+        // this.haveNewClass = false;
+        this.currentClipFinished = false;
 
-        // console.log(pStartTime, pLength);
-        if (pStartTime != undefined && pLength != undefined) {
-          this.targetClass = this.currentClass; //TODO: target class is a place holder for interuption logic
-          this.targetClassInPlateaus = true;
-          this.currentClipStartTime = Date.now();
-          this.currentClipLength = pLength;
-          console.log("target class " + this.currentClass + " in plateaus: " + this.targetClassInPlateaus);
-          console.log("start: " + pStartTime + " length: " + pLength);
-          let millisToDelay = Date.now() - startTime - pStartTime;
-          console.log("millis to delay: " + millisToDelay);
-          delayFrameIdx = floor((millisToDelay) / 1000 * CAMFPS); //convert plateau start time to how many frames we should go back from the present
-          this.initialDelayFrameIdx = delayFrameIdx;
-          // this.haveNewClass = false;
-          this.currentClipFinished = false;
+        // Clear the current timer if there is one
+        if (this.timer) clearTimeout(this.timer);
 
-          // Clear the current timer if there is one
-          if (this.timer) clearTimeout(this.timer);
-
-          //wait for pLength milliseconds to ask for a new clip
-          this.timer = setTimeout(() => {
-            this.currentClipFinished = true;
-            console.log("current clip done.")
-          }, pLength);
-
-        } else {
-          this.targetClassInPlateaus = false;
-        }
+        //wait for pLength milliseconds to ask for a new clip
+        this.timer = setTimeout(() => {
+          this.currentClipFinished = true;
+          console.log("current clip done.")
+        }, pLength);
 
       } else {
-        //otherwise continue on the current clip (update the delayFrameIdx every RECORDINGSECONDS)
-        // if (this.initialDelayFrameIdx) delayFrameIdx = this.initialDelayFrameIdx + floor((Date.now() - this.currentClipStartTime) / 1000 / RECORDINGSECONDS) * RECORDINGFRAMES;
-
-        //otherwise continue on the current clip (auto roll over to next recording is now happening in TD)
-        if (this.initialDelayFrameIdx) delayFrameIdx = this.initialDelayFrameIdx;
+        this.targetClassInPlateaus = false;
       }
 
-      text("Current class is: " + this.currentClass, INFOX, INFOY + 50);
-      if (!this.targetClassInPlateaus) text("We need at least one plateau finished " + RECORDINGSECONDS + " seconds ago to pull from the recording.", INFOX, INFOY + 75);
-      if (this.targetClassInPlateaus) text("Current pulling " + this.targetClass + ", method is: Random. Finishing in: " + (this.currentClipLength - (Date.now() - this.currentClipStartTime)) / 1000, INFOX, INFOY + 100);
-
     } else {
-      //----------------------manual controlling TD using mouse as a fall back------------------------
-      fill(0);
-      ellipse(mouseX, mouseY, 50, 50);
-      //first calculate the number of frames available for manual srubbing
-      //dynamically allocating TD cached frames for scrubbing is too glitchy, so we assume TD is already fully cached.
-      let availableFrames = cue.availableRecordingNum * RECORDINGFRAMES + CACHEFRAMES;
+      //otherwise continue on the current clip (update the delayFrameIdx every RECORDINGSECONDS)
+      // if (this.initialDelayFrameIdx) delayFrameIdx = this.initialDelayFrameIdx + floor((Date.now() - this.currentClipStartTime) / 1000 / RECORDINGSECONDS) * RECORDINGFRAMES;
 
-      //then we reversely map mouseX with available Frames
-      delayFrameIdx = constrain(floor(map(mouseX, 0, width, availableFrames - 1, 0)), 0, availableFrames - 1);
-      // delayFrameIdx = 0;
+      //otherwise continue on the current clip (auto roll over to next recording is now happening in TD)
+      if (this.initialDelayFrameIdx) delayFrameIdx = this.initialDelayFrameIdx;
     }
+
+    text("Current class is: " + this.currentClass, INFOX, INFOY + 50);
+    if (!this.targetClassInPlateaus) text("We need at least one plateau finished " + RECORDINGSECONDS + " seconds ago to pull from the recording.", INFOX, INFOY + 75);
+    if (this.targetClassInPlateaus) text("Current pulling " + this.targetClass + ", method is: Random. Finishing in: " + (this.currentClipLength - (Date.now() - this.currentClipStartTime)) / 1000, INFOX, INFOY + 100);
+
+
+    // if (this.plateauOn) { //-----------------------if plateau classification is on, we calculate the number of frames to be delayed automatically
+
+    // } else {
+
+    //   text("Press J to turn on plateau classification", INFOX, INFOY + 50);
+    //   // //----------------------manual controlling TD using mouse as a fall back------------------------
+    //   // fill(0);
+    //   // ellipse(mouseX, mouseY, 50, 50);
+    //   // //first calculate the number of frames available for manual srubbing
+    //   // //dynamically allocating TD cached frames for scrubbing is too glitchy, so we assume TD is already fully cached.
+    //   // let availableFrames = cue.availableRecordingNum * RECORDINGFRAMES + CACHEFRAMES;
+
+    //   // //then we reversely map mouseX with available Frames
+    //   // delayFrameIdx = constrain(floor(map(mouseX, 0, width, availableFrames - 1, 0)), 0, availableFrames - 1);
+    //   // // delayFrameIdx = 0;
+    // }
   }
 }
 

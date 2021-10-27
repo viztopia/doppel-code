@@ -18,7 +18,7 @@ let tdSocketID;
 
 //------------used to maintain plateau classification status-------------
 let plateauStatus = false;
-let currentClass;
+let currentClass = undefined;
 
 
 io.sockets.on('connection', function(socket) {
@@ -159,25 +159,18 @@ io.sockets.on('connection', function(socket) {
   //-----------------broadcast classification plateau stuff-----------------
 
   //control classification
-  socket.on('toggleclassifier', function() {
-    socket.broadcast.emit("toggleclassifier");
+  socket.on('toggleclassifier', function(msg) {
+    socket.broadcast.emit("toggleclassifier", msg);
     // socket.broadcast.emit("message1", 1234);
-    console.log("toggle classifier");
+    console.log("toggle classifier to: " + msg);
   });
 
-  socket.on('togglesendclass', function() {
-    socket.broadcast.emit("togglesendclass");
+  socket.on('togglesendclass', function(msg) {
+    socket.broadcast.emit("togglesendclass", msg);
     // socket.broadcast.emit("message1", 1234);
-    console.log("toggle send class");
+    console.log("toggle send class to:" + msg);
   });
   
-  //broadcast plateau stuff
-  socket.on('plateauOn', function(msg) {
-    socket.broadcast.emit("plateauOn", msg);
-    // socket.broadcast.emit("message1", 1234);
-    console.log("plateau classification is: " + (msg ? "On" : "Off"));
-    plateauStatus = msg;
-  });
   //broadcast plateau stuff
   socket.on('plateauOn', function(msg) {
     socket.broadcast.emit("plateauOn", msg);
@@ -202,7 +195,7 @@ io.sockets.on('connection', function(socket) {
     console.log("new class: " + msg);
   });
   socket.on('queryClass', function() {
-    if (currentClass) socket.emit("queriedClass", currentClass);
+    socket.emit("queriedClass", currentClass);
     // socket.broadcast.emit("message1", 1234);
     console.log("queried class: " + currentClass);
   });

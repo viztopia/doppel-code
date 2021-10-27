@@ -29,9 +29,6 @@ let recordedSeconds;
 let delayFrameIdx = 0;
 let pDelayFrameIdx = 0;
 
-//-------------recover settings-----------
-let acceptingNewPlateau = true;
-
 //-------------autopilot-------------
 let isAutopilot = true;
 let autopilotData;
@@ -55,15 +52,20 @@ function setup() {
   btnRecoverShow = createButton('RECOVER'); //
   btnRecoverShow.position(240, 0);
   btnRecoverShow.mousePressed(() => {
-    acceptingNewPlateau = true;
+    // plateau.plateauOn = true;
     recoverPerformance("showData.json")
   }); //make sure to change json name to showData.json
 
   btnRecoverOhCrap = createButton('RECOVER Oh Crap'); //
   btnRecoverOhCrap.position(240, 25);
   btnRecoverOhCrap.mousePressed(() => {
-    acceptingNewPlateau = false;
-    recoverPerformance("showData.json")
+    recoverPerformance("showData.json");
+
+    setTimeout(() => {  //make sure we turn off classifier
+      plateau.plateauOn = false;
+      socket.emit("toggleclassifier", plateau.plateauOn);
+      console.log("RECOVER OH CRAP, manually turning off classifier.")
+    }, 2000);
   }); //make sure to change json name to showData.json
 
   textAlign(LEFT, CENTER);
@@ -248,7 +250,6 @@ function savePerformance() {
     recordedSeconds: recordedSeconds,
     delayFrameIdx: delayFrameIdx,
     pDelayFrameIdx: pDelayFrameIdx,
-    acceptingNewPlateau: acceptingNewPlateau,
     isAutopilot: isAutopilot,
 
     //cue data
@@ -264,6 +265,7 @@ function savePerformance() {
     speed_mappedFrames: speed.mappedFrames,
     speed_avgFrame: speed.avgFrame,
     plateau_plateauOn: plateau.plateauOn,
+    plateau_classOn: plateau.classOn,
     plateau_plateaus: JSON.stringify([...plateausToSave]), //replace with cleaned plateaus now
     plateau_currentClass: plateau.currentClass, //should we clear this?
     plateau_haveNewClass: plateau.haveNewClass, //should we clear this?
@@ -293,7 +295,6 @@ function recoverPerformance(jsonPath) {
     recordedSeconds = data.recordedSeconds - data.recordedSeconds % RECORDINGSECONDS;
     delayFrameIdx = data.delayFrameIdx;
     pDelayFrameIdx = data.pDelayFrameIdx;
-    acceptingNewPlateau = data.acceptingNewPlateau;
     isAutopilot = data.isAutopilot;
 
     cue.showDoppel = data.showDoppel;
@@ -306,7 +307,8 @@ function recoverPerformance(jsonPath) {
     speed.jointDist = data.speed_jointDist;
     speed.mappedFrames = data.speed_mappedFrames;
     speed.avgFrame = data.speed_avgFrame;
-    // plateau.plateauOn = data.plateau_plateauOn;
+    plateau.plateauOn = data.plateau_plateauOn;
+    plateau.classOn = data.plateau_classOn;
     plateau.plateaus = new Map(JSON.parse(data.plateau_plateaus));
     // plateau.currentClass = data.plateau_currentClass;
     // plateau.haveNewClass = data.plateau_haveNewClass;
@@ -336,6 +338,10 @@ function recoverPerformance(jsonPath) {
       cue.isPlayingSound = true;
       socket.emit("playsound", cue.isPlayingSound)
     };
+
+    //resume classifier & send class
+    socket.emit("toggleclassifier", plateau.plateauOn);
+    socket.emit("togglesendclass", plateau.classOn);
 
 
     //start show
@@ -451,12 +457,14 @@ function keyPressed(e) {
     case 73: //-----------I: show joke 1 text
       if (mode == OTHER) socket.emit("source", JOKE1);
       break;
-    case 74: //-----------J: black out both off
-      socket.emit("toggleclassifier");
+    case 74: //-----------J: toggle plateau classification
+      plateau.plateauOn = !plateau.plateauOn;
+      socket.emit("toggleclassifier", plateau.plateauOn);
       cue.toggleclassifier++;
       break;
-    case 75: //-----------K: black out both off
-      socket.emit("togglesendclass");
+    case 75: //-----------K: toggle sending new class
+      plateau.classOn = !plateau.classOn;
+      socket.emit("togglesendclass", plateau.classOn);
       cue.togglesendclass++;
       break;
     case 79: //-----------O: show joke 2 text
@@ -489,65 +497,63 @@ function connect() {
     port: SOCKETPORT,
     rememberTransport: false
   });
-  socket.on('connect', function() {
+  socket.on('connect', function () {
     console.log("Connected!");
     if (!started) socket.emit("fileIdx", 0);
   });
 
   //---socket msg from part 2 classification sketch------------------
-  socket.on('plateauOn', function(msg) {
+  socket.on('plateauOn', function (msg) {
     console.log("plateau classification is: " + (msg ? "On" : "Off"));
     plateau.plateauOn = msg;
   });
 
-  // socket.on('plateauNew222222', function (p) {  //black out all plateaus, for testing only
-  socket.on('plateauNew', function(p) {
+  socket.on('plateauNew', function (p) {
 
     if (started) {
 
-      if (acceptingNewPlateau) {
-        console.log("received a new plateau of class " + p.className + ". it'll be available after " + RECORDINGSECONDS + " seconds.");
+      console.log("received a new plateau of class " + p.className + ". it'll be available after " + RECORDINGSECONDS + " seconds.");
 
-        setTimeout(() => { //delay RECORDINGSECONDS so that plateau playback won't bleed into cache
+      setTimeout(() => { //delay RECORDINGSECONDS so that plateau playback won't bleed into cache
 
-          console.log("new plateau available: ");
-          console.log(p);
+        console.log("new plateau available: ");
+        console.log(p);
 
-          //for each plateau, record its start time relative to the show's start time, i.e., how many milli seconds after the show starts.
-          let st = p.start - startTime > 0 ? p.start - startTime : 0;
+        //for each plateau, record its start time relative to the show's start time, i.e., how many milli seconds after the show starts.
+        let st = p.start - startTime > 0 ? p.start - startTime : 0;
 
-          if (!plateau.plateaus.has(p.className)) {
-            plateau.plateaus.set(p.className, [{
-              start: st,
-              length: p.end - p.start
-            }]); // if plateau of this class never exists, add one.
-          } else {
-            plateau.plateaus.get(p.className).push({
-              start: st,
-              length: p.end - p.start
-            }); // if plateau of this class already exists, add data to array.
-          }
-          // console.log(plateaus);
-          // plateaus.push({ className: p.className, start: p.start - startTime, length: p.end - p.start }); //save plateaus with timestamps in relation to recording start time
+        if (!plateau.plateaus.has(p.className)) {
+          plateau.plateaus.set(p.className, [{
+            start: st,
+            length: p.end - p.start
+          }]); // if plateau of this class never exists, add one.
+        } else {
+          plateau.plateaus.get(p.className).push({
+            start: st,
+            length: p.end - p.start
+          }); // if plateau of this class already exists, add data to array.
+        }
+        // console.log(plateaus);
+        // plateaus.push({ className: p.className, start: p.start - startTime, length: p.end - p.start }); //save plateaus with timestamps in relation to recording start time
 
-        }, RECORDINGSECONDS * 1000);
-      } else {
-        console.log("received a new plateau of class " + p.className + " but acceptance is closed. skipped.");
-      }
-
+      }, RECORDINGSECONDS * 1000);
     } else {
       console.log("got a new class " + p.className + " plateau but show not started yet. skipped.");
-      // console.log(p);
     }
   });
 
   socket.on('queriedClass', (c) => {
-    if (!plateau.currentClass) {
-      plateau.currentClass = c;
-      console.log("got queried class: " + c);
+    if (c != undefined) {
+      if (!plateau.currentClass) {
+        plateau.currentClass = c;
+        console.log("got queried class: " + c);
+      } else {
+        console.log("current class already exist: " + plateau.currentClass);
+      };
     } else {
-      console.log("current class is: " + plateau.currentClass);
-    };
+      plateau.currentClass = "1-Front"; //if there's no current class in the classifier, use "1-Front" as default.
+    }
+
   });
 
   socket.on('classNew', (c) => {
@@ -558,7 +564,7 @@ function connect() {
     };
   });
 
-  socket.on('classOn', (sc)=>{
+  socket.on('classOn', (sc) => {
     plateau.classOn = sc;
   })
   socket.on('jointDist', (jd) => {
