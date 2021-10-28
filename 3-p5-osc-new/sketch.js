@@ -1,18 +1,5 @@
-// MIDI controller
-
-// choreography logic, updated 08/24:
-// 0: PRESET interval mode: PRESET interval looping btw 4s, 4.5s, 6s and 10s
-// 1: Manual 1 mode: manual mode controlling the number of frames to delay using 1 interval;
-// 2: Speed mode: based on the joint distance, calcualte the amount of delay;
-// 3: Plateau mode: based on current class, pick one plateau with the same class; if no corresponding plateaus found, just play current frame;
-// - If one plateau finishes and we're still in the same class, pick another plateau with the same class;
-// - If we receive a new class in the middle of a plateau playback, jump to a new plateau that matches the new class;
-// - Added code and modes for plateau-based control and speed-based control and manual
-// 4: Bookmark mode: Q to save the current time as a bookmark, W to jump to bookmark
-
-
 //---------------modes config---------------------
-let mode = 0; // 0: PRESET interval, 1: manual 1 interval, 2: speed-based, 3:plateau-based, 4: bookmark
+let mode = 0; // 0: PRESET interval, 1: manual 1, 2: speed-based, 3:plateau-based, 4: bookmark
 
 //--------------sockets config-----------------------
 let socket;
@@ -33,6 +20,10 @@ let pDelayFrameIdx = 0;
 let isAutopilot = true;
 let autopilotData;
 let nextActionIdx = undefined;
+
+//-------------recovery----------
+let isAutoSave = false;
+let autoSaveIntervalID;
 
 function setup() {
   createCanvas(W, H);
@@ -83,19 +74,19 @@ function draw() {
   if (!started) {
     background(255, 0, 255);
     textSize(14);
-    text("If you wanna recover show:", INFOX, INFOY - 25);
-    text("Make sure TD window active, NOT minimized, showData updated.", INFOX, INFOY);
-    text("Top of Show: doppel ON, blackout ALL. Classify ON, Send Class OFF.", INFOX, INFOY + 50);
+    text("If recover: Make sure TD window active & showData updated.", INFOX, INFOY - 25);
+    text("Top of Show: doppel ON, blackout ALL. Classify ON, Send Class OFF, autopilot ON, autosave On.", INFOX, INFOY + 25, 450);
     if (autopilotData) {
-      text("Autopilot is: " + (isAutopilot ? "On" : "Off") + ", press M to toggle.", INFOX, INFOY + 100);
+      text("Autopilot: " + (isAutopilot ? "On" : "Off"), INFOX, INFOY + 100);
     } else {
       text("Autopilot data is not available. Please check autopilot.json", INFOX, INFOY + 100);
     }
+    text("Autosave: " + (isAutoSave?"On":"Off"), INFOX + 100, INFOY + 100).
     text("Doppel: " + (cue.showDoppel ? "On" : "Off") + "    Sound: " + (cue.isPlayingSound ? "On" : "Off"), INFOX, INFOY + 150);
     text("Blackout:" + (cue.blackoutLeft ? " Left" : "") + (cue.blackoutRight ? " Right" : ""), INFOX, INFOY + 175);
     text("Fadein: " + cue.fadeints, INFOX, INFOY + 200);
     // text("Classify: " + cue.toggleclassifier + "      Send: " + cue.togglesendclass, INFOX, INFOY + 225);
-    text("Classify: " + (plateau.plateauOn ? "On" : "Off") + "      Send Class: " + (plateau.classOn ? "On" : "Off") , INFOX, INFOY + 225);
+    text("Classify: " + (plateau.plateauOn ? "On" : "Off") + "      Send Class: " + (plateau.classOn ? "On" : "Off"), INFOX, INFOY + 225);
   } else {
 
     //--------display mode-----------------------
@@ -170,6 +161,11 @@ function startPerformance() {
   //start recording
   socket.emit("record", 1);
 
+  //get ready for auto save
+  if (isAutoSave){
+    autoSaveIntervalID = setInterval(savePerformance, CACHELENGTH * 1000);
+  }
+
   //start show
   started = true;
   console.log("Show and recording started at: " + startTime);
@@ -202,6 +198,9 @@ function stopPerformance() {
   //reset autopilot
   // isAutopilot = false;
   nextActionIdx = undefined;
+
+  //clear auto save
+  if (autoSaveIntervalID) clearInterval(autoSaveIntervalID);
 
   //we don't reset startTime, recordedSeconds, delayFrameIdx, pleateaus, and bookmarks just so we can save them if needed
 }
@@ -347,6 +346,11 @@ function recoverPerformance(jsonPath) {
     //get ready for autopilot if it's on
     nextActionIdx = undefined;
 
+    //get ready for auto save
+    if (isAutoSave){
+      autoSaveIntervalID = setInterval(savePerformance, CACHELENGTH * 1000);
+    }
+
     //start show
     started = true;
     console.log("Show recovered at new start time: " + startTime);
@@ -486,6 +490,9 @@ function keyPressed(e) {
       break;
     case 90: //-----------Z: reset max joint dists to their defaults
       speed.maxJointDists.splice(0, speed.maxJointDists.length, ...speed.maxJointDistsDefaults);
+      break;
+    case 88: //-----------X: toggle auto-saving
+      isAutoSave = !isAutoSave;
       break;
   }
 
