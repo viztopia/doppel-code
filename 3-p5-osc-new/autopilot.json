@@ -9,15 +9,15 @@
         },
         {
             "time": 27,
-            "key": "S",
-            "note": "unblackout left",
-            "text": "sitting straight front"
-        },
-        {
-            "time": 27,
             "key": "H",
             "note": "fade in left",
             "text": "sitting straight front\n0.42 \"a friend of mine once told me\""
+        },
+        {
+            "time": 27,
+            "key": "S",
+            "note": "unblackout left",
+            "text": "sitting straight front"
         },
         {
             "time": 56,
@@ -138,39 +138,87 @@
         },
         {
             "time": 821,
-            "key": "Q",
-            "note": "mark real nini about to stands up (right before first walking - because it happened)"
-        },
-        {
-            "time": 821,
             "key": "0",
-            "note": "switch to preset 4 sec (running start, voice: bc I have that feeling)"
+            "note": "go to preset 4 sec"
         },
         {
-            "time": 821,
+            "time": 822,
+            "key": "Q",
+            "note": "mark real nini about to stands up",
+            "text": "because it happened"
+        },
+        {
+            "time": 822,
+            "key": "ArrowLeft",
+            "note": "go to preset 0 sec"
+        },
+        {
+            "time": 823,
+            "key": "E",
+            "note": "mark real nini standing"
+        },
+        {
+            "time": 825,
             "key": "ArrowRight",
-            "note": "got to preset 4.5"
+            "note": "go to preset 4 sec"
         },
         {
-            "time": 821,
-            "key": "ArrowRight",
-            "note": "go to preset 6 sec "
+            "time": 825,
+            "key": "4",
+            "note": "switch to bookmark"
         },
         {
-            "time": 865,
+            "time": 825,
+            "key": "Y",
+            "note": "jump to bookmark E (which is standing)"
+        },
+        {
+            "time": 828,
+            "key": "0",
+            "note": "switch to preset 4 sec"
+        },
+        {
+            "time": 828,
+            "key": "0",
+            "note": "go to preset 4 sec"
+        },
+        {
+            "time": 828,
+            "key": "0",
+            "note": "go to preset 6 sec",
+            "text": "walking"
+        },
+        {
+            "time": 858,
             "key": "K",
-            "note": "[PLATEAU RECORDING: false]  NiNi begins crazy movement"
+            "note": "[PLATEAU RECORDING: false] switch to send class only "
+        },
+        {
+            "time": 860,
+            "key": "F",
+            "note": "blackout all"
+        },
+        {
+            "time": 863,
+            "key": "S",
+            "note": "unblackout left",
+            "text": "what else..."
         },
         {
             "time": 865,
             "key": "2",
             "note": "switch to speed (currently at 0.5)",
-            "text": "14. 25 robot \"what else... when I was young\""
+            "text": "14. 25 robot \"when I was young\""
         },
         {
             "time": 865,
             "key": "ArrowRight",
             "note": "change to speed 3"
+        },
+        {
+            "time": 870,
+            "key": "D",
+            "note": "unblackout right"
         },
         {
             "time": 888,
@@ -381,7 +429,7 @@
             "note": "go to preset 4.5 to get ready"
         },
         {
-            "time": 1487,
+            "time": 1488,
             "key": "ArrowLeft",
             "note": "go to preset 4 to get ready"
         },
@@ -450,15 +498,15 @@
             "note": "jump to bookmark E (which is standing)"
         },
         {
+            "time": 1826,
+            "key": "K",
+            "note": "[PLATEAU RECORDING: false] switch to send class only "
+        },
+        {
             "time": 1828,
             "key": "F",
             "note": "blackout all (right before humming)",
             "text": "\"now looking back it's a little funny\" "
-        },
-        {
-            "time": 1885,
-            "key": "K",
-            "note": "[PLATEAU RECORDING: false] switch to send class only "
         },
         {
             "time": 1885,

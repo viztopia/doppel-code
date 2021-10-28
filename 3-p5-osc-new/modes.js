@@ -1,5 +1,6 @@
 let preset = {
   idx: 2, //default to 4 sec.
+  pIdx: 2,
   currentDelayFrameIdx: 0,
   jumpIdx: 2, //preset idx smaller than this idx will be jumped and not eased
   run: function () {
@@ -11,9 +12,10 @@ let preset = {
     // Update current preset
     this.idx += step;
     this.idx = constrain(this.idx, 0, PRESETS.length - 1);
+    
   },
   updateCurrentFrame: function () {
-    if (this.idx < this.jumpIdx) { //if preset idx smaller than jump idx, just jump
+    if (this.idx < this.jumpIdx || (this.idx == 2 & this.pIdx == 1)) { //if preset idx smaller than jump idx, just jump
       this.currentDelayFrameIdx = PRESETS[this.idx] * RECORDINGFPS;
     } else { // Easing
       if (this.currentDelayFrameIdx < PRESETS[this.idx] * RECORDINGFPS) this.currentDelayFrameIdx++;
@@ -22,6 +24,7 @@ let preset = {
     }
 
     delayFrameIdx = this.currentDelayFrameIdx;
+    this.pIdx = this.idx;
   }
 }
 

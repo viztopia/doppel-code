@@ -344,6 +344,8 @@ function recoverPerformance(jsonPath) {
     socket.emit("toggleclassifier", plateau.plateauOn);
     socket.emit("togglesendclass", plateau.classOn);
 
+    //get ready for autopilot if it's on
+    nextActionIdx = undefined;
 
     //start show
     started = true;
