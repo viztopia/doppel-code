@@ -73,7 +73,7 @@
             "sound": "CLICK"
         },
         {
-            "time": 356,
+            "time": 358,
             "key": "ArrowRight",
             "note": "go to preset 10 sec",
             "sound": "CLICK"
@@ -82,7 +82,7 @@
             "time": 394,
             "key": "F",
             "note": "blackout all ",
-            "sound": "my first apartment (right after)"
+            "sound": "my first apartment (right after)\n"
         },
         {
             "time": 396,
@@ -107,7 +107,8 @@
         {
             "time": 398,
             "key": "S",
-            "note": "unblackout left - collapsy down"
+            "note": "unblackout left - collapsy down",
+            "sound": "6:39 CLICK"
         },
         {
             "time": 403,
@@ -116,10 +117,10 @@
             "sound": "6.50 \nThe first day.\nThe last day —\n\nI’ve learned\nLeaving and coming is a normal thing.\n\nI’m always —\nI’m always having serious emotional problems in airports. "
         },
         {
-            "time": 495,
+            "time": 490,
             "key": "0",
             "note": "switch to preset 4 sec (voice: when ppl leave)",
-            "sound": "8.18 \nWhen people leave, it’s not actually leaving.\n\nIt’s just the time and space they occupy… diminishes. \n\nThe people who leave are like… background music. \n\nNow looking back, it’s a little funny.\n\nI need to tell myself to calm down. \n\nWe’re all selfish. We can’t help it.\n\nBetween here and there, the distance is shorter. \nWhen I leave. I’m looking forward. \nWhen I sit down…. I think about...\n\nHUMMING"
+            "sound": "8.18 CLICK\nWhen people leave, it’s not actually leaving.\n\nIt’s just the time and space they occupy… diminishes. \n\nThe people who leave are like… background music. \n\nNow looking back, it’s a little funny.\n\nI need to tell myself to calm down. \n\nWe’re all selfish. We can’t help it.\n\nHUMMING\n\nBetween here and there, the distance is shorter. \nWhen I leave. I’m looking forward. \nWhen I sit down…. I think about...\n\nHUMMING"
         },
         {
             "time": 725,
@@ -407,8 +408,13 @@
         {
             "time": 1290,
             "key": "ArrowRight",
-            "note": "switch to preset 6 (echo circling)",
+            "note": "switch to preset 4.5 sec to get ready (echo circling)",
             "sound": "TALK ECHO HUMMING SECTION"
+        },
+        {
+            "time": 1290,
+            "key": "ArrowRight",
+            "note": "switch to preset 6 (echo circling)"
         },
         {
             "time": 1351,
