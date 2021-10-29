@@ -22,7 +22,7 @@ let autopilotData;
 let nextActionIdx = undefined;
 
 //-------------recovery----------
-let isAutoSave = false;
+let isAutoSave = true;
 let autoSaveIntervalID;
 
 function setup() {
@@ -81,8 +81,8 @@ function draw() {
     } else {
       text("Autopilot data is not available. Please check autopilot.json", INFOX, INFOY + 100);
     }
-    text("Autosave: " + (isAutoSave?"On":"Off"), INFOX + 100, INFOY + 100).
-    text("Doppel: " + (cue.showDoppel ? "On" : "Off") + "    Sound: " + (cue.isPlayingSound ? "On" : "Off"), INFOX, INFOY + 150);
+    text("Autosave: " + (isAutoSave ? "On" : "Off"), INFOX + 100, INFOY + 100).
+      text("Doppel: " + (cue.showDoppel ? "On" : "Off") + "    Sound: " + (cue.isPlayingSound ? "On" : "Off"), INFOX, INFOY + 150);
     text("Blackout:" + (cue.blackoutLeft ? " Left" : "") + (cue.blackoutRight ? " Right" : ""), INFOX, INFOY + 175);
     text("Fadein: " + cue.fadeints, INFOX, INFOY + 200);
     // text("Classify: " + cue.toggleclassifier + "      Send: " + cue.togglesendclass, INFOX, INFOY + 225);
@@ -161,14 +161,16 @@ function startPerformance() {
   //start recording
   socket.emit("record", 1);
 
-  //get ready for auto save
-  if (isAutoSave){
-    autoSaveIntervalID = setInterval(savePerformance, CACHELENGTH * 1000);
-  }
-
   //start show
   started = true;
   console.log("Show and recording started at: " + startTime);
+
+  //start auto save
+  if (isAutoSave) {
+    setTimeout(() => {
+      autoSaveIntervalID = setInterval(savePerformance, CACHELENGTH * 1000);
+    }, 500);
+  }
 }
 
 function stopPerformance() {
@@ -283,8 +285,8 @@ function savePerformance() {
 
   console.log("saving the following show data: ");
   console.log(showData);
-  saveJSON(showData, 'showData-' + month() + '-' + day() + '-' + hour() + '-' + minute() + '-' + second() + '.json');
-  // saveJSON(showData, 'showData.json');
+  // saveJSON(showData, 'showData-' + month() + '-' + day() + '-' + hour() + '-' + minute() + '-' + second() + '.json');
+  saveJSON(showData, 'showData.json');
 }
 
 function recoverPerformance(jsonPath) {
@@ -346,17 +348,19 @@ function recoverPerformance(jsonPath) {
     //get ready for autopilot if it's on
     nextActionIdx = undefined;
 
-    //get ready for auto save
-    if (isAutoSave){
-      autoSaveIntervalID = setInterval(savePerformance, CACHELENGTH * 1000);
-    }
-
     //start show
     started = true;
     console.log("Show recovered at new start time: " + startTime);
 
     console.log("recovered plateaus are:");
     console.log(plateau.plateaus);
+
+    //start auto save
+    if (isAutoSave) {
+      setTimeout(() => {
+        autoSaveIntervalID = setInterval(savePerformance, CACHELENGTH * 1000);
+      }, 500);
+    }
   });
 }
 
