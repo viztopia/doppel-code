@@ -285,13 +285,14 @@ function savePerformance() {
 
   console.log("saving the following show data: ");
   console.log(showData);
-  // saveJSON(showData, 'showData-' + month() + '-' + day() + '-' + hour() + '-' + minute() + '-' + second() + '.json');
-  saveJSON(showData, 'showData.json');
+  //saveJSON(showData, 'showData-' + month() + '-' + day() + '-' + hour() + '-' + minute() + '-' + second() + '.json');
+  //saveJSON(showData, 'showData.json');
 }
 
 function recoverPerformance(jsonPath) {
-
   loadJSON(jsonPath, (data) => {
+    console.log(data);
+
     mode = data.mode;
     startTime = Date.now() - (data.recordedSeconds - data.recordedSeconds % RECORDINGSECONDS) * 1000;
     recordedSeconds = data.recordedSeconds - data.recordedSeconds % RECORDINGSECONDS;

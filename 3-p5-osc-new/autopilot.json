@@ -120,36 +120,37 @@
             "time": 490,
             "key": "0",
             "note": "switch to preset 4 sec (voice: when ppl leave)",
-            "sound": "8.18 CLICK\nWhen people leave, it’s not actually leaving.\n\nIt’s just the time and space they occupy… diminishes. \n\nThe people who leave are like… background music. \n\nNow looking back, it’s a little funny.\n\nI need to tell myself to calm down. \n\nWe’re all selfish. We can’t help it.\n\nHUMMING\n\nBetween here and there, the distance is shorter. \nWhen I leave. I’m looking forward. \nWhen I sit down…. I think about...\n\nHUMMING"
+            "sound": "8.14 CLICK\nWhen people leave, it’s not actually leaving.\n\nIt’s just the time and space they occupy… diminishes. \n\nHUMMING\n\nThe people who leave are like… background music. \n\nNow looking back, it’s a little funny.\n\nI need to tell myself to calm down. \n\nWe’re all selfish. We can’t help it.\n\nHUMMING\n\nBetween here and there, the distance is shorter. \nWhen I leave. I’m looking forward. \nWhen I sit down…. I think about...\n\nHUMMING"
         },
         {
-            "time": 725,
+            "time": 731,
             "key": "S",
-            "note": "blackout left"
+            "note": "blackout left",
+            "sound": "12:07 \"the home sickness\""
         },
         {
-            "time": 728,
+            "time": 735,
             "key": "D",
             "note": "blackout right"
         },
         {
-            "time": 729,
+            "time": 739,
             "key": "S",
             "note": "unblackout left"
         },
         {
-            "time": 731,
+            "time": 739,
             "key": "2",
             "note": "switch to speed (currently at speed preset 1)",
-            "sound": "12.11 \"the home sickness, it's just with me one day\"\n"
+            "sound": "12.11  it's just with me one day\"\n"
         },
         {
-            "time": 731,
+            "time": 739,
             "key": "ArrowRight",
             "note": "change to speed 2"
         },
         {
-            "time": 736,
+            "time": 744,
             "key": "D",
             "note": "unblackout right",
             "sound": "12:41 and time is frozen\n13:02 I had this thought."
