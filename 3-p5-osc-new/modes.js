@@ -12,7 +12,7 @@ let preset = {
     // Update current preset
     this.idx += step;
     this.idx = constrain(this.idx, 0, PRESETS.length - 1);
-    
+
   },
   updateCurrentFrame: function () {
     if (this.idx < this.jumpIdx || (this.idx == 2 & this.pIdx == 1)) { //if preset idx smaller than jump idx, just jump
@@ -48,14 +48,14 @@ let manual = {
 
 let speed = { //------------speed-based--------------------------
   jointDist: 0,
-  FRAMESTOCACHE: 600, //caching 10 seconds for testing, so 10 * 60 = 600 frames
+  pJointDist: 0,
+  FRAMESTOCACHE: 600, //caching 20 seconds for testing, so 20 * 30 = 600 frames
   mappedFrames: [],
   avgFrame: 0,
   maxJointDistsDefaults: [1, 1, 1, 1], //default max joint dist used for preset recovery
   maxJointDists: [0.75, 0.75, 0.75, 0.75], //speed cue values based on 10/20 testing
   maxJointDistIdx: 0,  //the current idx used for speed cue
   run: function () {
-
     //map the jointDist amount to a frame index between 0 and framesToCache
     let mappedFrame = constrain(map(this.jointDist, 0, this.maxJointDists[this.maxJointDistIdx], 0, CACHEFRAMES - 1), 0, CACHEFRAMES - 1); //currently using only TD cache for performance considerations
     // console.log(mappedFrame);
@@ -66,19 +66,22 @@ let speed = { //------------speed-based--------------------------
       this.mappedFrames.splice(0, 1);
     }
 
+    this.pJointDist = this.jointDist;
+
+
     if (this.mappedFrames.length > 0) {
       delayFrameIdx = floor(getAvg1d(this.mappedFrames));
       text("Current joint dist is: " + this.jointDist, INFOX, INFOY + 25);
       text("Averaged delay frame is: " + delayFrameIdx, INFOX, INFOY + 50);
       text("Current Max Joint Dist is: " + this.maxJointDists[this.maxJointDistIdx] + ", Z to reset.", INFOX, INFOY + 75);
-    }
+    };
   },
   update: function (step) {
     // Update current speed max joint dist preset
     this.maxJointDistIdx += step;
     this.maxJointDistIdx = constrain(this.maxJointDistIdx, 0, this.maxJointDists.length - 1);
   },
-  adjust: function(step) {
+  adjust: function (step) {
     // manual adjust current max joint dist
     this.maxJointDists[this.maxJointDistIdx] += step * 0.05;
     this.maxJointDists[this.maxJointDistIdx] = constrain(this.maxJointDists[this.maxJointDistIdx], 0.05, 2); //constrain joint dist btw 0.05 & 2
@@ -103,19 +106,19 @@ let plateau = { //-------------plateau-based----------------
   run: function () {
 
     // if we can't get plateau classification status, need to check if classifier is running and socket connection is ok.
-    if (this.plateauOn == undefined){
+    if (this.plateauOn == undefined) {
       text("Plateau classification is unknown. PLEASE CHECK Classifier Connection.", INFOX, INFOY + 25);
       return;
     }
 
     // run normal plateau logic
-    if (this.classOn != undefined){
-      text("Plateau classification is: " + (this.plateauOn ? "On." : "Off.") + " Sending Class: " + (this.classOn  ? "On." : "Off."), INFOX, INFOY + 25);
+    if (this.classOn != undefined) {
+      text("Plateau classification is: " + (this.plateauOn ? "On." : "Off.") + " Sending Class: " + (this.classOn ? "On." : "Off."), INFOX, INFOY + 25);
     } else {
       text("Plateau classification is: " + (this.plateauOn ? "On." : "Off.") + " Sending Class: unknow. (Should be off by default).", INFOX, INFOY + 25);
     }
-    
-    if (!this.currentClass) {console.log("querying class"); socket.emit("queryClass"); }
+
+    if (!this.currentClass) { console.log("querying class"); socket.emit("queryClass"); }
 
     //----------------------auto controlling TD using plateau data------------------------
     // console.log(haveNewClass, currentClipFinished);
@@ -193,10 +196,10 @@ let bookmark = { //------------bookmark---------------------
   bookmark3: undefined,
   run: function () {
     if (this.bookmark1 || this.bookmark2 || this.bookmark3) {
-      let bookmarkTime1 = this.bookmark1 == undefined ? "empty" : (nf(floor(this.bookmark1/1000/60), 2, 0) + ":" + nf(floor(this.bookmark1/1000 % 60), 2, 0));
-      let bookmarkTime2 = this.bookmark2 == undefined ? "empty" : (nf(floor(this.bookmark2/1000/60), 2, 0) + ":" + nf(floor(this.bookmark2/1000 % 60), 2, 0));
-      let bookmarkTime3 = this.bookmark3 == undefined ? "empty" : (nf(floor(this.bookmark3/1000/60), 2, 0) + ":" + nf(floor(this.bookmark3/1000 % 60), 2, 0));
-      text("Current bookmarks:  " + bookmarkTime1 + ",  "  + bookmarkTime2 + ",  " + bookmarkTime3, INFOX, INFOY + 25);
+      let bookmarkTime1 = this.bookmark1 == undefined ? "empty" : (nf(floor(this.bookmark1 / 1000 / 60), 2, 0) + ":" + nf(floor(this.bookmark1 / 1000 % 60), 2, 0));
+      let bookmarkTime2 = this.bookmark2 == undefined ? "empty" : (nf(floor(this.bookmark2 / 1000 / 60), 2, 0) + ":" + nf(floor(this.bookmark2 / 1000 % 60), 2, 0));
+      let bookmarkTime3 = this.bookmark3 == undefined ? "empty" : (nf(floor(this.bookmark3 / 1000 / 60), 2, 0) + ":" + nf(floor(this.bookmark3 / 1000 % 60), 2, 0));
+      text("Current bookmarks:  " + bookmarkTime1 + ",  " + bookmarkTime2 + ",  " + bookmarkTime3, INFOX, INFOY + 25);
     } else {
       text("No bookmarks available yet.", INFOX, INFOY + 25);
     }
@@ -212,9 +215,9 @@ let bookmark = { //------------bookmark---------------------
   // },
   jump: function (bmNum) {
     let bmToJump;
-    if (bmNum == 1) {bmToJump = this.bookmark1;}
-    else if (bmNum == 2) {bmToJump = this.bookmark2;}
-    else if (bmNum == 3) {bmToJump = this.bookmark3;}
+    if (bmNum == 1) { bmToJump = this.bookmark1; }
+    else if (bmNum == 2) { bmToJump = this.bookmark2; }
+    else if (bmNum == 3) { bmToJump = this.bookmark3; }
     if (!bmToJump) return;
     console.log("jump to: " + bmToJump);
     delayFrameIdx = floor((Date.now() - startTime - bmToJump) / 1000 * CAMFPS);

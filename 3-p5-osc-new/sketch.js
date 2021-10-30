@@ -44,13 +44,13 @@ function setup() {
   btnRecoverShow.position(240, 0);
   btnRecoverShow.mousePressed(() => {
     // plateau.plateauOn = true;
-    recoverPerformance("showData.json");
+    recoverPerformance("../showdata_archive/showData.json");
   }); //make sure to change json name to showData.json
 
   btnRecoverOhCrap = createButton("RECOVER Oh Crap"); //
   btnRecoverOhCrap.position(240, 25);
   btnRecoverOhCrap.mousePressed(() => {
-    recoverPerformance("showData.json");
+    recoverPerformance("../showdata_archive/showData.json");
 
     setTimeout(() => {
       //make sure we turn off classifier
@@ -74,11 +74,7 @@ function draw() {
   if (!started) {
     background(255, 0, 255);
     textSize(14);
-    text(
-      "If recover: Make sure TD window active & showData updated.",
-      INFOX,
-      INFOY - 25
-    );
+    text("If recover: Make sure TD window active & showData updated.", INFOX, INFOY - 25);
     text(
       "Top of Show: doppel ON, blackout ALL. Classify ON, Send Class OFF, autopilot ON, autosave On.",
       INFOX,
@@ -88,41 +84,14 @@ function draw() {
     if (autopilotData) {
       text("Autopilot: " + (isAutopilot ? "On" : "Off"), INFOX, INFOY + 100);
     } else {
-      text(
-        "Autopilot data is not available. Please check autopilot.json",
-        INFOX,
-        INFOY + 100
-      );
+      text("Autopilot data is not available. Please check autopilot.json", INFOX, INFOY + 100);
     }
-    text(
-      "Autosave: " + (isAutoSave ? "On" : "Off"),
-      INFOX + 100,
-      INFOY + 100
-    ).text(
-      "Doppel: " +
-      (cue.showDoppel ? "On" : "Off") +
-      "    Sound: " +
-      (cue.isPlayingSound ? "On" : "Off"),
-      INFOX,
-      INFOY + 150
-    );
-    text(
-      "Blackout:" +
-      (cue.blackoutLeft ? " Left" : "") +
-      (cue.blackoutRight ? " Right" : ""),
-      INFOX,
-      INFOY + 175
-    );
+    text("Autosave: " + (isAutoSave ? "On" : "Off"), INFOX + 100, INFOY + 100);
+    text("Doppel: " + (cue.showDoppel ? "On" : "Off") + "    Sound: " + (cue.isPlayingSound ? "On" : "Off"), INFOX, INFOY + 150);
+    text("Blackout:" + (cue.blackoutLeft ? " Left" : "") + (cue.blackoutRight ? " Right" : ""), INFOX, INFOY + 175);
     text("Fadein: " + cue.fadeints, INFOX, INFOY + 200);
     // text("Classify: " + cue.toggleclassifier + "      Send: " + cue.togglesendclass, INFOX, INFOY + 225);
-    text(
-      "Classify: " +
-      (plateau.plateauOn ? "On" : "Off") +
-      "      Send Class: " +
-      (plateau.classOn ? "On" : "Off"),
-      INFOX,
-      INFOY + 225
-    );
+    text("Classify: " + (plateau.plateauOn ? "On" : "Off") + "      Send Class: " + (plateau.classOn ? "On" : "Off"), INFOX, INFOY + 225);
   } else {
     //--------display mode-----------------------
     background(MODEBGS[mode]);
@@ -134,11 +103,7 @@ function draw() {
     let clockMin = floor(recordedSeconds / 60);
     let clockSec = recordedSeconds % 60;
     textSize(14);
-    text(
-      "Show clock is: " + nf(clockMin, 2, 0) + ":" + nf(clockSec, 2, 0),
-      INFOX,
-      INFOY - 125
-    );
+    text("Show clock is: " + nf(clockMin, 2, 0) + ":" + nf(clockSec, 2, 0), INFOX, INFOY - 125);
 
     //--------autopilot------------------
     if (autopilotData && isAutopilot) {
@@ -150,20 +115,7 @@ function draw() {
           let nextAction = autopilotData.actions[nextActionIdx];
           let actionMin = floor(nextAction.time / 60);
           let actionSec = nextAction.time % 60;
-          text(
-            "Autopilot is On. Next action: at " +
-            nf(actionMin, 2, 0) +
-            ":" +
-            nf(actionSec, 2, 0) +
-            " press " +
-            nextAction.key +
-            "-" +
-            nextAction.note +
-            (nextAction.text ? ", " + nextAction.text : ""),
-            INFOX,
-            INFOY - 100,
-            W - 50
-          );
+          text("Autopilot is On. Next action: at " + nf(actionMin, 2, 0) + ":" + nf(actionSec, 2, 0) + " press " + nextAction.key + "-" + nextAction.note + (nextAction.text ? ", " + nextAction.text : ""), INFOX, INFOY - 100, W - 50);
           if (recordedSeconds == nextAction.time) {
             // console.log("executing: " + nextAction.time + ", " + nextAction.key + ", " + nextAction.note);
             let kc;
@@ -289,12 +241,9 @@ function savePerformance() {
     bookmarksToSave.push(bm);
   }
 
-  let bm1ToSave =
-    bookmark.bookmark1 > lastSecondMillis ? bookmark.bookmark1 : undefined;
-  let bm2ToSave =
-    bookmark.bookmark2 > lastSecondMillis ? bookmark.bookmark2 : undefined;
-  let bm3ToSave =
-    bookmark.bookmark3 > lastSecondMillis ? bookmark.bookmark3 : undefined;
+  let bm1ToSave = bookmark.bookmark1 > lastSecondMillis ? bookmark.bookmark1 : undefined;
+  let bm2ToSave = bookmark.bookmark2 > lastSecondMillis ? bookmark.bookmark2 : undefined;
+  let bm3ToSave = bookmark.bookmark3 > lastSecondMillis ? bookmark.bookmark3 : undefined;
 
   let showData = {
     //control data
