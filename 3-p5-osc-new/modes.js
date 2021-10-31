@@ -1,8 +1,4 @@
 let preset = {
-  idx: undefined, //default to 4 sec.
-  pIdx: undefined,
-  currentDelayFrameIdx: undefined,
-  jumpIdx: undefined, //preset idx smaller than this idx will be jumped and not eased
   reset: function() {
     this.idx = 2; //default to 4 sec.
     this.pIdx = 2;
@@ -56,14 +52,6 @@ let manual = {
 
 
 let speed = { //------------speed-based--------------------------
-  jointDist: undefined,
-  pJointDist: undefined,
-  FRAMESTOCACHE: undefined, //caching 20 seconds for testing, so 20 * 30 = 600 frames
-  mappedFrames: undefined,
-  avgFrame: undefined,
-  maxJointDistsDefaults: undefined, //default max joint dist used for preset recovery
-  maxJointDists: undefined, //speed cue values based on 10/20 testing
-  maxJointDistIdx: undefined,  //the current idx used for speed cue
   reset: function() {
     this.jointDist = 0,
     this.pJointDist = 0,
@@ -108,20 +96,6 @@ let speed = { //------------speed-based--------------------------
 }
 
 let plateau = { //-------------plateau-based----------------
-  //-------------------mode 3: clasification plateau stuff----------------
-  plateauOn: undefined, //whether plateau classification is on or off
-  classOn: undefined, //whether sending class is on or off
-  plateaus: new Map(),
-  currentClass: undefined,
-  haveNewClass: false,
-  targetClass: undefined,
-  targetClassInPlateaus: false,
-  currentClipStartTime: undefined,
-  currentClipFinished: true,
-  currentClipLength: undefined,
-  initialDelayFrameIdx: undefined,
-  timer: undefined,
-  currentWindowIdx: 0, //idx 0 is window length 20
   reset: function() {
     this.plateauOn = undefined; //whether plateau classification is on or off
     this.classOn = undefined; //whether sending class is on or off
@@ -229,11 +203,6 @@ let plateau = { //-------------plateau-based----------------
 }
 
 let bookmark = { //------------bookmark---------------------
-  bookmarks: [],
-  idx: 0,
-  bookmark1: undefined,
-  bookmark2: undefined,
-  bookmark3: undefined,
   reset: function() {
     this.bookmarks = [];
     this.idx = 0;

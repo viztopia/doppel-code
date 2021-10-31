@@ -36,9 +36,9 @@ function setup() {
   btnStop.position(80, 0);
   btnStop.mousePressed(stopPerformance);
 
-  btnSaveShow = createButton("SAVE"); //
-  btnSaveShow.position(160, 0);
-  btnSaveShow.mousePressed(savePerformance);
+  // btnSaveShow = createButton("SAVE"); //
+  // btnSaveShow.position(160, 0);
+  // btnSaveShow.mousePressed(savePerformance);
 
   // btnRecoverShow = createButton("RECOVER Local"); //
   // btnRecoverShow.position(240, 0);
@@ -144,11 +144,15 @@ function draw() {
 
 //------start & stop performance----------------
 function setTopOfShow() {
+  nextActionIdx = undefined;
   cue.reset();
   for(let mode of modes) mode.reset();
 }
 
 function startPerformance() {
+  // Set top of show
+  setTopOfShow();
+
   //---reset plateau data
   plateau.plateaus.clear();
 
@@ -186,16 +190,16 @@ function stopPerformance() {
   socket.emit("playsound", cue.isPlayingSound);
 
   //reset cue
-  // cue.showDoppel = false;
-  // socket.emit("showdoppel", cue.showDoppel);
-  // cue.blackoutLeft = false;
-  // socket.emit("blackoutleft", cue.blackoutLeft);
-  // cue.blackoutRight = false;
-  // socket.emit("blackoutright", cue.blackoutRight);
-
-  //reset mode
-  mode = 0;
-  preset.idx = 2;
+  cue.showDoppel = false;
+  socket.emit("showdoppel", cue.showDoppel);
+  cue.blackoutLeft = false;
+  socket.emit("blackoutleft", cue.blackoutLeft);
+  cue.blackoutRight = false;
+  socket.emit("blackoutright", cue.blackoutRight);
+  //
+  // //reset mode
+  // mode = 0;
+  // preset.idx = 2;
 
   //reset autopilot
   // isAutopilot = false;
@@ -370,11 +374,11 @@ function recoverPerformance_internal(data) {
   console.log(plateau.plateaus);
 
   //start auto save
-  if (isAutoSave) {
-    setTimeout(() => {
-      autoSaveIntervalID = setInterval(savePerformance, CACHELENGTH * 1000);
-    }, 500);
-  }
+  // if (isAutoSave) {
+  //   setTimeout(() => {
+  //     autoSaveIntervalID = setInterval(savePerformance, CACHELENGTH * 1000);
+  //   }, 500);
+  // }
 }
 
 //----------------------autopilot helper-------------------
@@ -391,27 +395,26 @@ function findNextActionIdx(currentShowTime) {
 // FF/REW to new show time
 function jumpToThisAction(newShowTimeInSeconds) {
   setTopOfShow();
-  startTime = Date.now() - (newShowTimeInSeconds * 1000);
   for (let a in autopilotData.actions) {
     let action = autopilotData.actions[a];
     if(action.time <= newShowTimeInSeconds) {
-      nextActionIdx = executeNextAction(a, true);
+      nextActionIdx = executeNextAction(int(a), true);
     }
     else break;
   }
-  // Move onto next action
-  nextActionIdx++;
+  startTime = Date.now() - (newShowTimeInSeconds * 1000);
 }
 
 function executeNextAction(idx, scrubbing) {
   if (idx <= autopilotData.actions.length - 1) {
     let nextAction = autopilotData.actions[idx];
+    //console.log("IDX:", idx, nextAction, scrubbing);
     //console.log("NEXT!", idx, nextAction);
     let actionMin = floor(nextAction.time / 60);
     let actionSec = nextAction.time % 60;
     text("Next: " + nf(actionMin, 2, 0) + ":" + nf(actionSec, 2, 0) + " press " + nextAction.key + "-" + nextAction.note + (nextAction.sound ? ", " + nextAction.sound : ""), INFOX, INFOY - 100, W-50);
     if (scrubbing || recordedSeconds == nextAction.time) {
-      console.log("executing: " + nextAction.time + ", " + nextAction.key + ", " + nextAction.note);
+      console.log("Executing:", idx, nextAction.time, nextAction.key, nextAction.note);
       let kc;
       if (nextAction.key == "ArrowLeft") kc = 37;
       else if (nextAction.key == "ArrowUp") kc = 38;
