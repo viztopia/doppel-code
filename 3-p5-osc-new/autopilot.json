@@ -4,459 +4,449 @@
         {
             "time": 0,
             "key": "0",
-            "noteplateauDefaultFalse": "switching to preset 4 sec & get ready for doppel (doppel is hidden at this time)"
+            "note": "switching to preset 4 sec & get ready for doppel (doppel is hidden at this time)"
         },
         {
             "time": 27,
             "key": "H",
-            "noteplateauDefaultFalse": "fade in left"
+            "note": "fade in left"
         },
         {
             "time": 27,
             "key": "S",
-            "noteplateauDefaultFalse": "unblackout left",
+            "note": "unblackout left",
             "sound": "\n0.42 \"a friend of mine once told me\""
         },
         {
             "time": 38,
             "key": "K",
-            "noteplateauDefaultFalse": "[PLATEAU RECORDING: true]"
+            "note": "[PLATEAU RECORDING: true]"
         },
         {
             "time": 56,
             "key": "ArrowLeft",
-            "noteplateauDefaultFalse": "go to preset 0 sec (to get prepared)",
+            "note": "go to preset 0 sec (to get prepared)",
             "sound": "0.56 \"travel long distances of silence\"\n1.15 \"I'm always hearing echoes\""
         },
         {
             "time": 57,
             "key": "ArrowLeft",
-            "noteplateauDefaultFalse": "go to preset 50 sec (will update presets as: 50, 0. 4, 4.5, 6, 10)"
+            "note": "go to preset 50 sec (will update presets as: 50, 0. 4, 4.5, 6, 10)"
         },
         {
             "time": 147,
             "key": "D",
-            "noteplateauDefaultFalse": "unblackout right"
+            "note": "unblackout right"
         },
         {
             "time": 255,
             "key": "K",
-            "noteplateauDefaultFalse": "[PLATEAU RECORDING: false] "
+            "note": "[PLATEAU RECORDING: false] "
         },
         {
             "time": 256,
             "key": "F",
-            "noteplateauDefaultFalse": "blackout all ",
+            "note": "blackout all ",
             "sound": "CLICK right after"
         },
         {
             "time": 256,
             "key": "ArrowRight",
-            "noteplateauDefaultFalse": "go to preset 0 sec (to get prepared)"
+            "note": "go to preset 0 sec (to get prepared)"
         },
         {
             "time": 257,
             "key": "ArrowRight",
-            "noteplateauDefaultFalse": "go to preset 4 sec"
+            "note": "go to preset 4 sec"
         },
         {
             "time": 267,
             "key": "S",
-            "noteplateauDefaultFalse": "unblackout left "
+            "note": "unblackout left "
         },
         {
             "time": 272,
             "key": "D",
-            "noteplateauDefaultFalse": "unblackout right",
+            "note": "unblackout right",
             "sound": "The moment \nI’m leaving \nthe thing or place.\n\nI park…\nnear a big rock."
         },
         {
             "time": 273,
             "key": "N",
-            "noteplateauDefaultFalse": "set window frame to 60"
+            "note": "set window frame to 60"
         },
         {
             "time": 273,
             "key": "K",
-            "noteplateauDefaultFalse": "[PLATEAU RECORDING: true] "
+            "note": "[PLATEAU RECORDING: true] "
         },
         {
             "time": 323,
             "key": "ArrowRight",
-            "noteplateauDefaultFalse": "go to preset 4.5 sec",
+            "note": "go to preset 4.5 sec",
             "sound": "praying - I see (very clearly)"
         },
         {
             "time": 332,
             "key": "ArrowRight",
-            "noteplateauDefaultFalse": "go to preset 6 sec",
-            "sound": "CLICK"
-        },
-        {
-            "time": 358,
-            "key": "ArrowRight",
-            "noteplateauDefaultFalse": "go to preset 10 sec",
+            "note": "go to preset 6 sec",
             "sound": "CLICK"
         },
         {
             "time": 393,
             "key": "K",
-            "noteplateauDefaultFalse": "[PLATEAU RECORDING: false] "
+            "note": "[PLATEAU RECORDING: false] "
         },
         {
             "time": 394,
             "key": "F",
-            "noteplateauDefaultFalse": "blackout all ",
+            "note": "blackout all ",
             "sound": "my first apartment (right after)\n"
         },
         {
             "time": 396,
             "key": "ArrowLeft",
-            "noteplateauDefaultFalse": "go to preset 6 sec (to get prepared)"
+            "note": "go to preset 4.5 sec (to get prepared)"
         },
         {
             "time": 396,
             "key": "ArrowLeft",
-            "noteplateauDefaultFalse": "go to preset 4.5 sec (to get prepared)"
-        },
-        {
-            "time": 396,
-            "key": "ArrowLeft",
-            "noteplateauDefaultFalse": "go to preset 4 sec (to get prepared)"
+            "note": "go to preset 4 sec (to get prepared)"
         },
         {
             "time": 398,
             "key": "2",
-            "noteplateauDefaultFalse": "switch to speed 1"
+            "note": "switch to speed 1"
         },
         {
             "time": 398,
             "key": "S",
-            "noteplateauDefaultFalse": "unblackout left - collapsy down",
+            "note": "unblackout left - collapsy down",
             "sound": "6:39 CLICK"
         },
         {
             "time": 403,
             "key": "D",
-            "noteplateauDefaultFalse": "unblackout right",
+            "note": "unblackout right",
             "sound": "6.50 \nThe first day.\nThe last day —\n\nI’ve learned\nLeaving and coming is a normal thing.\n\nI’m always —\nI’m always having serious emotional problems in airports. "
         },
         {
             "time": 404,
             "key": "K",
-            "noteplateauDefaultFalse": "[PLATEAU RECORDING: true] "
+            "note": "[PLATEAU RECORDING: true] "
         },
         {
             "time": 490,
             "key": "0",
-            "noteplateauDefaultFalse": "switch to preset 4 sec (voice: when ppl leave)",
+            "note": "switch to preset 4 sec (voice: when ppl leave)",
             "sound": "8.14 CLICK\nWhen people leave, it’s not actually leaving.\n\nIt’s just the time and space they occupy… diminishes. \n\nHUMMING\n\nThe people who leave are like… background music. \n\nNow looking back, it’s a little funny.\n\nI need to tell myself to calm down. \n\nWe’re all selfish. We can’t help it.\n\nHUMMING\n\nBetween here and there, the distance is shorter. \nWhen I leave. I’m looking forward. \nWhen I sit down…. I think about...\n\nHUMMING"
         },
         {
             "time": 730,
             "key": "K",
-            "noteplateauDefaultFalse": "[PLATEAU RECORDING: false] "
+            "note": "[PLATEAU RECORDING: false] "
         },
         {
             "time": 731,
             "key": "S",
-            "noteplateauDefaultFalse": "blackout left",
+            "note": "blackout left",
             "sound": "12:07 \"the home sickness\"\n\"12.11  it's just with me one day\"\"\n"
         },
         {
             "time": 735,
             "key": "D",
-            "noteplateauDefaultFalse": "blackout right"
+            "note": "blackout right"
         },
         {
             "time": 739,
             "key": "S",
-            "noteplateauDefaultFalse": "unblackout left"
+            "note": "unblackout left"
         },
         {
             "time": 739,
             "key": "2",
-            "noteplateauDefaultFalse": "switch to speed (currently at speed preset 1)"
+            "note": "switch to speed (currently at speed preset 1)"
         },
         {
             "time": 739,
             "key": "ArrowRight",
-            "noteplateauDefaultFalse": "change to speed 2"
+            "note": "change to speed 2"
         },
         {
             "time": 744,
             "key": "D",
-            "noteplateauDefaultFalse": "unblackout right",
+            "note": "unblackout right",
             "sound": "12:41 and time is frozen\n13:02 I had this thought."
         },
         {
             "time": 745,
             "key": "K",
-            "noteplateauDefaultFalse": "[PLATEAU RECORDING: true] "
+            "note": "[PLATEAU RECORDING: true] "
         },
         {
             "time": 821,
             "key": "0",
-            "noteplateauDefaultFalse": "go to preset 4 sec"
+            "note": "go to preset 4 sec"
         },
         {
             "time": 822,
             "key": "Q",
-            "noteplateauDefaultFalse": "mark real nini about to stands up",
+            "note": "mark real nini about to stands up",
             "sound": "because it happened"
         },
         {
             "time": 822,
             "key": "ArrowLeft",
-            "noteplateauDefaultFalse": "go to preset 0 sec"
+            "note": "go to preset 0 sec"
         },
         {
             "time": 823,
             "key": "E",
-            "noteplateauDefaultFalse": "mark real nini standing"
+            "note": "mark real nini standing"
         },
         {
             "time": 825,
             "key": "ArrowRight",
-            "noteplateauDefaultFalse": "go to preset 4 sec"
+            "note": "go to preset 4 sec"
         },
         {
             "time": 825,
             "key": "4",
-            "noteplateauDefaultFalse": "switch to bookmark"
+            "note": "switch to bookmark"
         },
         {
             "time": 825,
             "key": "Y",
-            "noteplateauDefaultFalse": "jump to bookmark E (which is standing)"
+            "note": "jump to bookmark E (which is standing)"
         },
         {
             "time": 828,
             "key": "0",
-            "noteplateauDefaultFalse": "switch to preset 4 sec"
+            "note": "switch to preset 4 sec"
         },
         {
             "time": 828,
             "key": "0",
-            "noteplateauDefaultFalse": "go to preset 4 sec"
+            "note": "go to preset 4 sec"
         },
         {
             "time": 828,
             "key": "0",
-            "noteplateauDefaultFalse": "go to preset 6 sec"
+            "note": "go to preset 6 sec"
         },
         {
             "time": 859,
             "key": "K",
-            "noteplateauDefaultFalse": "[PLATEAU RECORDING: false]"
+            "note": "[PLATEAU RECORDING: false]"
         },
         {
             "time": 860,
             "key": "F",
-            "noteplateauDefaultFalse": "blackout all"
+            "note": "blackout all"
         },
         {
             "time": 863,
             "key": "S",
-            "noteplateauDefaultFalse": "unblackout left",
+            "note": "unblackout left",
             "sound": "what else..."
         },
         {
             "time": 865,
             "key": "2",
-            "noteplateauDefaultFalse": "switch to speed (currently at 0.5)",
+            "note": "switch to speed (currently at 0.5)",
             "sound": "14:25 robot \"when I was young\""
         },
         {
             "time": 865,
             "key": "ArrowRight",
-            "noteplateauDefaultFalse": "change to speed 3"
+            "note": "change to speed 3"
         },
         {
             "time": 870,
             "key": "D",
-            "noteplateauDefaultFalse": "unblackout right"
+            "note": "unblackout right"
         },
         {
             "time": 1068,
             "key": "D",
-            "noteplateauDefaultFalse": "blackout right",
+            "note": "blackout right",
             "sound": "\"and I never cried after\""
         },
         {
             "time": 1099,
             "key": "5",
-            "noteplateauDefaultFalse": "switch to other mode to get ready to play video",
+            "note": "switch to other mode to get ready to play video",
             "sound": "\"the moment\""
         },
         {
             "time": 1099,
             "key": "P",
-            "noteplateauDefaultFalse": "play flashing video"
+            "note": "play flashing video"
         },
         {
             "time": 1100,
             "key": "D",
-            "noteplateauDefaultFalse": "unblackout right",
+            "note": "unblackout right",
             "sound": " "
         },
         {
             "time": 1286,
             "key": "F",
-            "noteplateauDefaultFalse": "blackout all",
+            "note": "blackout all",
             "sound": "\"keep spiraling in and out of orbit\" "
         },
         {
             "time": 1289,
             "key": "0",
-            "noteplateauDefaultFalse": "switch to preset 4 sec (this is the start of second half)",
+            "note": "switch to preset 4 sec (this is the start of second half)",
             "sound": "\"circling always returning, going round and round\" "
         },
         {
             "time": 1290,
             "key": "ArrowRight",
-            "noteplateauDefaultFalse": "switch to preset 4.5 sec to get ready (echo circling)",
+            "note": "switch to preset 4.5 sec to get ready (echo circling)",
             "sound": "TALK ECHO HUMMING SECTION"
         },
         {
             "time": 1290,
             "key": "ArrowRight",
-            "noteplateauDefaultFalse": "switch to preset 6 (echo circling)"
+            "note": "switch to preset 6 (echo circling)"
         },
         {
             "time": 1351,
             "key": "S",
-            "noteplateauDefaultFalse": "unblackout left",
-            "sound": "\"spiraling and crashing down into the void\""
+            "note": "unblackout left",
+            "sound": "i can no longer wait for your reply - blackout"
         },
         {
-            "time": 1360,
+            "time": 1359,
             "key": "D",
-            "noteplateauDefaultFalse": "unblackout right",
-            "sound": "\"our path is uncertain yet predetermined\" "
+            "note": "unblackout right",
+            "sound": "\"circling\""
         },
         {
             "time": 1445,
             "key": "ArrowRight",
-            "noteplateauDefaultFalse": "switch to preset 10 (humming)",
+            "note": "switch to preset 10 (humming)",
             "sound": "\"centrifuge in search of a gravitational center\" "
         },
         {
             "time": 1485,
             "key": "F",
-            "noteplateauDefaultFalse": "blackout all",
+            "note": "blackout all",
             "sound": "\"our path is uncertain yet predetermined\" "
         },
         {
             "time": 1486,
             "key": "ArrowLeft",
-            "noteplateauDefaultFalse": "go to preset 6 to get ready"
+            "note": "go to preset 6 to get ready"
         },
         {
             "time": 1487,
             "key": "ArrowLeft",
-            "noteplateauDefaultFalse": "go to preset 4.5 to get ready"
+            "note": "go to preset 4.5 to get ready"
         },
         {
             "time": 1488,
             "key": "ArrowLeft",
-            "noteplateauDefaultFalse": "go to preset 4 to get ready"
+            "note": "go to preset 4 to get ready"
         },
         {
             "time": 1488,
             "key": "S",
-            "noteplateauDefaultFalse": "unblackout left",
+            "note": "unblackout left",
             "sound": "\"when I was young\""
         },
         {
             "time": 1489,
             "key": "K",
-            "noteplateauDefaultFalse": "[PLATEAU RECORDING: true] "
+            "note": "[PLATEAU RECORDING: true] "
         },
         {
             "time": 1496,
             "key": "D",
-            "noteplateauDefaultFalse": "unblackout right (need to investigate why need 8 sec)"
+            "note": "unblackout right (need to investigate why need 8 sec)"
         },
         {
             "time": 1528,
             "key": "2",
-            "noteplateauDefaultFalse": "switch to speed (currently at 0.3875)",
+            "note": "switch to speed (currently at 0.3875)",
             "sound": "\"you're so scared\""
         },
         {
             "time": 1528,
             "key": "ArrowRight",
-            "noteplateauDefaultFalse": "change speed to the last preset which is also 0.3875"
+            "note": "change speed to the last preset which is also 0.3875"
         },
         {
             "time": 1587,
             "key": "0",
-            "noteplateauDefaultFalse": "switch to preset 4 sec to get ready",
-            "sound": "\"will I remember this\" PIANO BANG\n\n28:00 NiNi frantic\n\n\n\n29:00 broken therapist"
+            "note": "switch to preset 4 sec to get ready",
+            "sound": "\"will (26:27) I remember this\" PIANO BANG\n\n28:00 NiNi frantic\n\n\n\n29:00 broken therapist"
         },
         {
-            "time": 1809,
+            "time": 1807,
             "key": "E",
-            "noteplateauDefaultFalse": "mark real nini standing ",
+            "note": "mark real nini standing ",
             "sound": "gap right after people who leave are like..."
         },
         {
             "time": 1813,
             "key": "4",
-            "noteplateauDefaultFalse": "switch to bookmark"
+            "note": "switch to bookmark"
         },
         {
             "time": 1813,
             "key": "Y",
-            "noteplateauDefaultFalse": "jump to bookmark E (which is standing)"
+            "note": "jump to bookmark E (which is standing)"
         },
         {
             "time": 1817,
             "key": "Y",
-            "noteplateauDefaultFalse": "jump to bookmark E (which is standing)"
+            "note": "jump to bookmark E (which is standing)"
         },
         {
             "time": 1821,
             "key": "Y",
-            "noteplateauDefaultFalse": "jump to bookmark E (which is standing)"
+            "note": "jump to bookmark E (which is standing)"
         },
         {
             "time": 1825,
             "key": "Y",
-            "noteplateauDefaultFalse": "jump to bookmark E (which is standing)"
+            "note": "jump to bookmark E (which is standing)"
         },
         {
             "time": 1826,
             "key": "K",
-            "noteplateauDefaultFalse": "[PLATEAU RECORDING: false]"
+            "note": "[PLATEAU RECORDING: false]",
+            "sound": "(add sound cue)"
         },
         {
             "time": 1826,
             "key": "N",
-            "noteplateauDefaultFalse": "set window frame to 10"
+            "note": "set window frame to 10"
         },
         {
             "time": 1828,
             "key": "F",
-            "noteplateauDefaultFalse": "blackout all ",
+            "note": "blackout all ",
             "sound": "\"now looking back it's a little funny\" (humming)"
         },
         {
             "time": 1885,
             "key": "3",
-            "noteplateauDefaultFalse": "switch to plateau",
+            "note": "switch to plateau",
             "sound": "galuppi\nwhite noise"
         },
         {
             "time": 1885,
             "key": "G",
-            "noteplateauDefaultFalse": "unblackout all"
+            "note": "unblackout all"
         },
         {
             "time": 2093,
             "key": "F",
-            "noteplateauDefaultFalse": "blackout all",
+            "note": "blackout all",
             "sound": "click"
         }
     ]
