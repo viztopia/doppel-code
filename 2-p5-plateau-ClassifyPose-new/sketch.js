@@ -84,6 +84,7 @@ function setup() {
   classCacheLengthSlider = createSlider(10, 180, cacheLength, 10);
   classCacheLengthSlider.parent("controlsDiv");
   classCacheLengthSlider.input(() => {
+    console.log("HELLO");
     cacheLength = classCacheLengthSlider.value();
     newClassCountBaseline = cacheLength * classThreshold; //recalculate the baseline for deciding how much we count as a new class
     select("#cacheLengthLabel").html(cacheLength);
@@ -596,8 +597,9 @@ function setupSocket() {
 
   socket.on("updateWindow", function (msg) {
     cacheLength = msg;
-    classCacheLengthSlider.value(msg);
-    select("#cacheLengthLabel").html(msg);
+    newClassCountBaseline = cacheLength * classThreshold; //recalculate the baseline for deciding how much we count as a new class
+    classCacheLengthSlider.value(int(msg));
+    select("#cacheLengthLabel").html(msg);  
   })
 
   //-------------In Progress: used for video mode-------------
