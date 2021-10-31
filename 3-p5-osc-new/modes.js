@@ -102,7 +102,7 @@ let plateau = { //-------------plateau-based----------------
   currentClipLength: undefined,
   initialDelayFrameIdx: undefined,
   timer: undefined,
-  // receivingPlateau: true,
+  currentWindowIdx: 0, //idx 0 is window length 20
   run: function () {
 
     // if we can't get plateau classification status, need to check if classifier is running and socket connection is ok.
@@ -113,7 +113,7 @@ let plateau = { //-------------plateau-based----------------
 
     // run normal plateau logic
     if (this.classOn != undefined) {
-      text("Plateau classification is: " + (this.plateauOn ? "On." : "Off.") + " Sending Class: " + (this.classOn ? "On." : "Off."), INFOX, INFOY + 25);
+      text("Plateau classification is: " + (this.plateauOn ? "On." : "Off.") + " Sending Class: " + (this.classOn ? "On." : "Off.") + " Window: " + PLATEAUWINDOWS[this.currentWindowIdx], INFOX, INFOY + 25);
     } else {
       text("Plateau classification is: " + (this.plateauOn ? "On." : "Off.") + " Sending Class: unknow. (Should be off by default).", INFOX, INFOY + 25);
     }
@@ -185,6 +185,12 @@ let plateau = { //-------------plateau-based----------------
     //   // delayFrameIdx = constrain(floor(map(mouseX, 0, width, availableFrames - 1, 0)), 0, availableFrames - 1);
     //   // // delayFrameIdx = 0;
     // }
+  },
+  update: function (step) {
+    this.currentWindowIdx += step;
+    console.log(this.currentWindowIdx);
+    this.currentWindowIdx = constrain(this.currentWindowIdx, 0, PLATEAUWINDOWS.length - 1);
+    socket.emit("updateWindow", PLATEAUWINDOWS[this.currentWindowIdx]);
   }
 }
 

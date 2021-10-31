@@ -213,11 +213,11 @@ function draw() {
 
     //whenever there's a new plateau start, given the current window length & baseline, mark its start time and send new class over.
     if (isClassifying && !plateauStarted && maxClass && maxCount > newClassCountBaseline) {
-      
+
 
       // Only send class when it's asked for
       if (sendClass) {
-        if (maxClass != pMaxClass){
+        if (maxClass != pMaxClass) {
           console.log("Sending new class: " + maxClass + " at " + frameCount);
           socket.emit("classNew", maxClass);
           pMaxClass = maxClass;
@@ -233,7 +233,7 @@ function draw() {
     //whenever the plateau ends, mark its end time and send it over to part 3.
     else if (plateauStarted && (endPlateau || itsBeenAWhile || maxCount < newClassCountBaseline)) {
       console.log(maxClass + " ended at frame " + frameCount);
-      console.log(endPlateau, itsBeenAWhile, maxCount < newClassCountBaseline );
+      console.log(endPlateau, itsBeenAWhile, maxCount < newClassCountBaseline);
       plateauStarted = false;
       plateauEndTime = Date.now() - (itsBeenAWhile ? 0 : NOBODY);
 
@@ -455,7 +455,7 @@ function getMaxClass(array) {
 //---------------------Classification Helpers----------------------
 function toggleClassification(msg) {
   console.log(msg);
-  if (msg == undefined){
+  if (msg == undefined) {
     if (!isClassifying) {
       classifyBtn.html("Stop");
       isClassifying = true;
@@ -487,12 +487,12 @@ function toggleClassification(msg) {
 
 function toggleSendingClass(msg) {
 
-  if (msg == undefined){
+  if (msg == undefined) {
     sendClass = !sendClass;
   } else {
     sendClass = msg;
   }
-  
+
   console.log("Sending Class: ", sendClass);
   console.log("Sending Plateau: ", !sendClass);
   socket.emit("classOn", sendClass); // inform controller whether sending class or not
@@ -585,7 +585,7 @@ function setupSocket() {
 
   //-----------plateau classification-----------------
   // Toggle whether to classify
-  socket.on("toggleclassifier", function (msg){
+  socket.on("toggleclassifier", function (msg) {
     toggleClassification(msg);
   });
 
@@ -594,6 +594,11 @@ function setupSocket() {
     toggleSendingClass(msg);
   });
 
+  socket.on("updateWindow", function (msg) {
+    cacheLength = msg;
+    classCacheLengthSlider.value(msg);
+    select("#cacheLengthLabel").html(msg);
+  })
 
   //-------------In Progress: used for video mode-------------
   socket.on("playVideo", function (msg) { });

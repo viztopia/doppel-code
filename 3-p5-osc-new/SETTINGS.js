@@ -25,6 +25,9 @@ const PRESETS = [50, 0, 4, 4.5, 6, 10];
 // Speed mapping
 const MAXJOINTDIST = []; //no longer using presets for max joint dists. (variables inside mode speed now)
 
+// Plateau windows
+const PLATEAUWINDOWS = [20, 60, 10];
+
 // Sockets
 const SOCKETPORT = 8081;
 

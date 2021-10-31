@@ -5,7 +5,7 @@ let mode = 0; // 0: PRESET interval, 1: manual 1, 2: speed-based, 3:plateau-base
 let socket;
 
 //-------------show settings--------------
-let btnStart, btnStop, btnSaveShow, btnRecoverShow, btnRecoverOhCrap;
+let btnStart, btnStop, btnSaveShow, btnRecoverShow, btnRecoverOhCrap, btnRecoverJSON;
 let started = false;
 let startTime = 0;
 
@@ -40,9 +40,15 @@ function setup() {
   btnSaveShow.position(160, 0);
   btnSaveShow.mousePressed(savePerformance);
 
-  btnRecoverShow = createButton("RECOVER"); //
+  btnRecoverShow = createButton("RECOVER Local"); //
   btnRecoverShow.position(240, 0);
   btnRecoverShow.mousePressed(() => {
+    recoverPerformance("local");
+  });
+
+  btnRecoverJSON = createButton("RECOVER JSON"); //
+  btnRecoverJSON.position(360, 0);
+  btnRecoverJSON.mousePressed(() => {
     // plateau.plateauOn = true;
     recoverPerformance("../showdata_archive/showData.json");
   }); //make sure to change json name to showData.json
@@ -76,7 +82,7 @@ function draw() {
     textSize(14);
     text("If recover: Make sure TD window active & showData updated.", INFOX, INFOY - 25);
     text(
-      "Top of Show: doppel ON, blackout ALL. Classify ON, Send Class OFF, autopilot ON, autosave On.",
+      "Top of Show: doppel ON, blackout ALL. Classify ON, Send Class ON, autopilot ON, autosave On.",
       INFOX,
       INFOY + 25,
       450
@@ -286,20 +292,20 @@ function savePerformance() {
   console.log("saving the following show data: ");
   console.log(showData);
   saveJSON(showData, 'showData-' + month() + '-' + day() + '-' + hour() + '-' + minute() + '-' + second() + '.json');
-  saveJSON(showData, 'showData.json');
+  // saveJSON(showData, 'showData.json');
   localStorage.setItem("showData", JSON.stringify(showData));
 }
 
 //--------1) attempt to recover from localStorage "showData"; 2) if failed, recover from showData.json------------------
-function recoverPerformance(jsonPath) {
-  let localShowData = JSON.parse(localStorage.getItem("showData"));
+function recoverPerformance(path) {
 
-  if (localShowData) {
+  if (path == "local") {
     console.log("---------recovering from local storage.------------");
+    let localShowData = JSON.parse(localStorage.getItem("showData"));
     recoverPerformance_internal(localShowData);
   } else {
-    console.log("-----------local storage show data not found. recovering from showData.json--------------");
-    loadJSON(jsonPath, (data) => {
+    console.log("-----------recovering from showData.json--------------");
+    loadJSON(path, (data) => {
       recoverPerformance_internal(data);
     });
   }
@@ -515,6 +521,9 @@ function keyPressed(e) {
       break;
     case 88: //-----------X: toggle auto-saving
       isAutoSave = !isAutoSave;
+      break;
+    case 78: //-----------N: go to next plateau window
+      plateau.update(1);
       break;
   }
 }

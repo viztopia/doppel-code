@@ -72,6 +72,11 @@
         },
         {
             "time": 273,
+            "key": "N",
+            "noteplateauDefaultFalse": "set window frame to 60"
+        },
+        {
+            "time": 273,
             "key": "K",
             "noteplateauDefaultFalse": "[PLATEAU RECORDING: true] "
         },
@@ -425,6 +430,11 @@
             "time": 1826,
             "key": "K",
             "noteplateauDefaultFalse": "[PLATEAU RECORDING: false]"
+        },
+        {
+            "time": 1826,
+            "key": "N",
+            "noteplateauDefaultFalse": "set window frame to 10"
         },
         {
             "time": 1828,
