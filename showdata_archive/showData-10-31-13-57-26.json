@@ -1,0 +1,23 @@
+{
+  "mode": 0,
+  "startTime": 1635702985841,
+  "recordedSeconds": 60,
+  "delayFrameIdx": 1500,
+  "pDelayFrameIdx": 1500,
+  "isAutopilot": true,
+  "showDoppel": true,
+  "blackoutLeft": true,
+  "blackoutRight": false,
+  "preset_idx": 0,
+  "preset_currentDelayFrameIdx": 1500,
+  "manual_TH": 6000,
+  "speed_jointDist": 0,
+  "speed_mappedFrames": [],
+  "speed_avgFrame": 0,
+  "plateau_classOn": true,
+  "plateau_plateaus": "[]",
+  "plateau_haveNewClass": false,
+  "plateau_targetClassInPlateaus": false,
+  "plateau_currentClipFinished": true,
+  "bookmark_bookmarks": []
+}

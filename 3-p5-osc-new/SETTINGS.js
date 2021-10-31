@@ -50,3 +50,6 @@ const PULSEDELAY = 100;
 const CAMFPS = 30; //should be the same as recording FPS
 const CACHELENGTH = 30; //length of cache in TD in seconds. Ideally this should match with recording length so that there won't be gaps between recordings and TD cache.
 const CACHEFRAMES = CAMFPS * CACHELENGTH; //this should match the size of the Cache TOP in TD
+
+// FFREW
+const FFREW_INTERVAL = 10;

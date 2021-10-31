@@ -1,27 +1,21 @@
 let cue = {
-  fileIdx: -99,
-  pfileIdx: undefined,
-  cuePoint: 0,
-  availableRecordingNum: 0,
-  showDoppel: true,
-  blackoutLeft: false,
-  blackoutRight: false,
-  fadeints: -1,
-  toggleclassifier: 0,
-  togglesendclass: 0,
-  isPlayingSound: false,
   reset: function() {
     this.fileIdx = -99;
     this.pfileIdx = undefined;
     this.cuePoint = 0;
     this.availableRecordingNum = 0;
     this.showDoppel = true;
-    this.blackoutLeft = false;
-    this.blackoutRight = false;
+    this.blackoutLeft = true;
+    this.blackoutRight = true;
     this.fadeints = -1;
     this.toggleclassifier = 0;
     this.togglesendclass = 0;
     this.isPlayingSound = false;
+
+    // Send state to TD
+    socket.emit("showdoppel", this.showDoppel);
+    socket.emit("blackoutleft", this.blackoutLeft);
+    socket.emit("blackoutright", this.blackoutRight);
   },
   run: function () {
 

@@ -14,8 +14,7 @@
         {
             "time": 27,
             "key": "S",
-            "note": "unblackout left",
-            "sound": "\n0.42 \"a friend of mine once told me\""
+            "note": "unblackout left"
         },
         {
             "time": 38,
@@ -25,8 +24,7 @@
         {
             "time": 56,
             "key": "ArrowLeft",
-            "note": "go to preset 0 sec (to get prepared)",
-            "sound": "0.56 \"travel long distances of silence\"\n1.15 \"I'm always hearing echoes\""
+            "note": "go to preset 0 sec (to get prepared)"
         },
         {
             "time": 57,
@@ -46,8 +44,7 @@
         {
             "time": 256,
             "key": "F",
-            "note": "blackout all ",
-            "sound": "CLICK right after"
+            "note": "blackout all "
         },
         {
             "time": 256,
@@ -67,13 +64,7 @@
         {
             "time": 272,
             "key": "D",
-            "note": "unblackout right",
-            "sound": "The moment \nI’m leaving \nthe thing or place.\n\nI park…\nnear a big rock."
-        },
-        {
-            "time": 273,
-            "key": "N",
-            "note": "set window frame to 60"
+            "note": "unblackout right"
         },
         {
             "time": 273,
@@ -83,14 +74,12 @@
         {
             "time": 323,
             "key": "ArrowRight",
-            "note": "go to preset 4.5 sec",
-            "sound": "praying - I see (very clearly)"
+            "note": "go to preset 4.5 sec"
         },
         {
             "time": 332,
             "key": "ArrowRight",
-            "note": "go to preset 6 sec",
-            "sound": "CLICK"
+            "note": "go to preset 6 sec"
         },
         {
             "time": 393,
@@ -100,8 +89,7 @@
         {
             "time": 394,
             "key": "F",
-            "note": "blackout all ",
-            "sound": "my first apartment (right after)\n"
+            "note": "blackout all "
         },
         {
             "time": 396,
@@ -121,14 +109,12 @@
         {
             "time": 398,
             "key": "S",
-            "note": "unblackout left - collapsy down",
-            "sound": "6:39 CLICK"
+            "note": "unblackout left - collapsy down"
         },
         {
             "time": 403,
             "key": "D",
-            "note": "unblackout right",
-            "sound": "6.50 \nThe first day.\nThe last day —\n\nI’ve learned\nLeaving and coming is a normal thing.\n\nI’m always —\nI’m always having serious emotional problems in airports. "
+            "note": "unblackout right"
         },
         {
             "time": 404,
@@ -138,8 +124,7 @@
         {
             "time": 490,
             "key": "0",
-            "note": "switch to preset 4 sec (voice: when ppl leave)",
-            "sound": "8.14 CLICK\nWhen people leave, it’s not actually leaving.\n\nIt’s just the time and space they occupy… diminishes. \n\nHUMMING\n\nThe people who leave are like… background music. \n\nNow looking back, it’s a little funny.\n\nI need to tell myself to calm down. \n\nWe’re all selfish. We can’t help it.\n\nHUMMING\n\nBetween here and there, the distance is shorter. \nWhen I leave. I’m looking forward. \nWhen I sit down…. I think about...\n\nHUMMING"
+            "note": "switch to preset 4 sec (voice: when ppl leave)"
         },
         {
             "time": 730,
@@ -149,8 +134,7 @@
         {
             "time": 731,
             "key": "S",
-            "note": "blackout left",
-            "sound": "12:07 \"the home sickness\"\n\"12.11  it's just with me one day\"\"\n"
+            "note": "blackout left"
         },
         {
             "time": 735,
@@ -175,8 +159,7 @@
         {
             "time": 744,
             "key": "D",
-            "note": "unblackout right",
-            "sound": "12:41 and time is frozen\n13:02 I had this thought."
+            "note": "unblackout right"
         },
         {
             "time": 745,
@@ -191,8 +174,7 @@
         {
             "time": 822,
             "key": "Q",
-            "note": "mark real nini about to stands up",
-            "sound": "because it happened"
+            "note": "mark real nini about to stands up"
         },
         {
             "time": 822,
@@ -247,14 +229,12 @@
         {
             "time": 863,
             "key": "S",
-            "note": "unblackout left",
-            "sound": "what else..."
+            "note": "unblackout left"
         },
         {
             "time": 865,
             "key": "2",
-            "note": "switch to speed (currently at 0.5)",
-            "sound": "14:25 robot \"when I was young\""
+            "note": "switch to speed (currently at 0.5)"
         },
         {
             "time": 865,
@@ -269,14 +249,12 @@
         {
             "time": 1068,
             "key": "D",
-            "note": "blackout right",
-            "sound": "\"and I never cried after\""
+            "note": "blackout right"
         },
         {
             "time": 1099,
             "key": "5",
-            "note": "switch to other mode to get ready to play video",
-            "sound": "\"the moment\""
+            "note": "switch to other mode to get ready to play video"
         },
         {
             "time": 1099,
@@ -286,26 +264,22 @@
         {
             "time": 1100,
             "key": "D",
-            "note": "unblackout right",
-            "sound": " "
+            "note": "unblackout right"
         },
         {
             "time": 1286,
             "key": "F",
-            "note": "blackout all",
-            "sound": "\"keep spiraling in and out of orbit\" "
+            "note": "blackout all"
         },
         {
             "time": 1289,
             "key": "0",
-            "note": "switch to preset 4 sec (this is the start of second half)",
-            "sound": "\"circling always returning, going round and round\" "
+            "note": "switch to preset 4 sec (this is the start of second half)"
         },
         {
             "time": 1290,
             "key": "ArrowRight",
-            "note": "switch to preset 4.5 sec to get ready (echo circling)",
-            "sound": "TALK ECHO HUMMING SECTION"
+            "note": "switch to preset 4.5 sec to get ready (echo circling)"
         },
         {
             "time": 1290,
@@ -315,26 +289,22 @@
         {
             "time": 1351,
             "key": "S",
-            "note": "unblackout left",
-            "sound": "i can no longer wait for your reply - blackout"
+            "note": "unblackout left"
         },
         {
             "time": 1359,
             "key": "D",
-            "note": "unblackout right",
-            "sound": "\"circling\""
+            "note": "unblackout right"
         },
         {
             "time": 1445,
             "key": "ArrowRight",
-            "note": "switch to preset 10 (humming)",
-            "sound": "\"centrifuge in search of a gravitational center\" "
+            "note": "switch to preset 10 (humming)"
         },
         {
             "time": 1485,
             "key": "F",
-            "note": "blackout all",
-            "sound": "\"our path is uncertain yet predetermined\" "
+            "note": "blackout all"
         },
         {
             "time": 1486,
@@ -354,8 +324,7 @@
         {
             "time": 1488,
             "key": "S",
-            "note": "unblackout left",
-            "sound": "\"when I was young\""
+            "note": "unblackout left"
         },
         {
             "time": 1489,
@@ -370,8 +339,7 @@
         {
             "time": 1528,
             "key": "2",
-            "note": "switch to speed (currently at 0.3875)",
-            "sound": "\"you're so scared\""
+            "note": "switch to speed (currently at 0.3875)"
         },
         {
             "time": 1528,
@@ -381,14 +349,12 @@
         {
             "time": 1587,
             "key": "0",
-            "note": "switch to preset 4 sec to get ready",
-            "sound": "\"will (26:27) I remember this\" PIANO BANG\n\n28:00 NiNi frantic\n\n\n\n29:00 broken therapist"
+            "note": "switch to preset 4 sec to get ready"
         },
         {
             "time": 1807,
             "key": "E",
-            "note": "mark real nini standing ",
-            "sound": "gap right after people who leave are like..."
+            "note": "mark real nini standing "
         },
         {
             "time": 1813,
@@ -418,25 +384,17 @@
         {
             "time": 1826,
             "key": "K",
-            "note": "[PLATEAU RECORDING: false]",
-            "sound": "(add sound cue)"
-        },
-        {
-            "time": 1826,
-            "key": "N",
-            "note": "set window frame to 10"
+            "note": "[PLATEAU RECORDING: false]"
         },
         {
             "time": 1828,
             "key": "F",
-            "note": "blackout all ",
-            "sound": "\"now looking back it's a little funny\" (humming)"
+            "note": "blackout all "
         },
         {
             "time": 1885,
             "key": "3",
-            "note": "switch to plateau",
-            "sound": "galuppi\nwhite noise"
+            "note": "switch to plateau"
         },
         {
             "time": 1885,
@@ -446,8 +404,7 @@
         {
             "time": 2093,
             "key": "F",
-            "note": "blackout all",
-            "sound": "click"
+            "note": "blackout all"
         }
     ]
 }

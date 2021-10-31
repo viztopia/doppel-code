@@ -170,11 +170,11 @@ function startPerformance() {
   console.log("Show and recording started at: " + startTime);
 
   //start auto save
-  if (isAutoSave) {
-    setTimeout(() => {
-      autoSaveIntervalID = setInterval(savePerformance, CACHELENGTH * 1000);
-    }, 500);
-  }
+  // if (isAutoSave) {
+  //   setTimeout(() => {
+  //     autoSaveIntervalID = setInterval(savePerformance, CACHELENGTH * 1000);
+  //   }, 500);
+  // }
 }
 
 function stopPerformance() {
@@ -192,9 +192,9 @@ function stopPerformance() {
   //reset cue
   cue.showDoppel = false;
   socket.emit("showdoppel", cue.showDoppel);
-  cue.blackoutLeft = false;
+  cue.blackoutLeft = true;
   socket.emit("blackoutleft", cue.blackoutLeft);
-  cue.blackoutRight = false;
+  cue.blackoutRight = true;
   socket.emit("blackoutright", cue.blackoutRight);
   //
   // //reset mode
@@ -398,7 +398,9 @@ function jumpToThisAction(newShowTimeInSeconds) {
   for (let a in autopilotData.actions) {
     let action = autopilotData.actions[a];
     if(action.time <= newShowTimeInSeconds) {
-      nextActionIdx = executeNextAction(int(a), true);
+      setTimeout(function(){
+        nextActionIdx = executeNextAction(int(a), true);
+      }, int(a)*FFREW_INTERVAL);
     }
     else break;
   }
