@@ -75,7 +75,7 @@ function setup() {
     autopilotData = data;
   });
 
-  select('#set').mouseClicked(()=>{
+  select('#jump').mouseClicked(()=>{
     let secs = (int(select('#minute').value()) * 60) + int(select('#second').value());
     jumpToThisAction(secs);
   });
