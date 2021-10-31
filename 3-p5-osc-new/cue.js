@@ -10,6 +10,19 @@ let cue = {
   toggleclassifier: 0,
   togglesendclass: 0,
   isPlayingSound: false,
+  reset: function() {
+    this.fileIdx = -99;
+    this.pfileIdx = undefined;
+    this.cuePoint = 0;
+    this.availableRecordingNum = 0;
+    this.showDoppel = true;
+    this.blackoutLeft = false;
+    this.blackoutRight = false;
+    this.fadeints = -1;
+    this.toggleclassifier = 0;
+    this.togglesendclass = 0;
+    this.isPlayingSound = false;
+  },
   run: function () {
 
     //----------------------1. first we calculate how many cached/recorded content is available-----------

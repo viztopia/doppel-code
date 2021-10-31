@@ -1,8 +1,14 @@
 let preset = {
-  idx: 2, //default to 4 sec.
-  pIdx: 2,
-  currentDelayFrameIdx: 0,
-  jumpIdx: 2, //preset idx smaller than this idx will be jumped and not eased
+  idx: undefined, //default to 4 sec.
+  pIdx: undefined,
+  currentDelayFrameIdx: undefined,
+  jumpIdx: undefined, //preset idx smaller than this idx will be jumped and not eased
+  reset: function() {
+    this.idx = 2; //default to 4 sec.
+    this.pIdx = 2;
+    this.currentDelayFrameIdx = 0;
+    this.jumpIdx = 2; //preset idx smaller than this idx will be jumped and not eased
+  },
   run: function () {
     text("Current delay interval is: " + PRESETS[this.idx] + " seconds", INFOX, INFOY + 25);
     text("Note: presets on the left of " + PRESETS[this.jumpIdx] + " seconds will NOT be eased.", INFOX, INFOY + 50);
@@ -29,7 +35,10 @@ let preset = {
 }
 
 let manual = {
-  TH: 6000,
+  TH: undefined,
+  reset: function() {
+    this.TH = 6000;
+  },
   run: function () {
     text("Manual Count: " + delayFrameIdx, INFOX, INFOY + 25);
   },
@@ -47,14 +56,24 @@ let manual = {
 
 
 let speed = { //------------speed-based--------------------------
-  jointDist: 0,
-  pJointDist: 0,
-  FRAMESTOCACHE: 600, //caching 20 seconds for testing, so 20 * 30 = 600 frames
-  mappedFrames: [],
-  avgFrame: 0,
-  maxJointDistsDefaults: [1, 1, 1, 1], //default max joint dist used for preset recovery
-  maxJointDists: [0.75, 0.75, 0.75, 0.75], //speed cue values based on 10/20 testing
-  maxJointDistIdx: 0,  //the current idx used for speed cue
+  jointDist: undefined,
+  pJointDist: undefined,
+  FRAMESTOCACHE: undefined, //caching 20 seconds for testing, so 20 * 30 = 600 frames
+  mappedFrames: undefined,
+  avgFrame: undefined,
+  maxJointDistsDefaults: undefined, //default max joint dist used for preset recovery
+  maxJointDists: undefined, //speed cue values based on 10/20 testing
+  maxJointDistIdx: undefined,  //the current idx used for speed cue
+  reset: function() {
+    this.jointDist = 0,
+    this.pJointDist = 0,
+    this.FRAMESTOCACHE = 600; //caching 20 seconds for testing, so 20 * 30 = 600 frames
+    this.mappedFrames = [];
+    this.avgFrame = 0;
+    this.maxJointDistsDefaults = [1, 1, 1, 1]; //default max joint dist used for preset recovery
+    this.maxJointDists = [0.75, 0.75, 0.75, 0.75]; //speed cue values based on 10/20 testing
+    this.maxJointDistIdx = 0;  //the current idx used for speed cue
+  },
   run: function () {
     //map the jointDist amount to a frame index between 0 and framesToCache
     let mappedFrame = constrain(map(this.jointDist, 0, this.maxJointDists[this.maxJointDistIdx], 0, CACHEFRAMES - 1), 0, CACHEFRAMES - 1); //currently using only TD cache for performance considerations
@@ -103,6 +122,21 @@ let plateau = { //-------------plateau-based----------------
   initialDelayFrameIdx: undefined,
   timer: undefined,
   currentWindowIdx: 0, //idx 0 is window length 20
+  reset: function() {
+    this.plateauOn = undefined; //whether plateau classification is on or off
+    this.classOn = undefined; //whether sending class is on or off
+    this.plateaus = new Map();
+    this.currentClass = undefined;
+    this.haveNewClass = false;
+    this.targetClass = undefined;
+    this.targetClassInPlateaus = false;
+    this.currentClipStartTime = undefined;
+    this.currentClipFinished = true;
+    this.currentClipLength = undefined;
+    this.initialDelayFrameIdx = undefined;
+    this.timer = undefined;
+    this.currentWindowIdx = 0; //idx 0 is window length 20
+  },
   run: function () {
 
     // if we can't get plateau classification status, need to check if classifier is running and socket connection is ok.
@@ -200,6 +234,13 @@ let bookmark = { //------------bookmark---------------------
   bookmark1: undefined,
   bookmark2: undefined,
   bookmark3: undefined,
+  reset: function() {
+    this.bookmarks = [];
+    this.idx = 0;
+    this.bookmark1 = undefined;
+    this.bookmark2 = undefined;
+    this.bookmark3 = undefined;
+  },
   run: function () {
     if (this.bookmark1 || this.bookmark2 || this.bookmark3) {
       let bookmarkTime1 = this.bookmark1 == undefined ? "empty" : (nf(floor(this.bookmark1 / 1000 / 60), 2, 0) + ":" + nf(floor(this.bookmark1 / 1000 % 60), 2, 0));
@@ -236,6 +277,9 @@ let other = {
     text("Press O to show JOKE 2 text.", INFOX, INFOY + 50);
     text("Press P to play FLASHING video.", INFOX, INFOY + 75);
   },
+  reset: function() {
+    return;
+  }
 }
 
 

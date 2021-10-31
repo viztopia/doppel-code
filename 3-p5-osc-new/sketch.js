@@ -40,37 +40,47 @@ function setup() {
   btnSaveShow.position(160, 0);
   btnSaveShow.mousePressed(savePerformance);
 
-  btnRecoverShow = createButton("RECOVER Local"); //
-  btnRecoverShow.position(240, 0);
-  btnRecoverShow.mousePressed(() => {
-    recoverPerformance("local");
-  });
+  // btnRecoverShow = createButton("RECOVER Local"); //
+  // btnRecoverShow.position(240, 0);
+  // btnRecoverShow.mousePressed(() => {
+  //   recoverPerformance("local");
+  // });
 
-  btnRecoverJSON = createButton("RECOVER JSON"); //
-  btnRecoverJSON.position(360, 0);
-  btnRecoverJSON.mousePressed(() => {
-    // plateau.plateauOn = true;
-    recoverPerformance("../showdata_archive/showData.json");
-  }); //make sure to change json name to showData.json
+  // btnRecoverJSON = createButton("RECOVER JSON"); //
+  // btnRecoverJSON.position(360, 0);
+  // btnRecoverJSON.mousePressed(() => {
+  //   // plateau.plateauOn = true;
+  //   recoverPerformance("../showdata_archive/showData.json");
+  // }); //make sure to change json name to showData.json
 
-  btnRecoverOhCrap = createButton("RECOVER Oh Crap"); //
-  btnRecoverOhCrap.position(240, 25);
-  btnRecoverOhCrap.mousePressed(() => {
-    recoverPerformance("../showdata_archive/showData.json");
-
-    setTimeout(() => {
-      //make sure we turn off classifier
-      plateau.plateauOn = false;
-      socket.emit("toggleclassifier", plateau.plateauOn);
-      console.log("RECOVER OH CRAP, manually turning off classifier.");
-    }, 2000);
-  }); //make sure to change json name to showData.json
+  // btnRecoverOhCrap = createButton("RECOVER Oh Crap"); //
+  // btnRecoverOhCrap.position(240, 25);
+  // btnRecoverOhCrap.mousePressed(() => {
+  //   recoverPerformance("../showdata_archive/showData.json");
+  //
+  //   setTimeout(() => {
+  //     //make sure we turn off classifier
+  //     plateau.plateauOn = false;
+  //     socket.emit("toggleclassifier", plateau.plateauOn);
+  //     console.log("RECOVER OH CRAP, manually turning off classifier.");
+  //   }, 2000);
+  // }); //make sure to change json name to showData.json
 
   textAlign(LEFT, CENTER);
+
+  // Set top of show cues and mode settings
+  setTopOfShow();
 
   loadJSON("autopilot.json", (data) => {
     autopilotData = data;
   });
+
+  select('#set').mouseClicked(()=>{
+    let secs = (int(select('#minute').value()) * 60) + int(select('#second').value());
+    jumpToThisAction(secs);
+  });
+
+  // DEBUG keypresses
   // window.addEventListener('keydown', (e) => {
   //   console.log(e)
   // })
@@ -108,8 +118,9 @@ function draw() {
     recordedSeconds = floor((Date.now() - startTime) / 1000);
     let clockMin = floor(recordedSeconds / 60);
     let clockSec = recordedSeconds % 60;
+    textSize(28);
+    text(nf(clockMin, 2, 0) + ":" + nf(clockSec, 2, 0), INFOX, INFOY - 150);
     textSize(14);
-    text("Show clock is: " + nf(clockMin, 2, 0) + ":" + nf(clockSec, 2, 0), INFOX, INFOY - 125);
 
     //--------autopilot------------------
     if (autopilotData && isAutopilot) {
@@ -117,30 +128,7 @@ function draw() {
         nextActionIdx = findNextActionIdx(recordedSeconds);
         // console.log(nextActionIdx);
       } else {
-        if (nextActionIdx <= autopilotData.actions.length - 1) {
-          let nextAction = autopilotData.actions[nextActionIdx];
-          let actionMin = floor(nextAction.time / 60);
-          let actionSec = nextAction.time % 60;
-          text("Autopilot is On. Next action: at " + nf(actionMin, 2, 0) + ":" + nf(actionSec, 2, 0) + " press " + nextAction.key + "-" + nextAction.note + (nextAction.sound ? ", " + nextAction.sound : ""), INFOX, INFOY - 100, W - 50);
-          if (recordedSeconds == nextAction.time) {
-            // console.log("executing: " + nextAction.time + ", " + nextAction.key + ", " + nextAction.note);
-            let kc;
-            if (nextAction.key == "ArrowLeft") kc = 37;
-            else if (nextAction.key == "ArrowUp") kc = 38;
-            else if (nextAction.key == "ArrowRight") kc = 39;
-            else if (nextAction.key == "ArrowDown") kc = 40;
-            else kc = nextAction.key.charCodeAt(0);
-            window.dispatchEvent(
-              new KeyboardEvent("keydown", {
-                keyCode: kc,
-                which: kc,
-              })
-            );
-            nextActionIdx++;
-          }
-        } else {
-          text("Autopilot is On. No more actions", INFOX, INFOY - 75);
-        }
+        nextActionIdx = executeNextAction(nextActionIdx);
       }
     } else {
       text("Autopilot is Off. Press M to toggle.", INFOX, INFOY - 75);
@@ -155,6 +143,11 @@ function draw() {
 }
 
 //------start & stop performance----------------
+function setTopOfShow() {
+  cue.reset();
+  for(let mode of modes) mode.reset();
+}
+
 function startPerformance() {
   //---reset plateau data
   plateau.plateaus.clear();
@@ -395,6 +388,52 @@ function findNextActionIdx(currentShowTime) {
   return nextIdx;
 }
 
+// FF/REW to new show time
+function jumpToThisAction(newShowTimeInSeconds) {
+  setTopOfShow();
+  startTime = Date.now() - (newShowTimeInSeconds * 1000);
+  for (let a in autopilotData.actions) {
+    let action = autopilotData.actions[a];
+    if(action.time <= newShowTimeInSeconds) {
+      nextActionIdx = executeNextAction(a, true);
+    }
+    else break;
+  }
+  // Move onto next action
+  nextActionIdx++;
+}
+
+function executeNextAction(idx, scrubbing) {
+  if (idx <= autopilotData.actions.length - 1) {
+    let nextAction = autopilotData.actions[idx];
+    //console.log("NEXT!", idx, nextAction);
+    let actionMin = floor(nextAction.time / 60);
+    let actionSec = nextAction.time % 60;
+    text("Next: " + nf(actionMin, 2, 0) + ":" + nf(actionSec, 2, 0) + " press " + nextAction.key + "-" + nextAction.note + (nextAction.sound ? ", " + nextAction.sound : ""), INFOX, INFOY - 100, W-50);
+    if (scrubbing || recordedSeconds == nextAction.time) {
+      console.log("executing: " + nextAction.time + ", " + nextAction.key + ", " + nextAction.note);
+      let kc;
+      if (nextAction.key == "ArrowLeft") kc = 37;
+      else if (nextAction.key == "ArrowUp") kc = 38;
+      else if (nextAction.key == "ArrowRight") kc = 39;
+      else if (nextAction.key == "ArrowDown") kc = 40;
+      else kc = nextAction.key.charCodeAt(0);
+      window.dispatchEvent(
+        new KeyboardEvent("keydown", {
+          keyCode: kc,
+          which: kc,
+        })
+      );
+      return idx + 1;
+    }
+    return idx;
+  }
+  else {
+    text("Autopilot is On. No more actions", INFOX, INFOY - 75);
+    return idx;
+  }
+}
+
 //----------------------Mode Select--------------------------
 function keyPressed(e) {
   // console.log(e);
@@ -483,7 +522,7 @@ function keyPressed(e) {
       break;
     case 72: //-----------H: black out both off
       socket.emit("fadeinleft");
-      cue.fadeints = Date.now();
+      cue.fadeints++;
       break;
     case 73: //-----------I: show joke 1 text
       if (mode == OTHER) socket.emit("source", JOKE1);
