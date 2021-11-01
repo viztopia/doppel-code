@@ -37,7 +37,7 @@
             "note": "unblackout right"
         },
         {
-            "time": 255,
+            "time": 254,
             "key": "K",
             "note": "[PLATEAU RECORDING: false] "
         },
@@ -67,12 +67,12 @@
             "note": "unblackout right"
         },
         {
-            "time": 273,
+            "time": 274,
             "key": "N",
             "note": "set window frame to 60"
         },
         {
-            "time": 273,
+            "time": 274,
             "key": "K",
             "note": "[PLATEAU RECORDING: true] "
         },
@@ -87,7 +87,7 @@
             "note": "go to preset 6 sec"
         },
         {
-            "time": 393,
+            "time": 392,
             "key": "K",
             "note": "[PLATEAU RECORDING: false] "
         },
@@ -109,7 +109,7 @@
         {
             "time": 398,
             "key": "2",
-            "note": "switch to speed 1"
+            "note": "switch to speed 0 (0.95)"
         },
         {
             "time": 398,
@@ -119,10 +119,10 @@
         {
             "time": 403,
             "key": "D",
-            "note": "unblackout right"
+            "note": " "
         },
         {
-            "time": 404,
+            "time": 405,
             "key": "K",
             "note": "[PLATEAU RECORDING: true] "
         },
@@ -132,7 +132,7 @@
             "note": "switch to preset 4 sec (voice: when ppl leave)"
         },
         {
-            "time": 730,
+            "time": 729,
             "key": "K",
             "note": "[PLATEAU RECORDING: false] "
         },
@@ -154,12 +154,12 @@
         {
             "time": 739,
             "key": "2",
-            "note": "switch to speed (currently at speed preset 1)"
+            "note": "switch to speed (currently at speed preset 0.95)"
         },
         {
             "time": 739,
             "key": "ArrowRight",
-            "note": "change to speed 2"
+            "note": "change to speed 1 (0.95)"
         },
         {
             "time": 744,
@@ -167,9 +167,14 @@
             "note": "unblackout right"
         },
         {
-            "time": 745,
+            "time": 746,
             "key": "K",
             "note": "[PLATEAU RECORDING: true] "
+        },
+        {
+            "time": 785,
+            "key": "ArrowRight",
+            "note": "change to speed 2 (0.5)"
         },
         {
             "time": 821,
@@ -212,7 +217,7 @@
             "note": "switch to preset 4 sec"
         },
         {
-            "time": 859,
+            "time": 858,
             "key": "K",
             "note": "[PLATEAU RECORDING: false]"
         },
@@ -234,7 +239,7 @@
         {
             "time": 865,
             "key": "ArrowRight",
-            "note": "change to speed 3"
+            "note": "change to speed 3 (0.75)"
         },
         {
             "time": 870,
@@ -322,7 +327,7 @@
             "note": "unblackout left"
         },
         {
-            "time": 1489,
+            "time": 1490,
             "key": "K",
             "note": "[PLATEAU RECORDING: true] "
         },
@@ -334,12 +339,12 @@
         {
             "time": 1528,
             "key": "2",
-            "note": "switch to speed (currently at 0.3875)"
+            "note": "switch to speed (currently at 0.75)"
         },
         {
             "time": 1528,
             "key": "ArrowRight",
-            "note": "change speed to the last preset which is also 0.3875"
+            "note": "change speed 4 (0.75)"
         },
         {
             "time": 1587,
@@ -347,7 +352,7 @@
             "note": "switch to preset 4 sec to get ready"
         },
         {
-            "time": 1807,
+            "time": 1808,
             "key": "E",
             "note": "mark real nini standing "
         },
@@ -377,12 +382,12 @@
             "note": "jump to bookmark E (which is standing)"
         },
         {
-            "time": 1826,
+            "time": 1827,
             "key": "K",
             "note": "[PLATEAU RECORDING: false]"
         },
         {
-            "time": 1826,
+            "time": 1827,
             "key": "N",
             "note": "set window frame to 20"
         },

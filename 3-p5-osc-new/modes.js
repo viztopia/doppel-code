@@ -58,8 +58,8 @@ let speed = { //------------speed-based--------------------------
     this.FRAMESTOCACHE = 600; //caching 20 seconds for testing, so 20 * 30 = 600 frames
     this.mappedFrames = [];
     this.avgFrame = 0;
-    this.maxJointDistsDefaults = [1, 1, 1, 1]; //default max joint dist used for preset recovery
-    this.maxJointDists = [1, 0.5, 0.75, 0.75]; //speed cue values based on 10/20 testing
+    this.maxJointDistsDefaults = [1, 1, 1, 1, 1]; //default max joint dist used for preset recovery
+    this.maxJointDists = [0.95, 0.95, 0.5, 0.75, 0.75]; //speed cue values based on 10/20 testing
     this.maxJointDistIdx = 0;  //the current idx used for speed cue
   },
   run: function () {
