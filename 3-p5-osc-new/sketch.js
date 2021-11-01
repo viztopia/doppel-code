@@ -102,11 +102,8 @@ function draw() {
     } else {
       text("Autopilot data is not available. Please check autopilot.json", INFOX, INFOY + 100);
     }
-    text("Autosave: " + (isAutoSave ? "On" : "Off"), INFOX + 100, INFOY + 100);
-    text("Doppel: " + (cue.showDoppel ? "On" : "Off") + "    Sound: " + (cue.isPlayingSound ? "On" : "Off"), INFOX, INFOY + 150);
-    text("Blackout:" + (cue.blackoutLeft ? " Left" : "") + (cue.blackoutRight ? " Right" : ""), INFOX, INFOY + 175);
-    text("Fadein: " + cue.fadeints, INFOX, INFOY + 200);
-    text("Classify: " + (plateau.plateauOn ? "On" : "Off") + "      Send: " + (plateau.classOn ? "Class" : "Plateau") + "\t\tWindow: " + PLATEAUWINDOWS[modes[PLATEAU].currentWindowIdx] , INFOX, INFOY + 225);
+    // text("Autosave: " + (isAutoSave ? "On" : "Off"), INFOX + 100, INFOY + 100);
+    cue.display();
   } else {
     //--------display mode-----------------------
     background(MODEBGS[mode]);
@@ -394,16 +391,26 @@ function findNextActionIdx(currentShowTime) {
 // FF/REW to new show time
 function jumpToThisAction(newShowTimeInSeconds) {
   setTopOfShow();
+
+  let lastCueTime = 1;
+  // FF through all the cues up to new start time
   for (let a in autopilotData.actions) {
+    a = int(a);
     let action = autopilotData.actions[a];
+    lastCueTime = a*FFREW_INTERVAL;
     if(action.time <= newShowTimeInSeconds) {
       setTimeout(function(){
-        nextActionIdx = executeNextAction(int(a), true);
-      }, int(a)*FFREW_INTERVAL);
+        nextActionIdx = executeNextAction(a, true);
+      }, lastCueTime);
     }
-    else break;
+    else {
+      // Rewind after we're done with all of the cues
+      setTimeout(function(){
+        startTime = Date.now() - (newShowTimeInSeconds * 1000);
+      }, lastCueTime)
+      break;
+    }
   }
-  startTime = Date.now() - (newShowTimeInSeconds * 1000);
 }
 
 function executeNextAction(idx, scrubbing) {

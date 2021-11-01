@@ -30,13 +30,8 @@ let cue = {
       pDelayFrameIdx = delayFrameIdx;
     }
 
-    // Display current delay and file
-    text("Delayed frame: " + delayFrameIdx + "      File: " + this.fileIdx + " cuePoint: " + this.cuePoint, INFOX, INFOY + 125);
-    text("Doppel: " + (cue.showDoppel ? "On" : "Off") + "    Sound: " + (cue.isPlayingSound ? "On" : "Off"), INFOX, INFOY + 150);
-    text("Blackout:" + (cue.blackoutLeft ? " Left" : "") + (cue.blackoutRight ? " Right" : ""), INFOX, INFOY + 175);
-    text("Fadein: " + cue.fadeints, INFOX, INFOY + 200);
-    // text("Classify: " + cue.toggleclassifier + "      Send: " + cue.togglesendclass , INFOX, INFOY + 225);
-    text("Classify: " + (plateau.plateauOn ? "On" : "Off") + "      Send: " + (plateau.classOn ? "Class" : "Plateau") + "\t\tWindow: " + PLATEAUWINDOWS[modes[PLATEAU].currentWindowIdx] , INFOX, INFOY + 225);
+    // Display status
+    this.display();
   },
   update: function () {
     // Only update cue if something has changed
@@ -88,5 +83,13 @@ let cue = {
       socket.emit("source", CACHE);
       socket.emit("frameIdx", 0);
     }
+  },
+  display : function() {
+    // Display current delay and file
+    text("Delayed frame: " + delayFrameIdx + "      File: " + this.fileIdx + " cuePoint: " + this.cuePoint, INFOX, INFOY + 125);
+    text("Doppel: " + (cue.showDoppel ? "On" : "Off") + "    Sound: " + (cue.isPlayingSound ? "On" : "Off"), INFOX, INFOY + 150);
+    text("Blackout:" + (cue.blackoutLeft ? " Left" : "") + (cue.blackoutRight ? " Right" : ""), INFOX, INFOY + 175);
+    text("Fadein: " + cue.fadeints, INFOX, INFOY + 200);
+    text("Classify: " + (plateau.plateauOn ? "On" : "Off") + "      Send: " + (plateau.classOn ? "Class" : "Plateau") + "\t\tWindow: " + PLATEAUWINDOWS[modes[PLATEAU].currentWindowIdx] , INFOX, INFOY + 225);
   }
 }
