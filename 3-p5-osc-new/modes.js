@@ -17,7 +17,7 @@ let preset = {
 
   },
   updateCurrentFrame: function () {
-    if (this.idx < this.jumpIdx || (this.idx == 2 & this.pIdx == 1)) { //if preset idx smaller than jump idx, just jump
+    if (this.idx < this.jumpIdx || (this.idx == 2 && this.pIdx == 1) || (this.idx == 5 && this.pIdx == 4)) { //if preset idx smaller than jump idx, just jump
       this.currentDelayFrameIdx = PRESETS[this.idx] * RECORDINGFPS;
     } else { // Easing
       if (this.currentDelayFrameIdx < PRESETS[this.idx] * RECORDINGFPS) this.currentDelayFrameIdx++;
@@ -59,7 +59,7 @@ let speed = { //------------speed-based--------------------------
     this.mappedFrames = [];
     this.avgFrame = 0;
     this.maxJointDistsDefaults = [1, 1, 1, 1]; //default max joint dist used for preset recovery
-    this.maxJointDists = [0.75, 0.75, 0.75, 0.75]; //speed cue values based on 10/20 testing
+    this.maxJointDists = [1, 0.5, 0.75, 0.75]; //speed cue values based on 10/20 testing
     this.maxJointDistIdx = 0;  //the current idx used for speed cue
   },
   run: function () {
@@ -97,8 +97,8 @@ let speed = { //------------speed-based--------------------------
 
 let plateau = { //-------------plateau-based----------------
   reset: function() {
-    this.plateauOn = undefined; //whether plateau classification is on or off
-    this.classOn = undefined; //whether sending class is on or off
+    this.plateauOn = true; //whether plateau classification is on or off
+    this.classOn = true; //whether sending class is on or off
     this.plateaus = new Map();
     this.currentClass = undefined;
     this.haveNewClass = false;
@@ -121,9 +121,9 @@ let plateau = { //-------------plateau-based----------------
 
     // run normal plateau logic
     if (this.classOn != undefined) {
-      text("Plateau classification is: " + (this.plateauOn ? "On." : "Off.") + " Sending Class: " + (this.classOn ? "On." : "Off.") + " Window: " + PLATEAUWINDOWS[this.currentWindowIdx], INFOX, INFOY + 25);
+      text("Plateau classification is: " + (this.plateauOn ? "On." : "Off.") + " Send: " + (this.classOn ? "Class" : "Plateau") + " Window: " + PLATEAUWINDOWS[this.currentWindowIdx], INFOX, INFOY + 25);
     } else {
-      text("Plateau classification is: " + (this.plateauOn ? "On." : "Off.") + " Sending Class: unknow. (Should be off by default).", INFOX, INFOY + 25);
+      text("Plateau classification is: " + (this.plateauOn ? "On." : "Off.") + " Send: unknow. (Should be off by default).", INFOX, INFOY + 25);
     }
 
     if (!this.currentClass) { console.log("querying class"); socket.emit("queryClass"); }

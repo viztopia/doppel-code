@@ -68,6 +68,11 @@
         },
         {
             "time": 273,
+            "key": "N",
+            "note": "set window frame to 60"
+        },
+        {
+            "time": 273,
             "key": "K",
             "note": "[PLATEAU RECORDING: true] "
         },
@@ -207,16 +212,6 @@
             "note": "switch to preset 4 sec"
         },
         {
-            "time": 828,
-            "key": "0",
-            "note": "go to preset 4 sec"
-        },
-        {
-            "time": 828,
-            "key": "0",
-            "note": "go to preset 6 sec"
-        },
-        {
             "time": 859,
             "key": "K",
             "note": "[PLATEAU RECORDING: false]"
@@ -247,7 +242,7 @@
             "note": "unblackout right"
         },
         {
-            "time": 1068,
+            "time": 1064,
             "key": "D",
             "note": "blackout right"
         },
@@ -385,6 +380,11 @@
             "time": 1826,
             "key": "K",
             "note": "[PLATEAU RECORDING: false]"
+        },
+        {
+            "time": 1826,
+            "key": "N",
+            "note": "set window frame to 20"
         },
         {
             "time": 1828,

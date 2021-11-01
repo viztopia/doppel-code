@@ -36,7 +36,7 @@ let cue = {
     text("Blackout:" + (cue.blackoutLeft ? " Left" : "") + (cue.blackoutRight ? " Right" : ""), INFOX, INFOY + 175);
     text("Fadein: " + cue.fadeints, INFOX, INFOY + 200);
     // text("Classify: " + cue.toggleclassifier + "      Send: " + cue.togglesendclass , INFOX, INFOY + 225);
-    text("Classify: " + (plateau.plateauOn ? "On" : "Off") + "      Send Class: " + (plateau.classOn ? "On" : "Off") , INFOX, INFOY + 225);
+    text("Classify: " + (plateau.plateauOn ? "On" : "Off") + "      Send: " + (plateau.classOn ? "Class" : "Plateau") + "\t\tWindow: " + PLATEAUWINDOWS[modes[PLATEAU].currentWindowIdx] , INFOX, INFOY + 225);
   },
   update: function () {
     // Only update cue if something has changed
