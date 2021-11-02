@@ -492,6 +492,11 @@ function toggleSendingClass(msg) {
     sendClass = !sendClass;
   } else {
     sendClass = msg;
+    if (sendClass == true){ //stop plateau recording
+      endPlateau = true;
+    } else { //start plateau recording
+      endPlateau = false;
+    }
   }
 
   console.log("Sending Class: ", sendClass);
