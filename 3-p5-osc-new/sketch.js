@@ -390,24 +390,30 @@ function findNextActionIdx(currentShowTime) {
 
 // FF/REW to new show time
 function jumpToThisAction(newShowTimeInSeconds) {
+
+  // Reset everything
   setTopOfShow();
 
-  let lastCueTime = 1;
+  // Store how long it takes to get to the last cue
+  let lastCueTimeInMS;
   // FF through all the cues up to new start time
   for (let a in autopilotData.actions) {
     a = int(a);
     let action = autopilotData.actions[a];
-    lastCueTime = a*FFREW_INTERVAL;
-    if(action.time <= newShowTimeInSeconds) {
+    // Calculate how long it will take to get to this cue
+    lastCueTimeInMS = a*FFREW_INTERVAL;
+    // Convert to seconds
+    lastCueTimeInSeconds = lastCueTimeInMS/1000;
+    if(action.time <= newShowTimeInSeconds + lastCueTimeInSeconds) {
       setTimeout(function(){
         nextActionIdx = executeNextAction(a, true);
-      }, lastCueTime);
+      }, lastCueTimeInMS);
     }
     else {
       // Rewind after we're done with all of the cues
       setTimeout(function(){
-        startTime = Date.now() - (newShowTimeInSeconds * 1000);
-      }, lastCueTime)
+        startTime = Date.now() - (newShowTimeInSeconds + lastCueTimeInSeconds)*1000;
+      }, lastCueTimeInMS)
       break;
     }
   }
