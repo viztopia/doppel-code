@@ -74,7 +74,8 @@ stats.showPanel(3);
 document.body.appendChild(stats.dom);
 
 //-----------------for confidence thresholding----------------
-let confidenceThres = 90;  //this is percentage
+let confidenceThres = 70;  //this is percentage
+const TRASHCLASS = "trash";
 
 function preload() {
   //used for video mode
@@ -228,9 +229,11 @@ function draw() {
       // Only send class when it's asked for
       if (sendClass) {
         if (maxClass != pMaxClass) {
-          console.log("Sending new class: " + maxClass + " at " + frameCount);
-          socket.emit("classNew", maxClass);
-          pMaxClass = maxClass;
+          if (maxClass != TRASHCLASS){
+            console.log("Sending new class: " + maxClass + " at " + frameCount);
+            socket.emit("classNew", maxClass);
+            pMaxClass = maxClass;
+          }
         }
       }
       // Don't do plateaus if we are sending classes
@@ -428,27 +431,27 @@ function gotResults(err, result) {
 
     //---------------------------add confidence filter based on current confidenceThres------------------
     //-----there are two ways we can use it:
-    
+
     //1. only accept classes with confidence greater than threshold------------
     //-----only classes with confidence greater than threshold will be put into the classCache array------------
     //-----this will make a new class "harder to enter" but also "harder to exit"---------
 
-    if (confidence > confidenceThres) {
-      console.log("adding a class with conf:" + confidence);
-      classCache.push(label);
-    }
+    // if (confidence > confidenceThres) {
+    //   console.log("adding a class with conf:" + confidence);
+    //   classCache.push(label);
+    // }
 
 
     //2. if class confidence lower than threshold, mark it as trash
     //-----this will make plateaus more "accurate" compared to traning data, but also make them shorter in length----
     //-----to use this method, comment method 1 above and uncomment codes below.
 
-    // if (confidence > confidenceThres) {
-    //   console.log("adding a class with conf:" + confidence);
-    //   classCache.push(label);
-    // } else {
-    //   classCache.push("trash");
-    // }
+    if (confidence > confidenceThres) {
+      console.log("adding a class with conf:" + confidence);
+      classCache.push(label);
+    } else {
+      classCache.push(TRASHCLASS);
+    }
 
     while (classCache.length >= cacheLength) {
       classCache.shift();
