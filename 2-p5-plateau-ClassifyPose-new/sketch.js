@@ -73,6 +73,9 @@ let cPanel = stats.addPanel(new Stats.Panel("conf", "#ff8", "#221"));
 stats.showPanel(3);
 document.body.appendChild(stats.dom);
 
+//-----------------for confidence thresholding----------------
+let confidenceThres = 90;  //this is percentage
+
 function preload() {
   //used for video mode
   // video = createVideo('https://player.vimeo.com/external/591790914.hd.mp4?s=5423196882ed55a554896959f602c265d48c0af4&profile_id=175');
@@ -119,6 +122,12 @@ function setup() {
   select("#kvalue").value(kvalue);
   select("#kvalue").input(function () {
     kvalue = this.value();
+  });
+
+  // Dynamic Confidence Threshold
+  select("#confidenceThres").value(confidenceThres);
+  select("#confidenceThres").input(function () {
+    confidenceThres = this.value();
   });
 
   //------------MoveNet & KNN----------------------
@@ -416,12 +425,34 @@ function gotResults(err, result) {
 
     select("#result").html(label);
     select("#confidence").html(confidence + "%");
-    //if (confidence > 0.8) {
-    classCache.push(label);
+
+    //---------------------------add confidence filter based on current confidenceThres------------------
+    //-----there are two ways we can use it:
+    
+    //1. only accept classes with confidence greater than threshold------------
+    //-----only classes with confidence greater than threshold will be put into the classCache array------------
+    //-----this will make a new class "harder to enter" but also "harder to exit"---------
+
+    if (confidence > confidenceThres) {
+      console.log("adding a class with conf:" + confidence);
+      classCache.push(label);
+    }
+
+
+    //2. if class confidence lower than threshold, mark it as trash
+    //-----this will make plateaus more "accurate" compared to traning data, but also make them shorter in length----
+    //-----to use this method, comment method 1 above and uncomment codes below.
+
+    // if (confidence > confidenceThres) {
+    //   console.log("adding a class with conf:" + confidence);
+    //   classCache.push(label);
+    // } else {
+    //   classCache.push("trash");
+    // }
+
     while (classCache.length >= cacheLength) {
       classCache.shift();
     }
-    //}
 
     //----------track current confidence for ending a plateau and graphing-------------
     currentClassConfidence = confidence;
@@ -492,7 +523,7 @@ function toggleSendingClass(msg) {
     sendClass = !sendClass;
   } else {
     sendClass = msg;
-    if (sendClass == true){ //stop plateau recording
+    if (sendClass == true) { //stop plateau recording
       endPlateau = true;
     } else { //start plateau recording
       endPlateau = false;
@@ -604,7 +635,7 @@ function setupSocket() {
     cacheLength = msg;
     newClassCountBaseline = cacheLength * classThreshold; //recalculate the baseline for deciding how much we count as a new class
     classCacheLengthSlider.value(int(msg));
-    select("#cacheLengthLabel").html(msg);  
+    select("#cacheLengthLabel").html(msg);
   })
 
   //-------------In Progress: used for video mode-------------
