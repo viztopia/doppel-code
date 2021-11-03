@@ -4,7 +4,7 @@
         {
             "time": 0,
             "key": "0",
-            "note": "switching to preset 4 sec & get ready for doppel (doppel is hidden at this time)"
+            "note": "switching to preset 4 sec & get ready (doppel is blacked out at this time)"
         },
         {
             "time": 27,
@@ -29,7 +29,7 @@
         {
             "time": 57,
             "key": "ArrowLeft",
-            "note": "go to preset 50 sec (will update presets as: 50, 0. 4, 4.5, 6, 10)"
+            "note": "go to preset 55 sec (updated presets as: 55, 0. 4, 4.5, 6, 10)"
         },
         {
             "time": 147,
@@ -247,6 +247,16 @@
             "note": "unblackout right"
         },
         {
+            "time": 872,
+            "key": "K",
+            "note": "[PLATEAU RECORDING: true] "
+        },
+        {
+            "time": 1062,
+            "key": "K",
+            "note": "[PLATEAU RECORDING: false] "
+        },
+        {
             "time": 1064,
             "key": "D",
             "note": "blackout right"
@@ -409,7 +419,7 @@
         {
             "time": 2093,
             "key": "F",
-            "note": "blackout all"
+            "note": "blackout all (end of show)"
         }
     ]
 }

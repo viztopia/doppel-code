@@ -110,6 +110,9 @@ let plateau = { //-------------plateau-based----------------
     this.initialDelayFrameIdx = undefined;
     this.timer = undefined;
     this.currentWindowIdx = 0; //idx 0 is window length 20
+
+    socket.emit("toggleclassifier", this.plateauOn);
+    socket.emit("togglesendclass", this.classOn);
   },
   run: function () {
 
