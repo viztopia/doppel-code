@@ -8,8 +8,8 @@
 
 //------------------socket--------------------
 let socket;
-//let ip = "10.18.145.245"; //the IP of the machine that runs bridge.js
-let ip = "10.0.0.4"; //or local host
+//let ip = "10.0.0.2"; //the IP of the machine that runs bridge.js
+let ip = "127.0.0.1"; //or local host
 let port = 8081; //the port of the machine that runs bridge.js
 
 //--------simple UI--------------------
@@ -74,7 +74,7 @@ stats.showPanel(3);
 document.body.appendChild(stats.dom);
 
 //-----------------for confidence thresholding----------------
-let confidenceThres = 70;  //this is percentage
+let confidenceThres = 90;  //this is percentage
 const TRASHCLASS = "trash";
 
 function preload() {
@@ -447,7 +447,7 @@ function gotResults(err, result) {
     //-----to use this method, comment method 1 above and uncomment codes below.
 
     if (confidence > confidenceThres) {
-      console.log("adding a class with conf:" + confidence);
+      // console.log("adding a class with conf:" + confidence);
       classCache.push(label);
     } else {
       classCache.push(TRASHCLASS);
@@ -635,11 +635,18 @@ function setupSocket() {
   });
 
   socket.on("updateWindow", function (msg) {
+    console.log("updating window to: " + msg);
     cacheLength = msg;
     newClassCountBaseline = cacheLength * classThreshold; //recalculate the baseline for deciding how much we count as a new class
     classCacheLengthSlider.value(int(msg));
     select("#cacheLengthLabel").html(msg);
-  })
+  });
+
+  socket.on("updateConfidence", function (msg){
+    console.log("updating confidence to: " + msg);
+    confidenceThres = msg;
+    select("#confidenceThres").value(confidenceThres);
+  });
 
   //-------------In Progress: used for video mode-------------
   socket.on("playVideo", function (msg) { });

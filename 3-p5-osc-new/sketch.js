@@ -189,8 +189,8 @@ function stopPerformance() {
   socket.emit("playsound", cue.isPlayingSound);
 
   //reset cue
-  cue.showDoppel = false;
-  socket.emit("showdoppel", cue.showDoppel);
+  // cue.showDoppel = false;
+  // socket.emit("showdoppel", cue.showDoppel);
   cue.blackoutLeft = true;
   socket.emit("blackoutleft", cue.blackoutLeft);
   cue.blackoutRight = true;
@@ -613,6 +613,9 @@ function keyPressed(e) {
       break;
     case 78: //-----------N: go to next plateau window
       plateau.update(1);
+      break;
+    case 66: //-----------N: go to next plateau window
+      plateau.updateConfidence(1);
       break;
   }
 }

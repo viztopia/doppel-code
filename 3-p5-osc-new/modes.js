@@ -14,7 +14,6 @@ let preset = {
     // Update current preset
     this.idx += step;
     this.idx = constrain(this.idx, 0, PRESETS.length - 1);
-
   },
   updateCurrentFrame: function () {
     if (this.idx < this.jumpIdx || (this.idx == 2 && this.pIdx == 1) || (this.idx == 5 && this.pIdx == 4)) { //if preset idx smaller than jump idx, just jump
@@ -110,9 +109,13 @@ let plateau = { //-------------plateau-based----------------
     this.initialDelayFrameIdx = undefined;
     this.timer = undefined;
     this.currentWindowIdx = 0; //idx 0 is window length 20
+    this.currentConfidenceIdx = 0; //idx 0 is 90% classification confidence
 
     socket.emit("toggleclassifier", this.plateauOn);
     socket.emit("togglesendclass", this.classOn);
+    socket.emit("updateWindow", PLATEAUWINDOWS[this.currentWindowIdx]);
+    socket.emit("updateConfidence", CONFIDENCEPRESETS[this.currentConfidenceIdx]);
+
   },
   run: function () {
 
@@ -199,9 +202,15 @@ let plateau = { //-------------plateau-based----------------
   },
   update: function (step) {
     this.currentWindowIdx += step;
-    console.log(this.currentWindowIdx);
+    // console.log(this.currentWindowIdx);
     this.currentWindowIdx = constrain(this.currentWindowIdx, 0, PLATEAUWINDOWS.length - 1);
     socket.emit("updateWindow", PLATEAUWINDOWS[this.currentWindowIdx]);
+  },
+  updateConfidence: function (step) {
+    this.currentConfidenceIdx += step;
+    console.log(this.currentConfidenceIdx);
+    this.currentConfidenceIdx = constrain(this.currentConfidenceIdx, 0, CONFIDENCEPRESETS.length - 1);
+    socket.emit("updateConfidence", CONFIDENCEPRESETS[this.currentConfidenceIdx]);
   }
 }
 

@@ -28,6 +28,9 @@ const MAXJOINTDIST = []; //no longer using presets for max joint dists. (variabl
 // Plateau windows
 const PLATEAUWINDOWS = [20, 60, 10];
 
+// Class confidence presets
+const CONFIDENCEPRESETS = [90, 50];
+
 // Sockets
 const SOCKETPORT = 8081;
 

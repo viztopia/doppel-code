@@ -167,6 +167,13 @@ io.sockets.on('connection', function (socket) {
     console.log("update window to to: " + msg);
   });
 
+  //update classification confidence
+  socket.on('updateConfidence', function (msg) {
+    socket.broadcast.emit("updateConfidence", msg);
+    // socket.broadcast.emit("message1", 1234);
+    console.log("update confidence to to: " + msg);
+  });
+
   //control classification
   socket.on('toggleclassifier', function (msg) {
     socket.broadcast.emit("toggleclassifier", msg);
