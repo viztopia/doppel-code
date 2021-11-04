@@ -143,6 +143,7 @@ function draw() {
 
 //------start & stop performance----------------
 function setTopOfShow() {
+  mode = 0;
   nextActionIdx = undefined;
   cue.reset();
   for(let mode of modes) mode.reset();
