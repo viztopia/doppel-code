@@ -5,7 +5,7 @@ let mode = 0; // 0: PRESET interval, 1: manual 1, 2: speed-based, 3:plateau-base
 let socket;
 
 //-------------show settings--------------
-let btnStart, btnStop, btnSaveShow, btnRecoverShow, btnRecoverOhCrap, btnRecoverJSON;
+let btnStart, btnStop, btnSaveShow, btnRecoverShow, btnRecoverOhCrap, btnRecoverJSON, btnClearLocalStorage;
 let started = false;
 let startTime = 0;
 
@@ -35,6 +35,9 @@ function setup() {
   btnStop = createButton("STOP"); //master control: stop performance
   btnStop.position(80, 0);
   btnStop.mousePressed(stopPerformance);
+  btnStop = createButton("CLEAR LOCAL"); //master control: stop performance
+  btnStop.position(160, 0);
+  btnStop.mousePressed(()=>{localStorage.clear()});
 
   // btnSaveShow = createButton("SAVE"); //
   // btnSaveShow.position(160, 0);
@@ -98,7 +101,7 @@ function draw() {
       450
     );
     if (autopilotData) {
-      text("Autopilot: " + (isAutopilot ? "On" : "Off"), INFOX, INFOY + 100);
+      text("Autopilot: " + (isAutopilot ? "On" : "Off") + "     Autosave: " + (isAutoSave ? "On" : "Off"), INFOX, INFOY + 100);
     } else {
       text("Autopilot data is not available. Please check autopilot.json", INFOX, INFOY + 100);
     }
@@ -165,12 +168,12 @@ function startPerformance() {
   started = true;
   console.log("Show and recording started at: " + startTime);
 
-  //start auto save
-  // if (isAutoSave) {
-  //   setTimeout(() => {
-  //     autoSaveIntervalID = setInterval(savePerformance, CACHELENGTH * 1000);
-  //   }, 500);
-  // }
+  //start auto save plateaus
+  if (isAutoSave) {
+    setTimeout(() => {
+      autoSaveIntervalID = setInterval(savePlateaus, CACHELENGTH * 1000);
+    }, 500);
+  }
 }
 
 function stopPerformance() {
@@ -377,6 +380,33 @@ function recoverPerformance_internal(data) {
   // }
 }
 
+
+//----------auto save & recover plateaus----------------------
+function savePlateaus() {
+  let showData = {
+    plateau_plateaus: JSON.stringify([...plateau.plateaus]), //replace with cleaned plateaus now
+  };
+  console.log("saving the following show data: ");
+  console.log(showData);
+  localStorage.setItem("showData", JSON.stringify(showData));
+}
+
+function recoverPlateaus() {
+
+  console.log("---------recovering plateaus from local storage.------------");
+
+  let localShowData = JSON.parse(localStorage.getItem("showData"));
+  if(localShowData) {
+    plateau.plateaus = new Map(JSON.parse(localShowData.plateau_plateaus));
+
+    console.log("recovered plateaus are:");
+    console.log(plateau.plateaus);
+  } else {
+    console.log("local plateaus data not found.");
+  }
+
+}
+
 //----------------------autopilot helper-------------------
 function findNextActionIdx(currentShowTime) {
   let nextIdx = 0;
@@ -393,6 +423,9 @@ function jumpToThisAction(newShowTimeInSeconds) {
 
   // Reset everything
   setTopOfShow();
+
+  // Recover plateaus
+  recoverPlateaus();
 
   // Store how long it takes to get to the last cue
   let lastCueTimeInMS;
