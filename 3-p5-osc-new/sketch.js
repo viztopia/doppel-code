@@ -615,7 +615,7 @@ function keyPressed(e) {
     case 78: //-----------N: go to next plateau window
       plateau.update(1);
       break;
-    case 66: //-----------N: go to next plateau window
+    case 66: //-----------B: go to next plateau window
       plateau.updateConfidence(1);
       break;
   }

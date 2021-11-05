@@ -1,424 +1,420 @@
 {
   "version": 1,
-  "actions": [{
-      "time": 0,
-      "key": "0",
-      "note": "switching to preset 4 sec & get ready (doppel is blacked out at this time)"
-    },
+  "actions": [
     {
-      "time": 27,
-      "key": "H",
-      "note": "fade in left"
+        "time": 0,
+        "key": "0",
+        "note": "switching to preset 4 sec & get ready (doppel is blacked out at this time)"
     },
     {
-      "time": 27,
-      "key": "S",
-      "note": "unblackout left"
+        "time": 27,
+        "key": "H",
+        "note": "fade in left"
     },
     {
-      "time": 38,
-      "key": "K",
-      "note": "[PLATEAU RECORDING: true]"
+        "time": 27,
+        "key": "S",
+        "note": "unblackout left"
     },
     {
-      "time": 56,
-      "key": "ArrowLeft",
-      "note": "go to preset 0 sec (to get prepared)"
+        "time": 38,
+        "key": "K",
+        "note": "[PLATEAU RECORDING: true] waiting room 1: Front, BodyLeft"
     },
     {
-      "time": 57,
-      "key": "ArrowLeft",
-      "note": "go to preset 55 sec (updated presets as: 55, 0. 4, 4.5, 6, 10)"
+        "time": 56,
+        "key": "ArrowLeft",
+        "note": "go to preset 0 sec (to get prepared)"
     },
     {
-      "time": 147,
-      "key": "D",
-      "note": "unblackout right"
+        "time": 57,
+        "key": "ArrowLeft",
+        "note": "go to preset 55 sec (updated presets as: 55, 0. 4, 4.5, 6, 10)"
     },
     {
-      "time": 254,
-      "key": "K",
-      "note": "[PLATEAU RECORDING: false] "
+        "time": 147,
+        "key": "D",
+        "note": "unblackout right"
     },
     {
-      "time": 256,
-      "key": "F",
-      "note": "blackout all "
+        "time": 251,
+        "key": "K",
+        "note": "[PLATEAU RECORDING: false] "
     },
     {
-      "time": 256,
-      "key": "ArrowRight",
-      "note": "go to preset 0 sec (to get prepared)"
+        "time": 256,
+        "key": "F",
+        "note": "blackout all "
     },
     {
-      "time": 257,
-      "key": "ArrowRight",
-      "note": "go to preset 4 sec"
+        "time": 256,
+        "key": "ArrowRight",
+        "note": "go to preset 0 sec (to get prepared)"
     },
     {
-      "time": 267,
-      "key": "S",
-      "note": "unblackout left "
+        "time": 257,
+        "key": "ArrowRight",
+        "note": "go to preset 4 sec"
     },
     {
-      "time": 272,
-      "key": "D",
-      "note": "unblackout right"
+        "time": 267,
+        "key": "S",
+        "note": "unblackout left "
     },
     {
-      "time": 274,
-      "key": "N",
-      "note": "set window frame to 60"
+        "time": 272,
+        "key": "D",
+        "note": "unblackout right"
     },
     {
-      "time": 274,
-      "key": "K",
-      "note": "[PLATEAU RECORDING: true] "
+        "time": 273,
+        "key": "N",
+        "note": "set window frame to 60"
     },
     {
-      "time": 323,
-      "key": "ArrowRight",
-      "note": "go to preset 4.5 sec"
+        "time": 274,
+        "key": "K",
+        "note": "[PLATEAU RECORDING: true]  face wipe and prayer: HandFace, RightFoward"
     },
     {
-      "time": 332,
-      "key": "ArrowRight",
-      "note": "go to preset 6 sec"
+        "time": 323,
+        "key": "ArrowRight",
+        "note": "go to preset 4.5 sec"
     },
     {
-      "time": 392,
-      "key": "K",
-      "note": "[PLATEAU RECORDING: false] "
+        "time": 332,
+        "key": "ArrowRight",
+        "note": "go to preset 6 sec"
     },
     {
-      "time": 394,
-      "key": "F",
-      "note": "blackout all "
+        "time": 389,
+        "key": "K",
+        "note": "[PLATEAU RECORDING: false] "
     },
     {
-      "time": 396,
-      "key": "ArrowLeft",
-      "note": "go to preset 4.5 sec (to get prepared)"
+        "time": 394,
+        "key": "F",
+        "note": "blackout all "
     },
     {
-      "time": 396,
-      "key": "ArrowLeft",
-      "note": "go to preset 4 sec (to get prepared)"
+        "time": 396,
+        "key": "ArrowLeft",
+        "note": "go to preset 4.5 sec (to get prepared)"
     },
     {
-      "time": 398,
-      "key": "2",
-      "note": "switch to speed 0 (0.95)"
+        "time": 396,
+        "key": "ArrowLeft",
+        "note": "go to preset 4 sec (to get prepared)"
     },
     {
-      "time": 398,
-      "key": "S",
-      "note": "unblackout left - collapsy down"
+        "time": 398,
+        "key": "2",
+        "note": "switch to speed 0 (0.95)"
     },
     {
-      "time": 403,
-      "key": "D",
-      "note": " "
+        "time": 398,
+        "key": "S",
+        "note": "unblackout left - collapsy down"
     },
     {
-      "time": 405,
-      "key": "K",
-      "note": "[PLATEAU RECORDING: true] "
+        "time": 403,
+        "key": "D",
+        "note": " "
     },
     {
-      "time": 490,
-      "key": "0",
-      "note": "switch to preset 4 sec (voice: when ppl leave)"
+        "time": 405,
+        "key": "K",
+        "note": "[PLATEAU RECORDING: true]  Collapse, Airplane, Michael Jackson: LeanForward, HandSides, BodyLeft"
     },
     {
-      "time": 729,
-      "key": "K",
-      "note": "[PLATEAU RECORDING: false] "
+        "time": 490,
+        "key": "0",
+        "note": "switch to preset 4 sec (voice: when ppl leave)"
     },
     {
-      "time": 731,
-      "key": "S",
-      "note": "blackout left"
+        "time": 726,
+        "key": "K",
+        "note": "[PLATEAU RECORDING: false] "
     },
     {
-      "time": 735,
-      "key": "D",
-      "note": "blackout right"
+        "time": 731,
+        "key": "S",
+        "note": "blackout left"
     },
     {
-      "time": 739,
-      "key": "S",
-      "note": "unblackout left"
+        "time": 735,
+        "key": "D",
+        "note": "blackout right"
     },
     {
-      "time": 739,
-      "key": "2",
-      "note": "switch to speed (currently at speed preset 0.95)"
+        "time": 739,
+        "key": "S",
+        "note": "unblackout left"
     },
     {
-      "time": 739,
-      "key": "ArrowRight",
-      "note": "change to speed 1 (0.95)"
+        "time": 739,
+        "key": "2",
+        "note": "switch to speed (currently at speed preset 0.95)"
     },
     {
-      "time": 744,
-      "key": "D",
-      "note": "unblackout right"
+        "time": 739,
+        "key": "ArrowRight",
+        "note": "change to speed 1 (0.95)"
     },
     {
-      "time": 746,
-      "key": "K",
-      "note": "[PLATEAU RECORDING: true] "
+        "time": 744,
+        "key": "D",
+        "note": "unblackout right"
     },
     {
-      "time": 785,
-      "key": "ArrowRight",
-      "note": "change to speed 2 (0.5)"
+        "time": 746,
+        "key": "K",
+        "note": "[PLATEAU RECORDING: true] pulling bus and hair on face"
     },
     {
-      "time": 821,
-      "key": "0",
-      "note": "go to preset 4 sec"
+        "time": 785,
+        "key": "ArrowRight",
+        "note": "change to speed 2 (0.5)"
     },
     {
-      "time": 822,
-      "key": "Q",
-      "note": "mark real nini about to stands up"
+        "time": 816,
+        "key": "K",
+        "note": "[PLATEAU RECORDING: false]"
     },
     {
-      "time": 822,
-      "key": "ArrowLeft",
-      "note": "go to preset 0 sec"
+        "time": 821,
+        "key": "0",
+        "note": "go to preset 4 sec"
     },
     {
-      "time": 823,
-      "key": "E",
-      "note": "mark real nini standing"
+        "time": 822,
+        "key": "Q",
+        "note": "mark real nini about to stands up"
     },
     {
-      "time": 825,
-      "key": "ArrowRight",
-      "note": "go to preset 4 sec"
+        "time": 822,
+        "key": "ArrowLeft",
+        "note": "go to preset 0 sec"
     },
     {
-      "time": 825,
-      "key": "4",
-      "note": "switch to bookmark"
+        "time": 823,
+        "key": "E",
+        "note": "mark real nini standing"
     },
     {
-      "time": 825,
-      "key": "Y",
-      "note": "jump to bookmark E (which is standing)"
+        "time": 825,
+        "key": "ArrowRight",
+        "note": "go to preset 4 sec"
     },
     {
-      "time": 828,
-      "key": "0",
-      "note": "switch to preset 4 sec"
+        "time": 825,
+        "key": "4",
+        "note": "switch to bookmark"
     },
     {
-      "time": 858,
-      "key": "K",
-      "note": "[PLATEAU RECORDING: false]"
+        "time": 825,
+        "key": "Y",
+        "note": "jump to bookmark E (which is standing)"
     },
     {
-      "time": 860,
-      "key": "F",
-      "note": "blackout all"
+        "time": 828,
+        "key": "0",
+        "note": "switch to preset 4 sec"
     },
     {
-      "time": 863,
-      "key": "S",
-      "note": "unblackout left"
+        "time": 860,
+        "key": "F",
+        "note": "blackout all"
     },
     {
-      "time": 865,
-      "key": "2",
-      "note": "switch to speed (currently at 0.5)"
+        "time": 863,
+        "key": "S",
+        "note": "unblackout left"
     },
     {
-      "time": 865,
-      "key": "ArrowRight",
-      "note": "change to speed 3 (0.75)"
+        "time": 865,
+        "key": "2",
+        "note": "switch to speed (currently at 0.5)"
     },
     {
-      "time": 870,
-      "key": "D",
-      "note": "unblackout right"
+        "time": 865,
+        "key": "ArrowRight",
+        "note": "change to speed 3 (0.75)"
     },
     {
-      "time": 872,
-      "key": "K",
-      "note": "[PLATEAU RECORDING: true] "
+        "time": 870,
+        "key": "D",
+        "note": "unblackout right"
     },
     {
-      "time": 1062,
-      "key": "K",
-      "note": "[PLATEAU RECORDING: false] "
+        "time": 1064,
+        "key": "D",
+        "note": "blackout right"
     },
     {
-      "time": 1064,
-      "key": "D",
-      "note": "blackout right"
+        "time": 1099,
+        "key": "5",
+        "note": "switch to other mode to get ready to play video"
     },
     {
-      "time": 1099,
-      "key": "5",
-      "note": "switch to other mode to get ready to play video"
+        "time": 1099,
+        "key": "P",
+        "note": "play flashing video"
     },
     {
-      "time": 1099,
-      "key": "P",
-      "note": "play flashing video"
+        "time": 1100,
+        "key": "D",
+        "note": "unblackout right"
     },
     {
-      "time": 1100,
-      "key": "D",
-      "note": "unblackout right"
+        "time": 1286,
+        "key": "F",
+        "note": "blackout all"
     },
     {
-      "time": 1286,
-      "key": "F",
-      "note": "blackout all"
+        "time": 1289,
+        "key": "0",
+        "note": "switch to preset 4 sec (this is the start of second half)"
     },
     {
-      "time": 1289,
-      "key": "0",
-      "note": "switch to preset 4 sec (this is the start of second half)"
+        "time": 1290,
+        "key": "ArrowRight",
+        "note": "switch to preset 4.5 sec to get ready (echo circling)"
     },
     {
-      "time": 1290,
-      "key": "ArrowRight",
-      "note": "switch to preset 4.5 sec to get ready (echo circling)"
+        "time": 1290,
+        "key": "ArrowRight",
+        "note": "switch to preset 6 (echo circling)"
     },
     {
-      "time": 1290,
-      "key": "ArrowRight",
-      "note": "switch to preset 6 (echo circling)"
+        "time": 1351,
+        "key": "S",
+        "note": "unblackout left"
     },
     {
-      "time": 1351,
-      "key": "S",
-      "note": "unblackout left"
+        "time": 1359,
+        "key": "D",
+        "note": "unblackout right"
     },
     {
-      "time": 1359,
-      "key": "D",
-      "note": "unblackout right"
+        "time": 1445,
+        "key": "ArrowRight",
+        "note": "switch to preset 10 (humming)"
     },
     {
-      "time": 1445,
-      "key": "ArrowRight",
-      "note": "switch to preset 10 (humming)"
+        "time": 1485,
+        "key": "F",
+        "note": "blackout all"
     },
     {
-      "time": 1485,
-      "key": "F",
-      "note": "blackout all"
+        "time": 1486,
+        "key": "ArrowLeft",
+        "note": "go to preset 6 to get ready"
     },
     {
-      "time": 1486,
-      "key": "ArrowLeft",
-      "note": "go to preset 6 to get ready"
+        "time": 1487,
+        "key": "ArrowLeft",
+        "note": "go to preset 4.5 to get ready"
     },
     {
-      "time": 1487,
-      "key": "ArrowLeft",
-      "note": "go to preset 4.5 to get ready"
+        "time": 1488,
+        "key": "ArrowLeft",
+        "note": "go to preset 4 to get ready"
     },
     {
-      "time": 1488,
-      "key": "ArrowLeft",
-      "note": "go to preset 4 to get ready"
+        "time": 1488,
+        "key": "S",
+        "note": "unblackout left"
     },
     {
-      "time": 1488,
-      "key": "S",
-      "note": "unblackout left"
+        "time": 1490,
+        "key": "K",
+        "note": "[PLATEAU RECORDING: true] HandFace HairFace Airplane BusPulling"
     },
     {
-      "time": 1490,
-      "key": "K",
-      "note": "[PLATEAU RECORDING: true] "
+        "time": 1519,
+        "key": "D",
+        "note": "unblackout right (need to investigate why need 8 sec)"
     },
     {
-      "time": 1512,
-      "key": "D",
-      "note": "unblackout right (need to investigate why need 8 sec)"
+        "time": 1528,
+        "key": "2",
+        "note": "switch to speed (currently at 0.75)"
     },
     {
-      "time": 1528,
-      "key": "2",
-      "note": "switch to speed (currently at 0.75)"
+        "time": 1528,
+        "key": "ArrowRight",
+        "note": "change speed 4 (0.75)"
     },
     {
-      "time": 1528,
-      "key": "ArrowRight",
-      "note": "change speed 4 (0.75)"
+        "time": 1587,
+        "key": "0",
+        "note": "switch to preset 4 sec to get ready"
     },
     {
-      "time": 1587,
-      "key": "0",
-      "note": "switch to preset 4 sec to get ready"
+        "time": 1803,
+        "key": "K",
+        "note": "[PLATEAU RECORDING: false]"
     },
     {
-      "time": 1808,
-      "key": "E",
-      "note": "mark real nini standing "
+        "time": 1803,
+        "key": "N",
+        "note": "set window frame to 20"
     },
     {
-      "time": 1813,
-      "key": "4",
-      "note": "switch to bookmark"
+        "time": 1804,
+        "key": "B",
+        "note": "change confidence to 10"
     },
     {
-      "time": 1813,
-      "key": "Y",
-      "note": "jump to bookmark E (which is standing)"
+        "time": 1809,
+        "key": "E",
+        "note": "mark real nini standing "
     },
     {
-      "time": 1817,
-      "key": "Y",
-      "note": "jump to bookmark E (which is standing)"
+        "time": 1813,
+        "key": "4",
+        "note": "switch to bookmark"
     },
     {
-      "time": 1821,
-      "key": "Y",
-      "note": "jump to bookmark E (which is standing)"
+        "time": 1813,
+        "key": "Y",
+        "note": "jump to bookmark E (which is standing)"
     },
     {
-      "time": 1825,
-      "key": "Y",
-      "note": "jump to bookmark E (which is standing)"
+        "time": 1817,
+        "key": "Y",
+        "note": "jump to bookmark E (which is standing)"
     },
     {
-      "time": 1827,
-      "key": "K",
-      "note": "[PLATEAU RECORDING: false]"
+        "time": 1821,
+        "key": "Y",
+        "note": "jump to bookmark E (which is standing)"
     },
     {
-      "time": 1827,
-      "key": "N",
-      "note": "set window frame to 20"
+        "time": 1825,
+        "key": "Y",
+        "note": "jump to bookmark E (which is standing)"
     },
     {
-      "time": 1828,
-      "key": "F",
-      "note": "blackout all "
+        "time": 1828,
+        "key": "F",
+        "note": "blackout all "
     },
     {
-      "time": 1885,
-      "key": "3",
-      "note": "switch to plateau"
+        "time": 1885,
+        "key": "3",
+        "note": "switch to plateau"
     },
     {
-      "time": 1885,
-      "key": "G",
-      "note": "unblackout all"
+        "time": 1885,
+        "key": "G",
+        "note": "unblackout all"
     },
     {
-      "time": 2093,
-      "key": "F",
-      "note": "blackout all (end of show)"
+        "time": 2093,
+        "key": "F",
+        "note": "blackout all (end of show)"
     }
-  ]
+]
 }
