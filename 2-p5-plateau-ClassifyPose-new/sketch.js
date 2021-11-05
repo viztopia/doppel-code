@@ -37,6 +37,9 @@ let clearBtn;
 
 //------------------movenet & KNN----------------------
 let video;
+let msk;
+let MSK_MARGIN = 100;
+
 // let poseNet;
 let moveNet;
 let netReady = false;
@@ -147,6 +150,13 @@ function setup() {
     cnv.parent("cnvDiv");
     loadMoveNet();
     loadKNN();
+    // Create mask image
+    msk = createImage(width, height);
+    msk.loadPixels();
+    for (let i = 3; i < msk.pixels.length; i += 4) {
+      msk.pixels[i] = 255;
+    }
+    msk.updatePixels();
   });
   video.hide();
 
@@ -176,6 +186,9 @@ function draw() {
   // background(200);
 
   if (netReady) estimatePose();
+  
+  // If the mask is loaded, mask out the camera image
+  if(msk) video.copy(msk, 0, 0, 100, height, video.width-MSK_MARGIN, 0, 100, video.height);
   image(video, 0, 0, video.width, video.height);
   if (poses.length > 0) {
     drawKeypoints();
