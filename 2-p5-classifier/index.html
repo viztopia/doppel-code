@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <script src="libraries/p5.min.js"></script>
+  <script src="libraries/p5.dom.min.js"></script>
+  <!-- <script src="http://127.0.0.1:8081/socket.io/socket.io.js"></script> -->
+  <script src="libraries/socket.io.js"></script>
+
+  <script src="libraries/tfjs.js"></script>
+  <script src="libraries/pose-detection.js"></script>
+  <script src="libraries/knn-classifier.js"></script>
+
+  <script src="libraries/stats.min.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <meta charset="utf-8">
+
+</head>
+
+<body>
+  <div id="calibrate">Make a T-pose to (c)alibrate. <span id="nose"></span></div>
+  <div id="resultCon"></div>
+  <div id="cnvDiv"></div>
+  <div id="controlsDiv" style="width:800px; display: flex;flex-direction: row">
+    <div>Classification Window Length: <span id="cacheLengthLabel">20</span> Frames</div>
+
+  </div>
+  <div id="resultDisplay"></div>
+  <p id="status">Model Status: </p>
+  <div style="display: flex;">
+    <button id="buttonLoad">Load KNN Classes</button><br />
+    <input id="kvalue" value=20 style="text-align: right; width: 2em; margin: 0 0 0 2em;"><span id="kvalue-label"
+      style="margin: 0 2em 0 0;">k</span>
+    <input id="confidenceThres" value=90 style="text-align: right; width: 2em; margin: 0 0 0 2em;"><span id="confidenceThres-label"
+      style="margin: 0 2em 0 0;">% confidence</span>
+    <button id="buttonClassify">Predict</button>
+  </div>
+
+  <p>
+    KNN Classifier labeled this
+    as Class: <span id="result">...</span>
+    with a confidence of <span id="confidence">...</span>
+  </p>
+  <script src="sketch.js"></script>
+
+</body>
+
+</html>

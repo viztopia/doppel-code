@@ -1,0 +1,461 @@
+{
+    "version" : 1,
+    "actions" : [
+        {
+            "time": 0,
+            "key": "5",
+            "note": "switch to other mode to get ready to show first joke"
+        },
+        {
+            "time": 0,
+            "key": "5",
+            "note": "show first joke (this is considered real start of the show) (do noting. no longer display text)"
+        },
+        {
+            "time": 0,
+            "key": "L",
+            "note": "play sound.wav (sound.wav should start with hi hat sound, and offset should match to video)"
+        },
+        {
+            "time": 0,
+            "key": "0",
+            "note": "switching to preset 4 sec & get ready for doppel (doppel is hidden at this time)"
+        },
+        {
+            "time": 0,
+            "key": "ArrowLeft",
+            "note": "go to preset 0 sec (to get prepared)"
+        },
+        {
+            "time": 57,
+            "key": "ArrowLeft",
+            "note": "go to preset 60 sec (will update presets as: 60, 0. 4, 4.5, 6, 10)"
+        },
+        {
+            "time": 57,
+            "key": "A",
+            "note": "show doppel"
+        },
+        {
+            "time": 268,
+            "key": "F",
+            "note": "blackout all (waiting room 1 -> therapist 1, nini bends over)"
+        },
+        {
+            "time": 268,
+            "key": "ArrowRight",
+            "note": "go to preset 0 sec (to get prepared)"
+        },
+        {
+            "time": 268,
+            "key": "ArrowRight",
+            "note": "go to preset 4 sec"
+        },
+        {
+            "time": 273,
+            "key": "G",
+            "note": "unblackout all (voice: the moment)"
+        },
+        {
+            "time": 294,
+            "key": "ArrowRight",
+            "note": "go to preset 4.5 sec"
+        },
+        {
+            "time": 334,
+            "key": "ArrowRight",
+            "note": "go to preset 6 sec"
+        },
+        {
+            "time": 358,
+            "key": "ArrowRight",
+            "note": "go to preset 10 sec"
+        },
+        {
+            "time": 394,
+            "key": "F",
+            "note": "blackout all (right before voice: my first apartment)"
+        },
+        {
+            "time": 394,
+            "key": "ArrowLeft",
+            "note": "go to preset 6 sec (to get prepared)"
+        },
+        {
+            "time": 394,
+            "key": "ArrowLeft",
+            "note": "go to preset 4.5 sec (to get prepared)"
+        },
+        {
+            "time": 394,
+            "key": "ArrowLeft",
+            "note": "go to preset 4 sec (to get prepared)"
+        },
+        {
+            "time": 398,
+            "key": "2",
+            "note": "switch to speed 0.75"
+        },
+        {
+            "time": 398,
+            "key": "G",
+            "note": "unblackout all"
+        },
+        {
+            "time": 496,
+            "key": "0",
+            "note": "switch to preset 4 sec (voice: when ppl leave)"
+        },
+        {
+            "time": 726,
+            "key": "S",
+            "note": "blackout real nini"
+        },
+        {
+            "time": 730,
+            "key": "S",
+            "note": "unblackout real nini"
+        },
+        {
+            "time": 734,
+            "key": "2",
+            "note": "switch to speed (currently at 0.75)"
+        },
+        {
+            "time": 734,
+            "key": "ArrowRight",
+            "note": "change speed to 0.5"
+        },
+        {
+            "time": 824,
+            "key": "Q",
+            "note": "mark real nini about to stands up"
+        },
+        {
+            "time": 827,
+            "key": "S",
+            "note": "blackout real nini"
+        },
+        {
+            "time": 827,
+            "key": "4",
+            "note": "switch to bookmark"
+        },
+        {
+            "time": 827,
+            "key": "R",
+            "note": "jump to nini about to stand up"
+        },
+        {
+            "time": 831,
+            "key": "0",
+            "note": "switch to preset 4 sec (running start, voice: bc I have that feeling)"
+        },
+        {
+            "time": 831,
+            "key": "ArrowLeft",
+            "note": "go to preset 0 sec"
+        },
+        {
+            "time": 831,
+            "key": "S",
+            "note": "un-blackout real nini"
+        },
+        {
+            "time": 836,
+            "key": "ArrowRight",
+            "note": "go to preset 4 sec"
+        },
+        {
+            "time": 843,
+            "key": "2",
+            "note": "switch to speed (currently at 0.5)"
+        },
+        {
+            "time": 862,
+            "key": "ArrowRight",
+            "note": "change speed to 0.3875"
+        },
+        {
+            "time": 891,
+            "key": "W",
+            "note": "mark real nini sits"
+        },
+        {
+            "time": 914,
+            "key": "4",
+            "note": "switch to bookmark"
+        },
+        {
+            "time": 914,
+            "key": "T",
+            "note": "jump to bookmark W (which is sitting)"
+        },
+        {
+            "time": 917,
+            "key": "T",
+            "note": "jump to bookmark W (which is sitting)"
+        },
+        {
+            "time": 920,
+            "key": "T",
+            "note": "jump to bookmark W (which is sitting)"
+        },
+        {
+            "time": 923,
+            "key": "T",
+            "note": "jump to bookmark W (which is sitting)"
+        },
+        {
+            "time": 926,
+            "key": "T",
+            "note": "jump to bookmark W (which is sitting)"
+        },
+        {
+            "time": 929,
+            "key": "2",
+            "note": "switch to speed (currently at 0.3875)"
+        },
+        {
+            "time": 981,
+            "key": "4",
+            "note": "switch to bookmark"
+        },
+        {
+            "time": 981,
+            "key": "T",
+            "note": "jump to bookmark W (which is sitting)"
+        },
+        {
+            "time": 984,
+            "key": "T",
+            "note": "jump to bookmark W (which is sitting)"
+        },
+        {
+            "time": 987,
+            "key": "T",
+            "note": "jump to bookmark W (which is sitting)"
+        },
+        {
+            "time": 990,
+            "key": "T",
+            "note": "jump to bookmark W (which is sitting)"
+        },
+        {
+            "time": 993,
+            "key": "T",
+            "note": "jump to bookmark W (which is sitting)"
+        },
+        {
+            "time": 996,
+            "key": "2",
+            "note": "switch to speed (currently at 0.3875)"
+        },
+        {
+            "time": 1054,
+            "key": "4",
+            "note": "switch to bookmark"
+        },
+        {
+            "time": 1054,
+            "key": "T",
+            "note": "jump to bookmark W (which is sitting)"
+        },
+        {
+            "time": 1057,
+            "key": "T",
+            "note": "jump to bookmark W (which is sitting)"
+        },
+        {
+            "time": 1060,
+            "key": "T",
+            "note": "jump to bookmark W (which is sitting)"
+        },
+        {
+            "time": 1063,
+            "key": "T",
+            "note": "jump to bookmark W (which is sitting)"
+        },
+        {
+            "time": 1066,
+            "key": "S",
+            "note": "blackout left (which is real nini)"
+        },
+        {
+            "time": 1066,
+            "key": "R",
+            "note": "jump to bookmark Q (which is about to stand up)"
+        },
+        {
+            "time": 1069,
+            "key": "S",
+            "note": "unblackout left (which is real nini)"
+        },
+        {
+            "time": 1069,
+            "key": "D",
+            "note": "blackout right (which is doppel)"
+        },
+        {
+            "time": 1100,
+            "key": "5",
+            "note": "switch to other mode to get ready to play video"
+        },
+        {
+            "time": 1100,
+            "key": "D",
+            "note": "unblackout right (which is doppel)"
+        },
+        {
+            "time": 1100,
+            "key": "P",
+            "note": "play flashing video"
+        },
+        {
+            "time": 1283,
+            "key": "0",
+            "note": "switch to preset 4 sec (this is the start of second half)"
+        },
+        {
+            "time": 1365,
+            "key": "F",
+            "note": "blackout all"
+        },
+        {
+            "time": 1368,
+            "key": "G",
+            "note": "unblackout until end of running"
+        },
+        {
+            "time": 1484,
+            "key": "F",
+            "note": "blackout all"
+        },
+        {
+            "time": 1486,
+            "key": "0",
+            "note": "switch to preset 4 sec"
+        },
+        {
+            "time": 1486,
+            "key": "0",
+            "note": "show doppel (do nothing)"
+        },
+        {
+            "time": 1486,
+            "key": "G",
+            "note": "unblackout all"
+        },
+        {
+            "time": 1531,
+            "key": "2",
+            "note": "switch to speed (currently at 0.3875)"
+        },
+        {
+            "time": 1531,
+            "key": "ArrowRight",
+            "note": "change speed to the last preset which is also 0.3875"
+        },
+        {
+            "time": 1591,
+            "key": "0",
+            "note": "switch to preset 4 sec to get ready"
+        },
+        {
+            "time": 1591,
+            "key": "ArrowLeft",
+            "note": "go to preset 0 sec"
+        },
+        {
+            "time": 1628,
+            "key": "ArrowRight",
+            "note": "go to preset 4 sec"
+        },
+        {
+            "time": 1734,
+            "key": "0",
+            "note": "hide doppel (do nothing)"
+        },
+        {
+            "time": 1806,
+            "key": "E",
+            "note": "mark real nini standing"
+        },
+        {
+            "time": 1823,
+            "key": "4",
+            "note": "switch to bookmark"
+        },
+        {
+            "time": 1823,
+            "key": "Y",
+            "note": "jump to bookmark E (which is standing)"
+        },
+        {
+            "time": 1827,
+            "key": "Y",
+            "note": "jump to bookmark E (which is standing)"
+        },
+        {
+            "time": 1831,
+            "key": "Y",
+            "note": "jump to bookmark E (which is standing)"
+        },
+        {
+            "time": 1835,
+            "key": "S",
+            "note": "blackout left (which is real nini)"
+        },
+        {
+            "time": 1835,
+            "key": "Y",
+            "note": "jump to bookmark E (which is standing)"
+        },
+        {
+            "time": 1839,
+            "key": "F",
+            "note": "full blackout"
+        },
+        {
+            "time": 1839,
+            "key": "0",
+            "note": "switch to preset to get ready (currently at 4 sec)"
+        },
+        {
+            "time": 1841,
+            "key": "ArrowLeft",
+            "note": "go to preset 0 sec"
+        },
+        {
+            "time": 1841,
+            "key": "G",
+            "note": "un-full blackout"
+        },
+        {
+            "time": 1884,
+            "key": "3",
+            "note": "switch to plateau"
+        },
+        {
+            "time": 2090,
+            "key": "A",
+            "note": "hide doppel"
+        },
+        {
+            "time": 2090,
+            "key": "5",
+            "note": "switch to other mode to get ready for second joke"
+        },
+        {
+            "time": 2090,
+            "key": "O",
+            "note": "show second joke"
+        },
+        {
+            "time": 2150,
+            "key": "F",
+            "note": "blackout all (end of show) (should be at 35:54 for latest nini video, and 35:50 when offset is cleared)"
+        }
+    ]
+}
+

@@ -1,0 +1,47 @@
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<!-- <script src="http://127.0.0.1:8081/socket.io/socket.io.js"></script> -->
+	<script language="javascript" type="text/javascript" src="libraries/socket.io.js"></script>
+	<script language="javascript" type="text/javascript" src="libraries/p5.js"></script>
+	<script language="javascript" type="text/javascript" src="libraries/p5.dom.js"></script>
+	<script language="javascript" type="text/javascript" src="libraries/chance.min.js"></script>
+	<script language="javascript" type="text/javascript" src="libraries/avg.js"></script>
+	<script language="javascript" type="text/javascript" src="SETTINGS.js"></script>
+	<script language="javascript" type="text/javascript" src="stage.js"></script>
+	<script language="javascript" type="text/javascript" src="cue.js"></script>
+	<script language="javascript" type="text/javascript" src="modes.js"></script>
+	<script language="javascript" type="text/javascript" src="sketch.js"></script>
+	<style>
+		body {
+			padding: 0;
+			margin: 0;
+		}
+		#boundary {
+			width: 600px;
+			position: absolute;
+		}
+		#timeline {
+			position: absolute;
+			top: 0;
+			right: 0;
+		}
+
+		#timeline input {
+			width: 2.5em;
+		}
+	</style>
+</head>
+
+<body>
+	<div id="boundary">
+		<div id="timeline">
+			<input id="minute" value=2>
+			<input id="second" value=30>
+			<button id="jump">Jump</button>
+		</div>
+	</div>
+</body>
+
+</html>

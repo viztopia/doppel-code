@@ -1,0 +1,348 @@
+{
+  "version": 1,
+  "actions": [{
+      "time": 0,
+      "key": "1",
+      "note": "start in manual mode"
+    },
+    {
+      "time": 27,
+      "key": "H",
+      "note": "fade in left"
+    },
+    {
+      "time": 38,
+      "key": "K",
+      "note": "[PLATEAU RECORDING: true] waiting room 1: Front, BodyLeft"
+    },
+    {
+      "time": 56,
+      "key": "0",
+      "setting": 4,
+      "note": "go to preset 55 sec (updated presets as: 0, 4, 4.5, 6, 10, 55)"
+    },
+    {
+      "time": 147,
+      "key": "D",
+      "note": "unblackout right"
+    },
+    {
+      "time": 251,
+      "key": "K",
+      "note": "[PLATEAU RECORDING: false] "
+    },
+    {
+      "time": 256,
+      "key": "F",
+      "note": "blackout all "
+    },
+    {
+      "time": 257,
+      "key": "0",
+      "setting": 1,
+      "note": "go to preset 4 sec"
+    },
+    {
+      "time": 267,
+      "key": "S",
+      "note": "unblackout left "
+    },
+    {
+      "time": 272,
+      "key": "D",
+      "note": "unblackout right"
+    },
+    {
+      "time": 273,
+      "key": "N",
+      "note": 60
+    },
+    {
+      "time": 274,
+      "key": "K",
+      "note": "[PLATEAU RECORDING: true]  face wipe and prayer: HandFace, RightFoward"
+    },
+    {
+      "time": 323,
+      "key": "0",
+      "setting": 2,
+      "note": "go to preset 4.5 sec"
+    },
+    {
+      "time": 332,
+      "key": "0",
+      "setting": 3,
+      "note": "go to preset 6 sec"
+    },
+    {
+      "time": 389,
+      "key": "K",
+      "note": "[PLATEAU RECORDING: false] "
+    },
+    {
+      "time": 394,
+      "key": "F",
+      "note": "blackout all "
+    },
+    {
+      "time": 398,
+      "key": "2",
+      "setting": 2,
+      "note": "switch to speed 1: 0.95"
+    },
+    {
+      "time": 398,
+      "key": "S",
+      "note": "unblackout left - collapsy down"
+    },
+    {
+      "time": 403,
+      "key": "D",
+      "note": " "
+    },
+    {
+      "time": 405,
+      "key": "K",
+      "note": "[PLATEAU RECORDING: true]  Collapse, Airplane, Michael Jackson: LeanForward, HandSides, BodyLeft"
+    },
+    {
+      "time": 490,
+      "key": "0",
+      "setting": 1,
+      "note": "switch to preset 4 sec (voice: when ppl leave)"
+    },
+    {
+      "time": 726,
+      "key": "K",
+      "note": "[PLATEAU RECORDING: false] "
+    },
+    {
+      "time": 731,
+      "key": "S",
+      "note": "blackout left"
+    },
+    {
+      "time": 735,
+      "key": "D",
+      "note": "blackout right"
+    },
+    {
+      "time": 739,
+      "key": "S",
+      "note": "unblackout left"
+    },
+    {
+      "time": 739,
+      "key": "2",
+      "setting": 2,
+      "note": "switch to speed 2: 0.95"
+    },
+    {
+      "time": 744,
+      "key": "D",
+      "note": "unblackout right"
+    },
+    {
+      "time": 746,
+      "key": "K",
+      "note": "[PLATEAU RECORDING: true] pulling bus and hair on face"
+    },
+    {
+      "time": 785,
+      "key": "2",
+      "setting": 0,
+      "note": "switch to speed 3: 0.5"
+    },
+    {
+      "time": 816,
+      "key": "K",
+      "note": "[PLATEAU RECORDING: false]"
+    },
+    {
+      "time": 821,
+      "key": "0",
+      "setting": 1,
+      "note": "go to preset 4 sec"
+    },
+    {
+      "time": 822,
+      "key": "Q",
+      "note": "mark real nini about to stands up"
+    },
+    {
+      "time": 822,
+      "key": "0",
+      "setting": 0,
+      "note": "go to preset 0 sec"
+    },
+    {
+      "time": 827,
+      "key": "0",
+      "setting": 1,
+      "note": "go to preset 4 sec"
+    },
+    {
+      "time": 860,
+      "key": "F",
+      "note": "blackout all"
+    },
+    {
+      "time": 863,
+      "key": "S",
+      "note": "unblackout left"
+    },
+    {
+      "time": 865,
+      "key": "2",
+      "setting": 2,
+      "note": "switch to speed 3: 0.75"
+    },
+    {
+      "time": 870,
+      "key": "D",
+      "note": "unblackout right"
+    },
+    {
+      "time": 1064,
+      "key": "D",
+      "note": "blackout right"
+    },
+    {
+      "time": 1099,
+      "key": "5",
+      "note": "switch to other mode to get ready to play video"
+    },
+    {
+      "time": 1099,
+      "key": "P",
+      "note": "play flashing video"
+    },
+    {
+      "time": 1100,
+      "key": "D",
+      "note": "unblackout right"
+    },
+    {
+      "time": 1286,
+      "key": "F",
+      "note": "blackout all"
+    },
+    {
+      "time": 1290,
+      "key": "0",
+      "setting": 3,
+      "note": "switch to preset 6 (echo circling)"
+    },
+    {
+      "time": 1351,
+      "key": "S",
+      "note": "unblackout left"
+    },
+    {
+      "time": 1359,
+      "key": "D",
+      "note": "unblackout right"
+    },
+    {
+      "time": 1445,
+      "key": "0",
+      "setting": 4,
+      "note": "switch to preset 10 (humming)"
+    },
+    {
+      "time": 1485,
+      "key": "F",
+      "note": "blackout all"
+    },
+    {
+      "time": 1488,
+      "key": "0",
+      "setting": 1,
+      "note": "go to preset 4 to get ready"
+    },
+    {
+      "time": 1488,
+      "key": "S",
+      "note": "unblackout left"
+    },
+    {
+      "time": 1519,
+      "key": "D",
+      "note": "unblackout right (need to investigate why need 8 sec)"
+    },
+    {
+      "time": 1528,
+      "key": "2",
+      "setting": 2,
+      "note": "switch to speed (currently at 0.75)"
+    },
+    {
+      "time": 1587,
+      "key": "0",
+      "setting": 1,
+      "note": "switch to preset 4 sec to get ready"
+    },
+    {
+      "time": 1803,
+      "key": "N",
+      "setting": 20,
+      "note": "set window frame to 20"
+    },
+    {
+      "time": 1804,
+      "key": "B",
+      "setting": 10,
+      "note": "change confidence to 10"
+    },
+    {
+      "time": 1809,
+      "key": "E",
+      "note": "mark real nini standing "
+    },
+    {
+      "time": 1813,
+      "key": "4",
+      "note": "switch to bookmark"
+    },
+    {
+      "time": 1813,
+      "key": "Y",
+      "note": "jump to bookmark E (which is standing)"
+    },
+    {
+      "time": 1817,
+      "key": "Y",
+      "note": "jump to bookmark E (which is standing)"
+    },
+    {
+      "time": 1821,
+      "key": "Y",
+      "note": "jump to bookmark E (which is standing)"
+    },
+    {
+      "time": 1825,
+      "key": "Y",
+      "note": "jump to bookmark E (which is standing)"
+    },
+    {
+      "time": 1828,
+      "key": "F",
+      "note": "blackout all "
+    },
+    {
+      "time": 1885,
+      "key": "3",
+      "note": "switch to plateau"
+    },
+    {
+      "time": 1885,
+      "key": "G",
+      "note": "unblackout all"
+    },
+    {
+      "time": 2093,
+      "key": "F",
+      "note": "blackout all (end of show)"
+    }
+  ]
+}
