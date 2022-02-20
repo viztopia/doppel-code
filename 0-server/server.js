@@ -41,19 +41,16 @@ io.sockets.on('connection', function(socket) {
 
   //-----------------broadcast stage managing events-----------------
   socket.on('source', function(msg) {
+    console.log("source is: " + msg);
     socket.broadcast.emit("source", msg);
-    // socket.broadcast.emit("message1", 1234);
-    //console.log("source is: " + msg);
   });
   socket.on('frameIdx', function(msg) {
+    console.log("frameIdx is: " + msg);
     socket.broadcast.emit("frameIdx", msg);
-    // socket.broadcast.emit("message1", 1234);
-    //console.log("frameIdx is: " + msg);
   });
   socket.on('fileIdx', function(msg) {
-    socket.broadcast.emit("fileIdx", msg);
-    // socket.broadcast.emit("message1", 1234);
     console.log("fileIdx is: " + msg);
+    socket.broadcast.emit("fileIdx", msg);
   });
   socket.on('cuePoint', function(msg) {
     socket.broadcast.emit("cuePoint", msg);

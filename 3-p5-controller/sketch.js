@@ -55,56 +55,37 @@ function setup() {
 }
 
 function draw() {
-  // Waiting to start
-  if (!started) {
-    background(255, 0, 255);
-    textSize(14);
-    text("If recover: Make sure TD window active & showData updated.", INFOX, INFOY - 25);
-    text(
-      "Top of Show: doppel ON, blackout ALL. Classify ON, Send Class, autopilot ON, autosave On.",
-      INFOX,
-      INFOY + 25,
-      450
-    );
-    if (autopilotData) {
-      text("Autopilot: " + (isAutopilot ? "On" : "Off") + "     Autosave: " + (isAutoSave ? "On" : "Off"), INFOX, INFOY + 100);
+
+  //--------display mode-----------------------
+  background(MODEBGS[mode]);
+  textSize(40);
+  text("mode: " + MODENAMES[mode], INFOX, INFOY);
+
+  //--------display show time------------------
+  recordedSeconds = started ? floor((Date.now() - startTime) / 1000) : 0;
+  let clockMin = floor(recordedSeconds / 60);
+  let clockSec = recordedSeconds % 60;
+  textSize(28);
+  text(nf(clockMin, 2, 0) + ":" + nf(clockSec, 2, 0), INFOX, INFOY - 150);
+  textSize(14);
+
+  //--------autopilot------------------
+  if (autopilotData && isAutopilot) {
+    if (nextActionIdx == undefined) {
+      nextActionIdx = findNextActionIdx(recordedSeconds);
+      // console.log(nextActionIdx);
     } else {
-      text("Autopilot data is not available. Please check autopilot.json", INFOX, INFOY + 100);
+      nextActionIdx = executeNextAction(nextActionIdx);
     }
-    // text("Autosave: " + (isAutoSave ? "On" : "Off"), INFOX + 100, INFOY + 100);
-    // Started
   } else {
-    //--------display mode-----------------------
-    background(MODEBGS[mode]);
-    textSize(40);
-    text("mode: " + MODENAMES[mode], INFOX, INFOY);
-
-    //--------display show time------------------
-    recordedSeconds = floor((Date.now() - startTime) / 1000);
-    let clockMin = floor(recordedSeconds / 60);
-    let clockSec = recordedSeconds % 60;
-    textSize(28);
-    text(nf(clockMin, 2, 0) + ":" + nf(clockSec, 2, 0), INFOX, INFOY - 150);
-    textSize(14);
-
-    //--------autopilot------------------
-    if (autopilotData && isAutopilot) {
-      if (nextActionIdx == undefined) {
-        nextActionIdx = findNextActionIdx(recordedSeconds);
-        // console.log(nextActionIdx);
-      } else {
-        nextActionIdx = executeNextAction(nextActionIdx);
-      }
-    } else {
-      text("Autopilot is Off. Press M to toggle.", INFOX, INFOY - 75);
-    }
-
-    // Run the current mode
-    modes[mode].run();
-
-    // Run the current cue time
-    cue.run();
+    text("Autopilot is Off. Press M to toggle.", INFOX, INFOY - 75);
   }
+
+  // Run the current mode
+  modes[mode].run();
+
+  // Run the current cue time
+  cue.run();
 
   // Show stage data
   stage.display();
@@ -214,18 +195,22 @@ function jumpToThisAction(newShowTimeInSeconds) {
   for (let a in autopilotData.actions) {
     let idx = int(a);
     let action = autopilotData.actions[idx];
-    if(action.time <= newShowTimeInSeconds) executeNextAction(idx, true);
+    if (action.time <= newShowTimeInSeconds) executeNextAction(idx, true);
   }
 
   // Update startTime
-  startTime =  Date.now() - (newShowTimeInSeconds * 1000);
+  startTime = Date.now() - (newShowTimeInSeconds * 1000);
 
 
   // Resume gated socket emissions
   socketPaused = false;
 
   // Send out key emissions
-  for(let mode of modes) try { mode.emit(); } catch(e) { console.log("Nothing to emit in mode."); }
+  for (let mode of modes) try {
+    mode.emit();
+  } catch (e) {
+    console.log("Nothing to emit in mode.");
+  }
   stage.emit();
 }
 
@@ -288,7 +273,7 @@ function keyPressed(e) {
       mode = OTHER;
       break;
     case UP_ARROW: //arrow up
-      if (mode == MANUAL || mode == SPEED) modes[mode].adust(1);
+      if (mode == MANUAL || mode == SPEED) modes[mode].adjust(1);
       break;
     case DOWN_ARROW: //arrow down
       if (mode == MANUAL || mode == SPEED) modes[mode].adjust(-1);
@@ -459,5 +444,7 @@ function connect() {
 // Gatekeeper for emitting
 function emit(event, data) {
   if (socketPaused) return;
+
+  console.log("Emitting: ", event, data);
   socket.emit(event, data);
 }

@@ -5,10 +5,10 @@ let preset = {
   },
   run: function() {
     text("Current delay interval is: " + PRESETS[this.idx] + " seconds", INFOX, INFOY + 25);
-    cue.ease(PRESETS[this.idx]);
   },
   set: function(idx) {
     this.idx = idx;
+    cue.set(PRESETS[this.idx]);
   },
   update: function(step) {
     // Update current preset
@@ -23,14 +23,14 @@ let manual = {
     this.delayInSeconds = 0;
   },
   run: function() {
-    text("Manual Count: " + this.delayInSeconds, INFOX, INFOY + 25);
+    text("Manual Count: " + nf(this.delayInSeconds * 0.05, 0, 2), INFOX, INFOY + 25);
   },
   set: function(seconds) {
     cue.set(seconds);
   },
   adjust: function(step) {
     // Update the delay
-    this.delayInSeconds += nf(step * 0.05, 0, 2);
+    this.delayInSeconds += step * 0.1;
     this.set(this.delayInSeconds);
   }
 }
@@ -61,7 +61,8 @@ let speed = { //------------speed-based--------------------------
 
 
     if (this.mappedFrames.length > 0) {
-      cue.delayFrameIdx = floor(getAvg1d(this.mappedFrames));
+      // Set new delayFrameIdx
+      cue.set(floor(getAvg1d(this.mappedFrames)));
       text("Current joint dist is: " + this.jointDist, INFOX, INFOY + 25);
       text("Averaged delay frame is: " + cue.delayFrameIdx, INFOX, INFOY + 50);
       text("Current Max Joint Dist is: " + MAXJOINTDISTS[this.maxJointDistIdx] + ", Z to reset.", INFOX, INFOY + 75);

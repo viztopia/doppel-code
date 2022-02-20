@@ -3,43 +3,59 @@ let cue = {
   reset: function() {
     this.delayFrameIdx = 0;
     this.pDelayFrameIdx = 0;
-    this.currentDelayFrameIdx = 0;
+    this.intermediateDelayFrameIdx = 0;
     this.fileIdx = -99;
     this.pfileIdx = undefined;
     this.cuePoint = 0;
     this.availableRecordingNum = 0;
   },
-  run: function () {
+  run: function() {
 
     //----------------------1. first we calculate how many cached/recorded content is available-----------
     this.availableRecordingNum = floor(recordedSeconds / RECORDINGSECONDS);
     let availableCACHESeconds = recordedSeconds > CACHELENGTH ? CACHELENGTH : recordedSeconds;
     text(this.availableRecordingNum + " recording clips and " + availableCACHESeconds + " seconds in TD cache available", INFOX, INFOY - 50);
-
-    // Cue doppelganger in TD, only if there's a change
-    if (abs(this.delayFrameIdx - this.pDelayFrameIdx) > 0) {
-      this.update();
-      this.pDelayFrameIdx = this.delayFrameIdx;
-    }
   },
   set: function(seconds) {
-    this.delayFrameIdx = seconds * CAMFPS;
+    this.setFrames(seconds * CAMFPS);
   },
+
+  setFrames: function(frames) {
+    this.pDelayFrameIdx = this.delayFrameIdx;
+    this.delayFrameIdx = floor(frames);
+    this.update();
+  },
+
   ease: function(seconds) {
-      let target = seconds * RECORDINGFPS;
-      let diff = cue.delayFrameIdx - target;
-      this.currentDelayFrameIdx += diff/10;
-      cue.delayFrameIdx = this.currentDelayFrameIdx;
-      this.pIdx = this.idx;
+    // Calculate target
+    let target = seconds * RECORDINGFPS;
+    // Where am I now?
+    let intermediateDelayFrameIdx = this.delayFrameIdx;
+
+    console.log(intermediateDelayFrameIdx, target);
+
+    // Calculate distance
+    let diff = this.delayFrameIdx - target
+    // Keep easying towards target
+    let easing = setInterval(() => {
+      diff = target - intermediateDelayFrameIdx;
+      intermediateDelayFrameIdx += (diff * 0.1);
+
+      // Set the new delayFrameIdx
+      cue.setFrames(intermediateDelayFrameIdx);
+      if (abs(diff) <= 1) clearInterval(easing);
+    }, 100);
   },
-  update: function () {
-    // Only update cue if something has changed
-    // if (abs(delayFrameIdx - pdelayFrameIdx) <= 0) return;
+  update: function() {
 
-    if (this.delayFrameIdx != undefined) {
-
+    if (this.delayFrameIdx == undefined) {
+      text("No available delay frames yet. Showing TD current frame", INFOX, INFOY + 125);
+      emit("source", CACHE);
+      emit("frameIdx", 0);
+    } else {
       // If delay frame is within what is cached...
       if (this.delayFrameIdx <= CACHEFRAMES) {
+        console.log("SENDING IT OUT");
         emit("source", CACHE);
         this.fileIdx = -99;
         this.pfileIdx = this.fileIdx;
@@ -57,7 +73,7 @@ let cue = {
 
         let recordingStartFrame = totalavailableFrames - this.delayFrameIdx;
         this.fileIdx = floor(recordingStartFrame / RECORDINGFRAMES);
-        if(this.fileIdx < 0){
+        if (this.fileIdx < 0) {
           console.log("fileIdx < 0!");
           console.log(recordedSeconds, totalavailableFrames, recordingStartFrame, RECORDINGFRAMES);
           this.fileIdx = 0; //fixed issues when plateau pStartTime ==0;
@@ -72,10 +88,6 @@ let cue = {
         }
         emit("cuePoint", this.cuePoint); //updated TD to pulse after cuepoint update
       }
-    } else {
-      text("No available delay frames yet. Showing TD current frame", INFOX, INFOY + 125);
-      emit("source", CACHE);
-      emit("frameIdx", 0);
     }
-  },
+  }
 }

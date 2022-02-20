@@ -14,6 +14,7 @@ let stage = {
   },
   toggleDoppel: function() {
     this.showDoppel = !this.showDoppel;
+    emit("showdoppel", this.showDoppel);
   },
   toggleBlackoutLeft: function() {
     this.blackoutLeft = !this.blackoutLeft;
@@ -39,8 +40,8 @@ let stage = {
   },
   display: function stage() {
     // Display current delay and file
-    text("Delayed frame: " + cue.delayFrameIdx + "      File: " + cue.fileIdx + " cuePoint: " + this.cuePoint, INFOX, INFOY + 125);
-    text("Doppel: " + (this.showDoppel ? "On" : "Off"));
+    text("Delayed frame: " + floor(cue.delayFrameIdx) + "      File: " + cue.fileIdx + " cuePoint: " + cue.cuePoint, INFOX, INFOY + 125);
+    text("Doppel: " + (this.showDoppel ? "On" : "Off"), INFOX, INFOY + 150);
     let timeElapsed = this.fadeints ? constrain(floor(this.fadeints - Date.now()/1000), 0, 30) : 0;
     text("Blackout:" + (this.blackoutLeft ? " Left" : "") + (this.blackoutRight ? " Right" : "" + "\t\Fade: " + timeElapsed), INFOX, INFOY + 175);
     text("Bookmarks: " + modes[BOOKMARK].str, INFOX, INFOY + 200);
