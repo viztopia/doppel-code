@@ -21,6 +21,9 @@ let cue = {
   },
 
   setFrames: function(frames) {
+    // Ignore if there has been no change
+    if(floor(frames) == this.delayFrameIdx) return;
+
     this.pDelayFrameIdx = this.delayFrameIdx;
     this.delayFrameIdx = floor(frames);
     this.update();

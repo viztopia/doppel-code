@@ -83,7 +83,7 @@ let speed = { //------------speed-based--------------------------
     this.idx = constrain(this.idx, 0, MAXJOINTDISTS.length-1);
   },
   updateJointDist: function(jd) {
-    this.speed = jd;
+    this.jointDist = jd;
   }
 }
 
