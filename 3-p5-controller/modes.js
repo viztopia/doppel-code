@@ -64,7 +64,7 @@ let speed = { //------------speed-based--------------------------
       cue.setFrames(floor(getAvg1d(this.mappedFrames)));
       text("Current joint dist is: " + this.jointDist, INFOX, INFOY + 25);
       text("Averaged delay frame is: " + cue.delayFrameIdx, INFOX, INFOY + 50);
-      text("Current Max Joint Dist is: " + this.maxJointDist + ", Z to reset.", INFOX, INFOY + 75);
+      text("Current Max Joint Dist is: " + nfs(this.maxJointDist, 0, 2) + ", Z to reset.", INFOX, INFOY + 75);
     };
   },
   set: function(mjd) {

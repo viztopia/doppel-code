@@ -42,7 +42,7 @@ let cue = {
     // Keep easying towards target
     let easing = setInterval(() => {
       diff = target - intermediateDelayFrameIdx;
-      intermediateDelayFrameIdx += (diff * 0.1);
+      intermediateDelayFrameIdx += (diff * 0.05);
 
       // Set the new delayFrameIdx
       cue.setFrames(intermediateDelayFrameIdx);

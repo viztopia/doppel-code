@@ -40,7 +40,7 @@ let stage = {
   },
   display: function stage() {
     // Display current delay and file
-    text("Delayed frame: " + floor(cue.delayFrameIdx) + "      File: " + cue.fileIdx + " cuePoint: " + cue.cuePoint, INFOX, INFOY + 125);
+    text("Delayed frame: " + floor(cue.delayFrameIdx) + "      File: " + cue.fileIdx + " cuePoint: " + nfs(cue.cuePoint, 0, 2), INFOX, INFOY + 125);
     text("Doppel: " + (this.showDoppel ? "On" : "Off"), INFOX, INFOY + 150);
     let timeElapsed = this.fadeints ? constrain(floor(this.fadeints - Date.now()/1000), 0, 30) : 0;
     text("Blackout:" + (this.blackoutLeft ? " Left" : "") + (this.blackoutRight ? " Right" : "" + "\t\Fade: " + timeElapsed), INFOX, INFOY + 175);
