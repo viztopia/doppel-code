@@ -130,17 +130,18 @@ io.sockets.on('connection', function(socket) {
     console.log("classification is: " + (msg ? "On" : "Off"));
     plateauStatus = msg;
   });
+  socket.on('sending', function(msg) {
+    socket.broadcast.emit("sending", msg);
+    // socket.broadcast.emit("message1", 1234);
+    console.log("sending: " + msg == CLASSES ? "Plateaus" : "Classes");
+    classStatus = msg;
+  });
   socket.on('plateauNew', function(msg) {
     socket.broadcast.emit("plateauNew", msg);
     // socket.broadcast.emit("message1", 1234);
     console.log("new plateau data: " + msg);
   });
-  socket.on('sending', function(msg) {
-    socket.broadcast.emit("sending", msg);
-    // socket.broadcast.emit("message1", 1234);
-    console.log("sending: " + msg == 0 ? "Plateaus" : "Classes");
-    classStatus = msg;
-  });
+
   socket.on('classNew', function(msg) {
     socket.broadcast.emit("classNew", msg);
     // socket.broadcast.emit("message1", 1234);

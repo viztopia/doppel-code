@@ -8,10 +8,10 @@
 
 //------------------socket--------------------
 let socket;
-//let ip = "10.18.63.58"; //the IP of the machine that runs bridge.js
-let ip = "127.0.0.1"; //or local host
+let ip = "10.18.63.58"; //the IP of the machine that runs bridge.js
+//let ip = "127.0.0.1"; //or local host
 let port = 8081; //the port of the machine that runs bridge.js
-let sending, CLASSES;
+let sending;
 //--------simple UI--------------------
 let cnv;
 let waiting = 180;
@@ -30,8 +30,8 @@ let plateauMinLength = 1000;
 let plateaus = [];
 let endPlateau = false;
 let sender = -1;
-const SENDPLATEAUS = 0;
-const SENDCLASS = 1;
+const PLATEAUS = 0;
+const CLASSES = 1;
 
 let classCacheLengthSlider;
 let recordBtn, downloadBtn;
@@ -506,25 +506,22 @@ function getMaxClass(array) {
 
 //---------------------Classification Helpers----------------------
 function setClassifier(state) {
-  isClassifying = state || !isClassifying;
+  console.log("STATE", state);
+  isClassifying = state == undefined ? !isClassifying : state;
+  console.log("isClassifying", isClassifying);
   classifyBtn.html(isClassifying ? "Stop" : "Predict");
   endPlateau = !state;
   if (isClassifying) classify();
 
-  socket.emit("classifying", isClassifying); //tells the controller sketch if classifying analysis is ready
+  if(state == undefined) socket.emit("classifying", isClassifying); //tells the controller sketch if classifying analysis is ready
 }
 
-function setSender(msg) {
-
-  if (msg == undefined) {
-    sending = sending == CLASSES ? PLATEAUS : CLASSES;
-  } else {
-    sending = msg;
-    endPlateau = sending == CLASSES ? true : false;
-  }
+function setSender(state) {
+  sending = state !== undefined ? state : sending == CLASSES ? PLATEAUS : CLASSES;
+  endPlateau = sending == CLASSES;
 
   console.log("Sending: ", sending == CLASSES ? "Plateaus" : "Classes");
-  socket.emit("sending", sending); // inform controller whether sending class or not
+  if(state == undefined) socket.emit("sending", sending); // inform controller whether sending class or not
 }
 
 //------------load KNN classes---------------

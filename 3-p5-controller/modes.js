@@ -181,11 +181,17 @@ let plateau = { //-------------plateau-based----------------
   },
 
   toggleClassifier: function(state) {
-    this.classify = state || !this.classify;
+    // Ignore if there is no state change
+    if(state == this.classify) return;
+
+    this.classify = state == undefined ? !this.classify : state;
     emit("setclassifier", this.classify);
   },
   toggleSender: function(state) {
-    this.sending = state || (this.sending == 0 ? this.CLASSES : this.PLATEAUS);
+    // Ignore if there is no state change
+    if(state == this.sending) return;
+
+    this.sending = state == undefined ? (this.sending == 0 ? this.CLASSES : this.PLATEAUS) : state;
     emit("setsender", this.sending);
   },
 
