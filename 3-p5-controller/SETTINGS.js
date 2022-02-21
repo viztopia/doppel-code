@@ -24,9 +24,6 @@ const MODEBGS = [[140, 226, 238], [147, 186, 225], [137, 132, 214], [114, 81, 17
 // Delay presets
 const PRESETS = [0, 4, 4.5, 6, 10, 55];
 
-// Speed mapping
-const MAXJOINTDISTS = [0.5, 0.75, 0.95, 1, 2]; //no longer using presets for max joint dists. (variables inside mode speed now)
-
 // Sockets
 const SOCKETPORT = 8081;
 

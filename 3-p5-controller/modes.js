@@ -38,7 +38,6 @@ let manual = {
 
 let speed = { //------------speed-based--------------------------
   reset: function() {
-    this.idx = 0;
     this.jointDist = 0,
     this.pJointDist = 0,
     this.FRAMESTOCACHE = 600; //caching 20 seconds for testing, so 20 * 30 = 600 frames
@@ -65,22 +64,17 @@ let speed = { //------------speed-based--------------------------
       cue.setFrames(floor(getAvg1d(this.mappedFrames)));
       text("Current joint dist is: " + this.jointDist, INFOX, INFOY + 25);
       text("Averaged delay frame is: " + cue.delayFrameIdx, INFOX, INFOY + 50);
-      text("Current Max Joint Dist is: " + MAXJOINTDISTS[this.maxJointDistIdx] + ", Z to reset.", INFOX, INFOY + 75);
+      text("Current Max Joint Dist is: " + this.maxJointDist + ", Z to reset.", INFOX, INFOY + 75);
     };
   },
-  set: function(idx) {
-    // Update current speed max joint dist preset
-    this.idx = idx;
-    this.maxJointDist = MAXJOINTDISTS[this.idx];
+  set: function(mjd) {
+    // Update current speed max joint dist
+    this.maxJointDist = mjd;
   },
   adjust: function(step) {
     // manual adjust current max joint dist
     this.maxJointDist += step * 0.05;
-    this.maxJointDist = constrain(MAXJOINTDISTS[this.maxJointDistIdx], 0.05, 2); //constrain joint dist btw 0.05 & 2
-  },
-  cycle: function(step) {
-    this.idx += step;
-    this.idx = constrain(this.idx, 0, MAXJOINTDISTS.length-1);
+    this.maxJointDist = constrain(this.maxJointDist, 0.05, 2); //constrain joint dist btw 0.05 & 2
   },
   updateJointDist: function(jd) {
     this.jointDist = jd;
