@@ -8,10 +8,10 @@
 
 //------------------socket--------------------
 let socket;
-//let ip = "10.0.0.2"; //the IP of the machine that runs bridge.js
+//let ip = "10.18.63.58"; //the IP of the machine that runs bridge.js
 let ip = "127.0.0.1"; //or local host
 let port = 8081; //the port of the machine that runs bridge.js
-
+let sending, CLASSES;
 //--------simple UI--------------------
 let cnv;
 let waiting = 180;
@@ -506,11 +506,8 @@ function getMaxClass(array) {
 
 //---------------------Classification Helpers----------------------
 function setClassifier(state) {
-  console.log(msg);
-  if (msg == undefined) isClassifying = !isClassifying;
-
+  isClassifying = state || !isClassifying;
   classifyBtn.html(isClassifying ? "Stop" : "Predict");
-  isClassifying = state;
   endPlateau = !state;
   if (isClassifying) classify();
 

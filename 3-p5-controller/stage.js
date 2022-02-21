@@ -45,6 +45,6 @@ let stage = {
     let timeElapsed = this.fadeints ? constrain(floor(this.fadeints - Date.now()/1000), 0, 30) : 0;
     text("Blackout:" + (this.blackoutLeft ? " Left" : "") + (this.blackoutRight ? " Right" : "" + "\t\Fade: " + timeElapsed), INFOX, INFOY + 175);
     text("Bookmarks: " + modes[BOOKMARK].str, INFOX, INFOY + 200);
-    text("Classify: " + (modes[PLATEAU].classify ? "On" : "Off") + "\t\tSend: " + (modes[PLATEAU].sending = modes[PLATEAU].CLASSES ? "Plateaus" : "Classes"), INFOX, INFOY + 225);
+    text("Classify: " + (modes[PLATEAU].classify ? "On" : "Off") + "\t\tSend: " + (modes[PLATEAU].sending == modes[PLATEAU].CLASSES ? "Plateaus" : "Classes"), INFOX, INFOY + 225);
   }
 }

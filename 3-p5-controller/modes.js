@@ -62,7 +62,7 @@ let speed = { //------------speed-based--------------------------
 
     if (this.mappedFrames.length > 0) {
       // Set new delayFrameIdx
-      cue.set(floor(getAvg1d(this.mappedFrames)));
+      cue.setFrames(floor(getAvg1d(this.mappedFrames)));
       text("Current joint dist is: " + this.jointDist, INFOX, INFOY + 25);
       text("Averaged delay frame is: " + cue.delayFrameIdx, INFOX, INFOY + 50);
       text("Current Max Joint Dist is: " + MAXJOINTDISTS[this.maxJointDistIdx] + ", Z to reset.", INFOX, INFOY + 75);
@@ -81,6 +81,9 @@ let speed = { //------------speed-based--------------------------
   cycle: function(step) {
     this.idx += step;
     this.idx = constrain(this.idx, 0, MAXJOINTDISTS.length-1);
+  },
+  updateJointDist: function(jd) {
+    this.speed = jd;
   }
 }
 
@@ -177,12 +180,12 @@ let plateau = { //-------------plateau-based----------------
 
   },
 
-  toggleClassifier: function() {
-    this.classify = !this.classify;
+  toggleClassifier: function(state) {
+    this.classify = state || !this.classify;
     emit("setclassifier", this.classify);
   },
-  toggleSender: function() {
-    this.sending = this.sending == this.CLASSES ? this.PLATEAUS : this.CLASSES;
+  toggleSender: function(state) {
+    this.sending = state || (this.sending == 0 ? this.CLASSES : this.PLATEAUS);
     emit("setsender", this.sending);
   },
 
@@ -193,6 +196,54 @@ let plateau = { //-------------plateau-based----------------
   setConfidence: function(confidence) {
     this.confidence = confidence;
     emit("updateConfidence", this.confidence);
+  },
+  addPlateau: function(p) {
+    console.log(
+      "received a new plateau of class " +
+      p.className +
+      ". it'll be available after " +
+      RECORDINGSECONDS +
+      " seconds."
+    );
+
+    setTimeout(() => {
+      //delay RECORDINGSECONDS so that plateau playback won't bleed into cache
+
+      console.log("new plateau available: ");
+      console.log(p);
+
+      //for each plateau, record its start time relative to the show's start time, i.e., how many milli seconds after the show starts.
+      let st = p.start - startTime > 0 ? p.start - startTime : 0;
+
+      if (!this.plateaus.has(p.className)) {
+        this.plateaus.set(p.className, [{
+          start: st,
+          length: p.end - p.start,
+        }, ]); // if plateau of this class never exists, add one.
+      } else {
+        this.plateaus.get(p.className).push({
+          start: st,
+          length: p.end - p.start,
+        }); // if plateau of this class already exists, add data to array.
+      }
+      // console.log(plateaus);
+      // plateaus.push({ className: p.className, start: p.start - startTime, length: p.end - p.start }); //save plateaus with timestamps in relation to recording start time
+    }, RECORDINGSECONDS * 1000);
+  },
+  updateClass : function(c) {
+    if (modes[PLATEAU].currentClass != c) {
+      modes[PLATEAU].haveNewClass = true;
+      modes[PLATEAU].currentClass = c;
+      console.log("got new class: " + c);
+    }
+  },
+  recoverClass : function(c) {
+    if (modes[PLATEAU].currentClass) {
+      console.log("current class already exist: " + modes[PLATEAU].currentClass);
+      return;
+    }
+    modes[PLATEAU].currentClass = c || "1-Front";
+    console.log("got queried class: " + c);
   }
 }
 

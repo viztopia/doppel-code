@@ -44,7 +44,7 @@ let cue = {
       // Set the new delayFrameIdx
       cue.setFrames(intermediateDelayFrameIdx);
       if (abs(diff) <= 1) clearInterval(easing);
-    }, 100);
+    }, 50);
   },
   update: function() {
 

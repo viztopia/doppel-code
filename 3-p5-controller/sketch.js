@@ -367,42 +367,16 @@ function connect() {
   //---socket msg from part 2 classification sketch------------------
   socket.on("classifying", function(msg) {
     console.log("classification is: " + (msg ? "On" : "Off"));
-    modes[PLATEAU].classify = msg;
+    modes[PLATEAU].toggleClassifier(msg);
+  });
+
+  socket.on("sending", (msg) => {
+    modes[PLATEAU].toggleSender(msg);
   });
 
   socket.on("plateauNew", function(p) {
     if (started) {
-      console.log(
-        "received a new plateau of class " +
-        p.className +
-        ". it'll be available after " +
-        RECORDINGSECONDS +
-        " seconds."
-      );
-
-      setTimeout(() => {
-        //delay RECORDINGSECONDS so that plateau playback won't bleed into cache
-
-        console.log("new plateau available: ");
-        console.log(p);
-
-        //for each plateau, record its start time relative to the show's start time, i.e., how many milli seconds after the show starts.
-        let st = p.start - startTime > 0 ? p.start - startTime : 0;
-
-        if (!modes[PLATEAU].plateaus.has(p.className)) {
-          modes[PLATEAU].plateaus.set(p.className, [{
-            start: st,
-            length: p.end - p.start,
-          }, ]); // if plateau of this class never exists, add one.
-        } else {
-          modes[PLATEAU].plateaus.get(p.className).push({
-            start: st,
-            length: p.end - p.start,
-          }); // if plateau of this class already exists, add data to array.
-        }
-        // console.log(plateaus);
-        // plateaus.push({ className: p.className, start: p.start - startTime, length: p.end - p.start }); //save plateaus with timestamps in relation to recording start time
-      }, RECORDINGSECONDS * 1000);
+      modes[PLATEAU].addPlateau(p);
     } else {
       console.log(
         "got a new class " +
@@ -413,31 +387,15 @@ function connect() {
   });
 
   socket.on("queriedClass", (c) => {
-    if (c != undefined) {
-      if (!modes[PLATEAU].currentClass) {
-        modes[PLATEAU].currentClass = c;
-        console.log("got queried class: " + c);
-      } else {
-        console.log("current class already exist: " + modes[PLATEAU].currentClass);
-      }
-    } else {
-      modes[PLATEAU].currentClass = "1-Front"; //if there's no current class in the classifier, use "1-Front" as default.
-    }
+    modes[PLATEAU].recoverClass(c);
   });
 
   socket.on("classNew", (c) => {
-    if (mode == PLATEAU && modes[PLATEAU].currentClass != c) {
-      modes[PLATEAU].haveNewClass = true;
-      modes[PLATEAU].currentClass = c;
-      console.log("got new class: " + c);
-    }
+    if(mode == PLATEAU) modes[PLATEAU].updateClass(c);
   });
 
-  socket.on("sending", (msg) => {
-    modes[PLATEAU].classOn = msg;
-  });
   socket.on("jointDist", (jd) => {
-    speed.jointDist = jd;
+    modes[SPEED].updateJointDist(jd);
   });
 }
 
