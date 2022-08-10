@@ -319,7 +319,7 @@ function keyPressed(e) {
       stage.setBlackoutAll(true);
       break;
     case 71: //-----------G: black out both off
-      stage.setBlackoutAll(true);
+      stage.setBlackoutAll(false);
       break;
     case 72: //-----------H: fade in left
       stage.fadeInLeft();

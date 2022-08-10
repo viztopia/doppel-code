@@ -4,7 +4,7 @@ let preset = {
     this.pIdx = 1;
   },
   run: function() {
-    text("Current delay interval is: " + PRESETS[this.idx] + " seconds", INFOX, INFOY + 25);
+    text("Current delay interval is: " + PRESETS[this.idx] + " seconds", INFOX, INFOY + 30);
   },
   set: function(idx) {
     this.idx = idx;
@@ -23,7 +23,7 @@ let manual = {
     this.delayInSeconds = 0;
   },
   run: function() {
-    text("Manual Count: " + nf(this.delayInSeconds * 0.05, 0, 2), INFOX, INFOY + 25);
+    text("Manual Count: " + nf(this.delayInSeconds * 0.05, 0, 2), INFOX, INFOY + 30);
   },
   set: function(seconds) {
     cue.set(seconds);
@@ -62,9 +62,9 @@ let speed = { //------------speed-based--------------------------
     if (this.mappedFrames.length > 0) {
       // Set new delayFrameIdx
       cue.setFrames(floor(getAvg1d(this.mappedFrames)));
-      text("Current joint dist is: " + this.jointDist, INFOX, INFOY + 25);
+      text("Current joint dist is: " + this.jointDist, INFOX, INFOY + 30);
       text("Averaged delay frame is: " + cue.delayFrameIdx, INFOX, INFOY + 50);
-      text("Current Max Joint Dist is: " + nfs(this.maxJointDist, 0, 2) + ", Z to reset.", INFOX, INFOY + 75);
+      text("Current Max Joint Dist is: " + nfs(this.maxJointDist, 0, 2) + ", Z to reset.", INFOX, INFOY + 70);
     };
   },
   set: function(mjd) {
@@ -107,20 +107,6 @@ let plateau = { //-------------plateau-based----------------
     socket.emit("updateConfidence", this.confidence);
   },
   run: function() {
-
-    // if we can't get plateau classification status, need to check if classifier is running and socket connection is ok.
-    if (this.classify == undefined) {
-      text("Plateau classification is unknown. PLEASE CHECK Classifier Connection.", INFOX, INFOY + 25);
-      return;
-    }
-
-    // run normal plateau logic
-    if (this.classOn != undefined) {
-      text("Plateau classification is: " + (this.classify ? "On." : "Off.") + " Send: " + (this.classOn ? "Class" : "Plateau") + " Window: " + PLATEAUWINDOWS[this.currentWindowIdx], INFOX, INFOY + 25);
-    } else {
-      text("Plateau classification is: " + (this.classify ? "On." : "Off.") + " Send: unknow. (Should be off by default).", INFOX, INFOY + 25);
-    }
-
     if (!this.currentClass) {
       console.log("querying class");
       socket.emit("queryClass");
@@ -168,9 +154,9 @@ let plateau = { //-------------plateau-based----------------
 
     }
 
-    text("Current class is: " + this.currentClass, INFOX, INFOY + 50);
-    if (!this.targetClassInPlateaus) text("We need at least one plateau finished " + RECORDINGSECONDS + " seconds ago to pull from the recording.", INFOX, INFOY + 75);
-    if (this.targetClassInPlateaus) text("Current pulling " + this.targetClass + ", method is: Random. Finishing in: " + (this.currentClipLength - (Date.now() - this.currentClipStartTime)) / 1000, INFOX, INFOY + 100);
+    text("Current class is: " + this.currentClass, INFOX, INFOY + 30);
+    if (!this.targetClassInPlateaus) text("No plateaus available. (" + RECORDINGSECONDS + "s ago)", INFOX, INFOY + 50);
+    if (this.targetClassInPlateaus) text("Current pulling " + this.targetClass + ", method is: Random. Finishing in: " + (this.currentClipLength - (Date.now() - this.currentClipStartTime)) / 1000, INFOX, INFOY + 70);
 
   },
 
@@ -261,9 +247,9 @@ let bookmark = { //------------bookmark---------------------
   run: function() {
     this.str = "";
     this.bookmarks.forEach((bm) => {
-      this.str += (nf(floor(bm / 1000 / 60), 2, 0) + ":" + nf(floor(bm / 1000 % 60), 2, 0) + "(" + bm + ")")
+      this.str += (nf(floor(bm / 1000 / 60), 2, 0) + ":" + nf(floor(bm / 1000 % 60), 2, 0) + "(" + bm + ")\t")
     });
-    text("Press Q, W, E to add/overwrite, press R, T, Y to jump.", INFOX, INFOY + 125);
+    text("Press Q, W, E to add/overwrite, press R, T, Y to jump.", INFOX, INFOY + 50);
   },
   set: function(idx) {
     // Set current bookmark
@@ -281,7 +267,7 @@ let bookmark = { //------------bookmark---------------------
 
 let other = {
   run: function() {
-    text("Press P to play FLASHING video.", INFOX, INFOY + 75);
+    text("Press P to play FLASHING video.", INFOX, INFOY + 50);
   },
   reset: function() {
     return;

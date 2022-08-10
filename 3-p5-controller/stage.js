@@ -26,7 +26,7 @@ let stage = {
   },
   setBlackoutAll: function(state) {
     this.blackoutLeft = state;
-    this.blackoutright = state;
+    this.blackoutRight = state;
     emit("blackoutleft", this.blackoutLeft);
     emit("blackoutright", this.blackoutRight);
   },
@@ -41,10 +41,10 @@ let stage = {
   display: function stage() {
     // Display current delay and file
     text("Delayed frame: " + floor(cue.delayFrameIdx) + "      File: " + cue.fileIdx + " cuePoint: " + nfs(cue.cuePoint, 0, 2), INFOX, INFOY + 125);
-    text("Doppel: " + (this.showDoppel ? "On" : "Off"), INFOX, INFOY + 150);
+    text("Doppel (A): " + (this.showDoppel ? "On" : "Off"), INFOX, INFOY + 150);
     let timeElapsed = this.fadeints ? constrain(floor(this.fadeints - Date.now()/1000), 0, 30) : 0;
-    text("Blackout:" + (this.blackoutLeft ? " Left" : "") + (this.blackoutRight ? " Right" : "" + "\t\Fade: " + timeElapsed), INFOX, INFOY + 175);
-    text("Bookmarks: " + modes[BOOKMARK].str, INFOX, INFOY + 200);
-    text("Classify: " + (modes[PLATEAU].classify ? "On" : "Off") + "\t\tSend: " + (modes[PLATEAU].sending == modes[PLATEAU].CLASSES ? "Plateaus" : "Classes"), INFOX, INFOY + 225);
+    text("Blackout (S,D,F,G): " + (this.blackoutLeft ? " Left" : "") + (this.blackoutRight ? " Right" : "" + "\t\Fade: " + timeElapsed), INFOX, INFOY + 175);
+    text("Bookmarks (4): " + modes[BOOKMARK].str, INFOX, INFOY + 200);
+    text("Classify (J): " + (modes[PLATEAU].classify ? "On" : "Off") + "\t\tSend (K): " + (modes[PLATEAU].sending == modes[PLATEAU].CLASSES ? "Plateaus" : "Classes" + "\t\tWindow: "), INFOX, INFOY + 225);
   }
 }
