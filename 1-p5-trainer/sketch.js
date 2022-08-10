@@ -1,5 +1,5 @@
 // test commit
-
+// Video object
 let video;
 // Create a KNN classifier
 let classifier;
@@ -15,6 +15,7 @@ let prediction;
 
 // Recording rate
 let fps = 10;
+const SCL = 0.5;
 
 let LABELS = ['Front', 'BodyLeft', 'RightFoward', 'HandFace', 'LeanForward', 'HandSides', 'FaceLeft','FaceRight','Mistake'];
 
@@ -38,6 +39,11 @@ document.body.appendChild(stats.dom);
 
 function setup() {
   video = createCapture(VIDEO, () => {
+
+    // Scale the video down
+    video.width *= SCL;
+    video.height *= SCL;
+
     const canvas = createCanvas(video.width, video.height);
     canvas.parent('videoContainer');
     loadMoveNet();

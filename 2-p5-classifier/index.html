@@ -24,22 +24,21 @@
   <div id="cnvDiv"></div>
   <div id="controlsDiv" style="width:800px; display: flex;flex-direction: row">
     <div>Classification Window Length: <span id="cacheLengthLabel">20</span> Frames</div>
-
+    <button id="clear">Clear</button><br />
+    <button id="download">Download</button><br />
   </div>
   <div id="resultDisplay"></div>
   <p id="status">Model Status: </p>
-  <div style="display: flex;">
-    <button id="buttonLoad">Load KNN Classes</button><br />
-    <input id="kvalue" value=20 style="text-align: right; width: 2em; margin: 0 0 0 2em;"><span id="kvalue-label"
-      style="margin: 0 2em 0 0;">k</span>
-    <input id="confidenceThres" value=90 style="text-align: right; width: 2em; margin: 0 0 0 2em;"><span id="confidenceThres-label"
-      style="margin: 0 2em 0 0;">% confidence</span>
-    <button id="buttonClassify">Predict</button>
+  <div id="KNNPredict">
+    <button id="load">Load</button>
+    <input id="kvalue" value="20"><span id="kvalue-label">k</span>
+    <input id="confidenceThres" value=90><span id="confidenceThres-label">%</span>
+    <button id="predict">Predict</button>
   </div>
 
   <p>
     KNN Classifier labeled this
-    as Class: <span id="result">...</span>
+    as: <span id="result">...</span>
     with a confidence of <span id="confidence">...</span>
   </p>
   <script src="sketch.js"></script>

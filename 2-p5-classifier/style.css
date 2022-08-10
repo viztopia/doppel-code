@@ -25,11 +25,35 @@ canvas {
   color: red;
 }
 
-#buttonClassify {
+button {
+  margin: 0 0 0 1em;
+  height: 2em;
+}
+
+input {
+  margin: 0 0 0 1em;
+}
+
+#KNNPredict {
+  display: flex;
+}
+
+#KNNPredict input {
+  font-size: 1em;
+  height: 1.3em;
+  width: 2em;
+  text-align: right;
+}
+
+#KNNPredict span {
+  margin: 0.15em 0 0 0.25em;
+}
+
+#predict {
   font-size: 2em;
 }
 
-#resultDisplay {
+#result {
   position: fixed;
   top: 0;
   left: 0;
@@ -38,7 +62,7 @@ canvas {
   color: red;
   font-size: 15em;
 }
-#resultCon {
+#confidence {
   /* position: fixed; */
   top: 0;
   left: 0;

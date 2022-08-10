@@ -40,7 +40,8 @@ let clearBtn;
 //------------------movenet & KNN----------------------
 let video;
 let msk;
-let MSK_MARGIN = 100;
+const MSK_MARGIN = 100;
+const SCL = 0.5;
 
 // let poseNet;
 let moveNet;
@@ -99,13 +100,13 @@ function setup() {
     select("#cacheLengthLabel").html(cacheLength);
   });
 
-  clearBtn = createButton("Clear Plateaus Data");
+  clearBtn = select("#clear");
   clearBtn.mousePressed(() => {
     plateaus = [];
   });
   clearBtn.parent("controlsDiv");
 
-  downloadBtn = createButton("Download Plateau JSON");
+  downloadBtn = select("#download");
   downloadBtn.mousePressed(() => {
     saveJSON(
       plateaus,
@@ -146,6 +147,11 @@ function setup() {
   //   }
   // };
   video = createCapture(VIDEO, () => {
+
+    // Scale the video down
+    video.width *= SCL;
+    video.height *= SCL;
+
     cnv = createCanvas(video.width, video.height);
     // cnv = createCanvas(1440, 1080);
     // cnv = createCanvas(960, 540);
@@ -162,12 +168,12 @@ function setup() {
   });
   video.hide();
 
-  loadKNNBtn = select("#buttonLoad");
+  loadKNNBtn = select("#load");
   loadKNNBtn.mousePressed(() => {
     loadJSON("classes.json", loadClassesJSON);
   });
 
-  classifyBtn = select("#buttonClassify");
+  classifyBtn = select("#predict");
   classifyBtn.mousePressed(setClassifier);
 
   //----------speed-based delay setup----------------
@@ -228,10 +234,10 @@ function draw() {
     [maxClass, maxCount] = getMaxClass(classCache);
 
     if (maxClass) {
-      select("#resultDisplay").html(maxClass);
+      select("#result").html(maxClass);
       let resultCon = round((maxCount / cacheLength) * 100);
       // resultCon = nf(resultCon,3,3);
-      select("#resultCon").html("confidence: " + resultCon + "%");
+      select("#confidence").html("confidence: " + resultCon + "%");
       // console.log(round(resultCon));
       // text("current class is: " + maxClass, width / 2 - 50, height / 2 - 50);
       // text("class count is: " + maxCount, width / 2 - 50, height / 2 + 50);
