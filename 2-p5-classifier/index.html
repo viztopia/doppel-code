@@ -22,17 +22,19 @@
   <div id="calibrate">Make a T-pose to (c)alibrate. <span id="nose"></span></div>
   <div id="resultCon"></div>
   <div id="cnvDiv"></div>
-  <div id="controlsDiv" style="width:800px; display: flex;flex-direction: row">
-    <div>Classification Window Length: <span id="cacheLengthLabel">20</span> Frames</div>
-    <button id="clear">Clear</button><br />
-    <button id="download">Download</button><br />
+  <div id="controls">
+    <div id="window-wrapper">Window: <span id="window-label">20</span>  frames
+      <input id="window" type="range" min="10" max="180" value="20">
+    </div>
+    <button id="clear">Clear</button>
+    <button id="download">Download</button>
   </div>
-  <div id="resultDisplay"></div>
+  <p>Plateau: <span id="plateau">None</span></p>
   <p id="status">Model Status: </p>
   <div id="KNNPredict">
     <button id="load">Load</button>
     <input id="kvalue" value="20"><span id="kvalue-label">k</span>
-    <input id="confidenceThres" value=90><span id="confidenceThres-label">%</span>
+    <input id="th" value=90><span id="th-label">%</span>
     <button id="predict">Predict</button>
   </div>
 

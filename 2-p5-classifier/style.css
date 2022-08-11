@@ -3,8 +3,18 @@ html, body {
   padding: 0;
   font-family: sans-serif;
 }
+
+body {
+  padding: 0 0 0 1em;
+}
+
 canvas {
   display: block;
+}
+#controls {
+  display: flex;
+  flex-direction: row;
+  margin: 1em 0 0 0;
 }
 
 #calibrate {
@@ -34,6 +44,10 @@ input {
   margin: 0 0 0 1em;
 }
 
+#window {
+
+}
+
 #KNNPredict {
   display: flex;
 }
@@ -53,7 +67,7 @@ input {
   font-size: 2em;
 }
 
-#result {
+.result {
   position: fixed;
   top: 0;
   left: 0;

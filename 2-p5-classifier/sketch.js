@@ -8,8 +8,8 @@
 
 //------------------socket--------------------
 let socket;
-let ip = "10.18.63.58"; //the IP of the machine that runs bridge.js
-//let ip = "127.0.0.1"; //or local host
+//let ip = "10.18.63.58"; //the IP of the machine that runs bridge.js
+let ip = "127.0.0.1"; //or local host
 let port = 8081; //the port of the machine that runs bridge.js
 let sending;
 //--------simple UI--------------------
@@ -34,8 +34,6 @@ const PLATEAUS = 0;
 const CLASSES = 1;
 
 let classCacheLengthSlider;
-let recordBtn, downloadBtn;
-let clearBtn;
 
 //------------------movenet & KNN----------------------
 let video;
@@ -50,7 +48,6 @@ let poses = [];
 let classifier;
 let kvalue = 20;
 let isClassifying = false;
-let loadKNNBtn, classifyBtn;
 let classIndexOffset = 0;
 let timeOfLastPose = 0;
 let itsBeenAWhile = false;
@@ -80,7 +77,7 @@ stats.showPanel(3);
 document.body.appendChild(stats.dom);
 
 //-----------------for confidence thresholding----------------
-let confidenceThres = 90; //this is percentage
+let th = 90; //this is percentage
 const TRASHCLASS = "trash";
 
 function preload() {
@@ -91,23 +88,18 @@ function preload() {
 }
 
 function setup() {
-  classCacheLengthSlider = createSlider(10, 180, cacheLength, 10);
-  classCacheLengthSlider.parent("controlsDiv");
-  classCacheLengthSlider.input(() => {
-    console.log("HELLO");
-    cacheLength = classCacheLengthSlider.value();
+  select("#window").input(function() {
+    cacheLength = this.value();
+    console.log("HELLO", cacheLength);
     newClassCountBaseline = cacheLength * classThreshold; //recalculate the baseline for deciding how much we count as a new class
-    select("#cacheLengthLabel").html(cacheLength);
+    select("#window-label").html(cacheLength);
   });
 
-  clearBtn = select("#clear");
-  clearBtn.mousePressed(() => {
+  select("#clear").mousePressed(() => {
     plateaus = [];
   });
-  clearBtn.parent("controlsDiv");
 
-  downloadBtn = select("#download");
-  downloadBtn.mousePressed(() => {
+  select("#download").mousePressed(() => {
     saveJSON(
       plateaus,
       "plateaus-" +
@@ -123,7 +115,6 @@ function setup() {
       ".json"
     );
   });
-  downloadBtn.parent("controlsDiv");
 
   // Dynamic K value
   select("#kvalue").value(kvalue);
@@ -132,9 +123,9 @@ function setup() {
   });
 
   // Dynamic Confidence Threshold
-  select("#confidenceThres").value(confidenceThres);
-  select("#confidenceThres").input(function() {
-    confidenceThres = this.value();
+  select("#th").value(th);
+  select("#th").input(function() {
+    th = this.value();
   });
 
   //------------MoveNet & KNN----------------------
@@ -168,13 +159,11 @@ function setup() {
   });
   video.hide();
 
-  loadKNNBtn = select("#load");
-  loadKNNBtn.mousePressed(() => {
+  select("#load").mousePressed(() => {
     loadJSON("classes.json", loadClassesJSON);
   });
 
-  classifyBtn = select("#predict");
-  classifyBtn.mousePressed(setClassifier);
+  select("#predict").mousePressed(setClassifier);
 
   //----------speed-based delay setup----------------
   jointPrev = {
@@ -234,7 +223,7 @@ function draw() {
     [maxClass, maxCount] = getMaxClass(classCache);
 
     if (maxClass) {
-      select("#result").html(maxClass);
+      select("#plateau").html(maxClass);
       let resultCon = round((maxCount / cacheLength) * 100);
       // resultCon = nf(resultCon,3,3);
       select("#confidence").html("confidence: " + resultCon + "%");
@@ -469,7 +458,7 @@ function gotResults(err, result) {
     //-----this will make plateaus more "accurate" compared to traning data, but also make them shorter in length----
     //-----to use this method, comment method 1 above and uncomment codes below.
 
-    if (confidence > confidenceThres) {
+    if (confidence > th) {
       // console.log("adding a class with conf:" + confidence);
       classCache.push(label);
     } else {
@@ -515,7 +504,7 @@ function setClassifier(state) {
   console.log("STATE", state);
   isClassifying = state == undefined ? !isClassifying : state;
   console.log("isClassifying", isClassifying);
-  classifyBtn.html(isClassifying ? "Stop" : "Predict");
+  select("#predict").html(isClassifying ? "Stop" : "Predict");
   endPlateau = !state;
   if (isClassifying) classify();
 
@@ -637,13 +626,13 @@ function setupSocket() {
     cacheLength = msg;
     newClassCountBaseline = cacheLength * classThreshold; //recalculate the baseline for deciding how much we count as a new class
     classCacheLengthSlider.value(int(msg));
-    select("#cacheLengthLabel").html(msg);
+    select("#window-label").html(msg);
   });
 
   socket.on("updateConfidence", function(msg) {
     console.log("updating confidence to: " + msg);
-    confidenceThres = msg;
-    select("#confidenceThres").value(confidenceThres);
+    th = msg;
+    select("#th").value(th);
   });
 
   //-------------In Progress: used for video mode-------------
