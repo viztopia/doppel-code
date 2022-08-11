@@ -246,7 +246,7 @@ function draw() {
           }
         }
       }
-      // Don't do plateaus if we are sending classes
+      //If not sending classes, start a new plateau
       else {
         console.log(maxClass + " started at frame " + frameCount);
         plateauStarted = true;
@@ -254,12 +254,15 @@ function draw() {
       }
     }
     //whenever the plateau ends, mark its end time and send it over to part 3.
+    //we turned off predicting
+    //nobody's there
+    //we've been in a pose long enough
     else if (plateauStarted && (endPlateau || itsBeenAWhile || maxCount < newClassCountBaseline)) {
       console.log(maxClass + " ended at frame " + frameCount);
       console.log(endPlateau, itsBeenAWhile, maxCount < newClassCountBaseline);
       plateauStarted = false;
       plateauEndTime = Date.now() - (itsBeenAWhile ? 0 : NOBODY);
-
+      // If enough time has passed
       if (plateauEndTime - plateauStartTime > plateauMinLength) {
         console.log("Sending new plateau.");
         let newPlat = {
