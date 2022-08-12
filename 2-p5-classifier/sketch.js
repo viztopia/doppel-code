@@ -272,9 +272,9 @@ function draw() {
 
 // Helper functions for deciding what data to send.
 function stableNewClass() {
-  let status = bestCount >= BEST_COUNT_TH && bestClass != pbestClass && bestClass != TRASHCLASS;
+  let status = bestClass != TRASHCLASS && bestCount >= BEST_COUNT_TH && bestClass != pbestClass;
   if(status) pbestClass = bestClass;
-  return bestCount >= BEST_COUNT_TH && bestClass != pbestClass && bestClass != TRASHCLASS;
+  return status;
 }
 
 function interruptPlateau() {
