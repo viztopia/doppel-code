@@ -235,9 +235,8 @@ function draw() {
       if (stableNewClass()) {
         console.log("Sending new class: " + bestClass + " at " + frameCount);
         socket.emit("classNew", bestClass);
-        pbestClass = bestClass;
-
       }
+
     } else if (sending == PLATEAUS) {
       // End the plateau and send it out.
       if (interruptPlateau()) {
@@ -246,6 +245,7 @@ function draw() {
         plateauEndTime = Date.now() - (itsBeenAWhile ? 0 : NOBODY);
 
         if (endPlateau) endPlateau = false;
+
       } else if (completedPlateau()) {
         console.log("Sending new plateau.");
         let newPlat = {
@@ -255,6 +255,7 @@ function draw() {
         };
         socket.emit("plateauNew", newPlat);
         plateaus.push(newPlat);
+
       } else if (newPlateau()) {
         console.log(bestClass + " started at frame " + frameCount);
         plateauStarted = true;
@@ -271,6 +272,8 @@ function draw() {
 
 // Helper functions for deciding what data to send.
 function stableNewClass() {
+  let status = bestCount >= BEST_COUNT_TH && bestClass != pbestClass && bestClass != TRASHCLASS;
+  if(status) pbestClass = bestClass;
   return bestCount >= BEST_COUNT_TH && bestClass != pbestClass && bestClass != TRASHCLASS;
 }
 
@@ -279,20 +282,20 @@ function interruptPlateau() {
 }
 
 function completedPlateau() {
-  return plateauStarted && bestCount >= BEST_COUNT_TH;
+  return plateauStarted && stableNewClass();
 }
 
 function newPlateau() {
-  return !plateauStarted && bestCount >= BEST_COUNT_TH;
+  return !plateauStarted && stableNewClass();
 }
 
 function itsBeenAwhile() {
-  let itHas = millis() - timeOfLastPose > NOBODY;
-  if(itHas) {
+  let status = millis() - timeOfLastPose > NOBODY;
+  if(status) {
     poses = [];
     console.log("NOBODY HERE!");
   }
-  return itHas;
+  return status;
 }
 
 //---------calibration & normalization----------
