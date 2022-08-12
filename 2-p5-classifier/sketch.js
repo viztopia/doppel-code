@@ -8,8 +8,8 @@
 
 //------------------socket--------------------
 let socket;
-//let ip = "10.18.63.58"; //the IP of the machine that runs bridge.js
-let ip = "127.0.0.1"; //or local host
+let ip = "10.23.11.152"; //the IP of the machine that runs bridge.js
+// let ip = "127.0.0.1"; //or local host
 let port = 8081; //the port of the machine that runs bridge.js
 //--------simple UI--------------------
 let cnv;
@@ -150,7 +150,7 @@ function setup() {
     // video.width *= SCL;
     // video.height *= SCL;
 
-    cnv = createCanvas(video.width, video.height);
+    cnv = createCanvas(video.width*SCL, video.height*SCL);
     // cnv = createCanvas(1440, 1080);
     // cnv = createCanvas(960, 540);
     cnv.parent("cnvDiv");
@@ -653,11 +653,7 @@ function setupSocket() {
     rememberTransport: false,
   });
   socket.on("connect", function() {
-    socket.emit("plateauOn", false);
-  });
-
-  socket.on("disconnect", function() {
-    socket.emit("plateauOn", false);
+    socket.emit("classifying", false);
   });
 
 

@@ -15,6 +15,7 @@ let preset = {
     this.idx += step;
     this.idx = constrain(this.idx, 0, PRESETS.length - 1);
     cue.ease(PRESETS[this.idx]);
+    // cue.set(PRESETS[this.idx]);
   }
 }
 

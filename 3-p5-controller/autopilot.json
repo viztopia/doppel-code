@@ -1,6 +1,7 @@
 {
   "version": 1,
-  "actions": [{
+  "actions": [
+    {
       "time": 0,
       "key": "1",
       "note": "start in manual mode"
@@ -18,7 +19,7 @@
     {
       "time": 56,
       "key": "0",
-      "setting": 4,
+      "setting": 5,
       "note": "go to preset 55 sec (updated presets as: 0, 4, 4.5, 6, 10, 55)"
     },
     {
@@ -87,8 +88,8 @@
     {
       "time": 398,
       "key": "2",
-      "setting": 2,
-      "note": "switch to speed 1: 0.95"
+      "setting": 1,
+      "note": "switch to speed"
     },
     {
       "time": 398,
@@ -134,8 +135,8 @@
     {
       "time": 739,
       "key": "2",
-      "setting": 2,
-      "note": "switch to speed 2: 0.95"
+      "setting": 1,
+      "note": "switch to speed"
     },
     {
       "time": 744,
@@ -150,8 +151,8 @@
     {
       "time": 785,
       "key": "2",
-      "setting": 0,
-      "note": "switch to speed 3: 0.5"
+      "setting": 0.5,
+      "note": "switch to speed"
     },
     {
       "time": 816,
@@ -194,8 +195,8 @@
     {
       "time": 865,
       "key": "2",
-      "setting": 2,
-      "note": "switch to speed 3: 0.75"
+      "setting": 0.75,
+      "note": "switch to speed"
     },
     {
       "time": 870,
@@ -273,8 +274,8 @@
     {
       "time": 1528,
       "key": "2",
-      "setting": 2,
-      "note": "switch to speed (currently at 0.75)"
+      "setting": 0.75,
+      "note": "switch to speed"
     },
     {
       "time": 1587,

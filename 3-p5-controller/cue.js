@@ -8,6 +8,7 @@ let cue = {
     this.pfileIdx = undefined;
     this.cuePoint = 0;
     this.availableRecordingNum = 0;
+    this.easing = undefined;
   },
   run: function() {
 
@@ -30,6 +31,10 @@ let cue = {
   },
 
   ease: function(seconds) {
+
+    // if there's an easing happening at the moment, clear it
+    if(this.easing) clearInterval(this.easing);
+
     // Calculate target
     let target = seconds * RECORDINGFPS;
     // Where am I now?
@@ -40,13 +45,13 @@ let cue = {
     // Calculate distance
     let diff = this.delayFrameIdx - target
     // Keep easying towards target
-    let easing = setInterval(() => {
+    this.easing = setInterval(() => {
       diff = target - intermediateDelayFrameIdx;
       intermediateDelayFrameIdx += (diff * 0.05);
 
       // Set the new delayFrameIdx
       cue.setFrames(intermediateDelayFrameIdx);
-      if (abs(diff) <= 1) clearInterval(easing);
+      if (abs(diff) <= 1) clearInterval(this.easing);
     }, 50);
   },
   update: function() {
@@ -58,7 +63,7 @@ let cue = {
     } else {
       // If delay frame is within what is cached...
       if (this.delayFrameIdx <= CACHEFRAMES) {
-        console.log("SENDING IT OUT");
+        // console.log("SENDING IT OUT");
         emit("source", CACHE);
         this.fileIdx = -99;
         this.pfileIdx = this.fileIdx;
