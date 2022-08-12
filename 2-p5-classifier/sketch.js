@@ -11,7 +11,6 @@ let socket;
 //let ip = "10.18.63.58"; //the IP of the machine that runs bridge.js
 let ip = "127.0.0.1"; //or local host
 let port = 8081; //the port of the machine that runs bridge.js
-let sending;
 //--------simple UI--------------------
 let cnv;
 let waiting = 180;
@@ -22,17 +21,22 @@ let classCache = [];
 let cacheLength = 20; //classification window size
 let classCacheLengthSlider;
 
-let bestClass, bestCount;
-let pbestClass;
+let stableClass
+let pStableClass;
 const CONFIDENCE_TH = 0.8;
 const BEST_COUNT_TH = cacheLength * CONFIDENCE_TH; //calculate the baseline for deciding how much % within the window we count as a new class
 
 //--------Plateau Stuff--------------------
-let plateauStarted = false;
-let plateauStartTime, plateauEndTime;
-const PLATEAU_TH = 1000;
+let plateau = {
+  start: null,
+  end: null,
+  reset: function() {
+    this.start = null;
+      this.end = null
+  }
+};
 let plateaus = [];
-let endPlateau = false;
+const PLATEAU_TH = 1000;
 
 //--------Sending Data--------------------
 let sending = -1;
@@ -54,7 +58,7 @@ let kvalue = 20;
 let isClassifying = false;
 let classIndexOffset = 0;
 let timeOfLastPose = 0;
-const NOBODY = 500;
+const NOBODY_TH = 500;
 
 //-----------------speed-based delay----------------------
 let joint, jointPrev;
@@ -223,79 +227,108 @@ function draw() {
       }
     }
 
-    //---------------for plateau-based delay, send over classification & plateau data----------------
-    [bestClass, bestCount] = getBestClass(classCache);
+    if (isClassifying) {
 
-    if (bestClass) {
-      select("#best-class").html(bestClass);
-      select("#best-count").html(bestCount + " / " + BEST_COUNT_TH);
+      //---------------for plateau-based delay, send over classification & plateau data----------------
+      let bestClass, bestCount;
+      [bestClass, bestCount] = getBestClass(classCache);
+
+      if (bestClass) {
+        select("#best-class").html(bestClass);
+        select("#best-count").html(bestCount + " / " + BEST_COUNT_TH);
+
+        // Is current best class stable and new?
+        if (bestClassIsStable(bestClass, bestCount)) {
+          stableClass = bestClass;
+          select("#best-class").addClass("stable");
+
+          // If there's a new stable class
+          if (stableClassIsNew()) {
+            pStableClass = stableClass;
+
+            // Send it
+            if (sending == CLASSES) {
+              socket.emit("classNew", stableClass);
+              console.log("Sending new class: " + bestClass + " at " + frameCount);
+              select("#class").html(stableClass);
+
+            // Process plateau
+            } else if (sending == PLATEAUS) {
+              console.log("STABLE PLATEAU");
+              processPlateau();
+              plateau.start = Date.now();
+              console.log(stableClass + " started at frame " + frameCount);
+            }
+          }
+        }
+        // If data is too noisy, end plateau
+        else {
+          processPlateau();
+          select("#best-class").removeClass("stable");
+        }
+      }
     }
 
-    if (sending == CLASSES) {
-      if (stableNewClass()) {
-        console.log("Sending new class: " + bestClass + " at " + frameCount);
-        socket.emit("classNew", bestClass);
-      }
-
-    } else if (sending == PLATEAUS) {
-      // End the plateau and send it out.
-      if (interruptPlateau()) {
-        console.log(bestClass + " ended at frame " + frameCount);
-        plateauStarted = false;
-        plateauEndTime = Date.now() - (itsBeenAWhile ? 0 : NOBODY);
-
-        if (endPlateau) endPlateau = false;
-
-      } else if (completedPlateau()) {
-        console.log("Sending new plateau.");
-        let newPlat = {
-          className: bestClass,
-          start: plateauStartTime,
-          end: plateauEndTime,
-        };
-        socket.emit("plateauNew", newPlat);
-        plateaus.push(newPlat);
-
-      } else if (newPlateau()) {
-        console.log(bestClass + " started at frame " + frameCount);
-        plateauStarted = true;
-        plateauStartTime = Date.now();
-      }
+    // Check for bodies
+    if (itsBeenAwhile()) {
+      resetClassification(NOBODY_TH);
     }
+
+    //--------graph current confidence---------
+    let confidenceAvg =
+      confidenceCache.reduce((a, b) => a + b) / confidenceCache.length;
+    cPanel.update(confidenceAvg, 100);
   }
-
-  //--------graph current confidence---------
-  let confidenceAvg =
-    confidenceCache.reduce((a, b) => a + b) / confidenceCache.length;
-  cPanel.update(confidenceAvg, 100);
 }
 
+function bestClassIsStable(bestClass, bestCount) {
+  return bestClass != TRASHCLASS && bestCount >= BEST_COUNT_TH;
+}
 // Helper functions for deciding what data to send.
-function stableNewClass() {
-  let status = bestClass != TRASHCLASS && bestCount >= BEST_COUNT_TH && bestClass != pbestClass;
-  if(status) pbestClass = bestClass;
-  return status;
-}
-
-function interruptPlateau() {
-  return endPlateau || itsBeenAwhile();
-}
-
-function completedPlateau() {
-  return plateauStarted && stableNewClass();
-}
-
-function newPlateau() {
-  return !plateauStarted && stableNewClass();
+function stableClassIsNew() {
+  return pStableClass != stableClass;
 }
 
 function itsBeenAwhile() {
-  let status = millis() - timeOfLastPose > NOBODY;
-  if(status) {
-    poses = [];
-    console.log("NOBODY HERE!");
+  return millis() - timeOfLastPose > NOBODY_TH;
+}
+
+function processPlateau(buffer) {
+
+  // Complete plateau if there is one
+  if (!plateau.start) return;
+
+  // Calculate end time
+  plateau.end = Date.now() - (buffer ? buffer : 0);
+
+  // If plateau is long enough, send it.
+  if (plateau.end - plateau.start > PLATEAU_TH) {
+    console.log("Sending completed plateau.");
+    let completedPlateau = {
+      className: stableClass,
+      start: plateau.start,
+      end: plateau.end,
+    };
+    socket.emit("plateauNew", completedPlateau);
+    select("#plateau").html(stableClass + ": " + (plateau.end - plateau.start));
+    plateaus.push(completedPlateau);
   }
-  return status;
+
+  // Discard plateau either way
+  plateau.reset();
+}
+
+function resetClassification(buffer) {
+
+  // Clear out poses data
+  poses = [];
+
+  // Clear out classes
+  stableClass = null;
+  pStableClass = null;
+
+  // Clear out plateaus
+  processPlateau(buffer);
 }
 
 //---------calibration & normalization----------
@@ -466,7 +499,7 @@ function gotResults(err, result) {
     //-----this will make plateaus more "accurate" compared to traning data, but also make them shorter in length----
     //-----to use this method, comment method 1 above and uncomment codes below.
 
-    if (confidence > th) {
+    if (confidence > CONFIDENCE_TH) {
       // console.log("adding a class with conf:" + confidence);
       classCache.push(label);
     } else {
@@ -493,41 +526,48 @@ function gotResults(err, result) {
 function getBestClass(array) {
   if (array.length == 0) return [undefined, undefined];
   let modeMap = {};
-  let bestEl = array[0],
+  let bestClass = array[0],
     bestCount = 1;
   for (let i = 0; i < array.length; i++) {
     let el = array[i];
     if (modeMap[el] == null) modeMap[el] = 1;
     else modeMap[el]++;
     if (modeMap[el] > bestCount) {
-      bestEl = el;
+      bestClass = el;
       bestCount = modeMap[el];
     }
   }
-  return [bestEl, bestCount];
+  return [bestClass, bestCount];
 }
 
 //---------------------Classification Helpers----------------------
 function setClassifier(state) {
-  console.log("STATE", state);
+  console.log("PREDICT", state);
+
+  resetClassification();
+
   isClassifying = state == undefined ? !isClassifying : state;
   console.log("isClassifying", isClassifying);
   select("#predict").html(isClassifying ? "Stop" : "Predict");
-  endPlateau = !state;
   if (isClassifying) classify();
+
 
   if (state == undefined) socket.emit("classifying", isClassifying); //tells the controller sketch if classifying analysis is ready
 }
 
 function setSender(state) {
-  sending = state !== undefined ? state : sending == CLASSES ? PLATEAUS : CLASSES;
-  endPlateau = sending == CLASSES;
+  if (state == undefined) {
+    socket.emit("sending", sending); // inform controller whether sending class or not
+    // Toggle it
+    sending == CLASSES ? PLATEAUS : CLASSES;
+  } else sending = state;
 
-  console.log("Sending: ", sending == CLASSES ? "Classes" : "Plateaus");
-  if (state == undefined) socket.emit("sending", sending); // inform controller whether sending class or not
+  // End active plateau
+  if (sending == CLASSES) resetClassification();
 
   // Update Status
   select("#sending").html(sending == CLASSES ? "Classes" : "Plateaus");
+  console.log("Sending: ", sending == CLASSES ? "Classes" : "Plateaus");
 }
 
 //------------load KNN classes---------------
