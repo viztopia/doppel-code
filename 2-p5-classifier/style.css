@@ -44,10 +44,6 @@ input {
   margin: 0 0 0 1em;
 }
 
-#window {
-
-}
-
 #KNNPredict {
   display: flex;
 }
@@ -67,7 +63,7 @@ input {
   font-size: 2em;
 }
 
-.result {
+#raw-class-billboard {
   position: fixed;
   top: 0;
   left: 0;

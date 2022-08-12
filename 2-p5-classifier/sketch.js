@@ -16,24 +16,28 @@ let sending;
 let cnv;
 let waiting = 180;
 
+//--------Classifier Stuff--------------------
 let classResult = 0;
 let classCache = [];
 let cacheLength = 20; //classification window size
+let classCacheLengthSlider;
 
-let maxClass, maxCount;
-let pMaxClass;
-let classThreshold = 0.8;
-let newClassCountBaseline = cacheLength * classThreshold; //calculate the baseline for deciding how much % within the window we count as a new class
+let bestClass, bestCount;
+let pbestClass;
+const CONFIDENCE_TH = 0.8;
+const BEST_COUNT_TH = cacheLength * CONFIDENCE_TH; //calculate the baseline for deciding how much % within the window we count as a new class
+
+//--------Plateau Stuff--------------------
 let plateauStarted = false;
 let plateauStartTime, plateauEndTime;
-let plateauMinLength = 1000;
+const PLATEAU_TH = 1000;
 let plateaus = [];
 let endPlateau = false;
-let sender = -1;
-const PLATEAUS = 0;
-const CLASSES = 1;
 
-let classCacheLengthSlider;
+//--------Sending Data--------------------
+let sending = -1;
+const CLASSES = 0;
+const PLATEAUS = 1;
 
 //------------------movenet & KNN----------------------
 let video;
@@ -50,7 +54,6 @@ let kvalue = 20;
 let isClassifying = false;
 let classIndexOffset = 0;
 let timeOfLastPose = 0;
-let itsBeenAWhile = false;
 const NOBODY = 500;
 
 //-----------------speed-based delay----------------------
@@ -91,7 +94,7 @@ function setup() {
   select("#window").input(function() {
     cacheLength = this.value();
     console.log("HELLO", cacheLength);
-    newClassCountBaseline = cacheLength * classThreshold; //recalculate the baseline for deciding how much we count as a new class
+    BEST_COUNT_TH = cacheLength * CONFIDENCE_TH; //recalculate the baseline for deciding how much we count as a new class
     select("#window-label").html(cacheLength);
   });
 
@@ -140,8 +143,8 @@ function setup() {
   video = createCapture(VIDEO, () => {
 
     // Scale the video down
-    video.width *= SCL;
-    video.height *= SCL;
+    // video.width *= SCL;
+    // video.height *= SCL;
 
     cnv = createCanvas(video.width, video.height);
     // cnv = createCanvas(1440, 1080);
@@ -181,6 +184,7 @@ function setup() {
 //---------draw-----------------
 function draw() {
   // background(200);
+  scale(SCL, SCL);
 
   if (netReady) estimatePose();
 
@@ -220,71 +224,42 @@ function draw() {
     }
 
     //---------------for plateau-based delay, send over classification & plateau data----------------
-    [maxClass, maxCount] = getMaxClass(classCache);
+    [bestClass, bestCount] = getBestClass(classCache);
 
-    if (maxClass) {
-      select("#plateau").html(maxClass);
-      let resultCon = round((maxCount / cacheLength) * 100);
-      // resultCon = nf(resultCon,3,3);
-      select("#confidence").html("confidence: " + resultCon + "%");
-      // console.log(round(resultCon));
-      // text("current class is: " + maxClass, width / 2 - 50, height / 2 - 50);
-      // text("class count is: " + maxCount, width / 2 - 50, height / 2 + 50);
+    if (bestClass) {
+      select("#best-class").html(bestClass);
+      select("#best-count").html(bestCount + " / " + BEST_COUNT_TH);
     }
 
-    //whenever there's a new plateau start, given the current window length & baseline, mark its start time and send new class over.
-    if (isClassifying && !plateauStarted && maxClass && maxCount > newClassCountBaseline) {
+    if (sending == CLASSES) {
+      if (stableNewClass()) {
+        console.log("Sending new class: " + bestClass + " at " + frameCount);
+        socket.emit("classNew", bestClass);
+        pbestClass = bestClass;
 
+      }
+    } else if (sending == PLATEAUS) {
+      // End the plateau and send it out.
+      if (interruptPlateau()) {
+        console.log(bestClass + " ended at frame " + frameCount);
+        plateauStarted = false;
+        plateauEndTime = Date.now() - (itsBeenAWhile ? 0 : NOBODY);
 
-      // Only send class when it's asked for
-      if (sending == CLASSES) {
-        if (maxClass != pMaxClass) {
-          if (maxClass != TRASHCLASS) {
-            console.log("Sending new class: " + maxClass + " at " + frameCount);
-            socket.emit("classNew", maxClass);
-            pMaxClass = maxClass;
-          }
-        }
-      }
-      //If not sending classes, start a new plateau
-      else {
-        console.log(maxClass + " started at frame " + frameCount);
-        plateauStarted = true;
-        plateauStartTime = Date.now();
-      }
-    }
-    //whenever the plateau ends, mark its end time and send it over to part 3.
-    //we turned off predicting
-    //nobody's there
-    //we've been in a pose long enough
-    else if (plateauStarted && (endPlateau || itsBeenAWhile || maxCount < newClassCountBaseline)) {
-      console.log(maxClass + " ended at frame " + frameCount);
-      console.log(endPlateau, itsBeenAWhile, maxCount < newClassCountBaseline);
-      plateauStarted = false;
-      plateauEndTime = Date.now() - (itsBeenAWhile ? 0 : NOBODY);
-      // If enough time has passed
-      if (plateauEndTime - plateauStartTime > plateauMinLength) {
+        if (endPlateau) endPlateau = false;
+      } else if (completedPlateau()) {
         console.log("Sending new plateau.");
         let newPlat = {
-          className: maxClass,
+          className: bestClass,
           start: plateauStartTime,
           end: plateauEndTime,
         };
         socket.emit("plateauNew", newPlat);
         plateaus.push(newPlat);
+      } else if (newPlateau()) {
+        console.log(bestClass + " started at frame " + frameCount);
+        plateauStarted = true;
+        plateauStartTime = Date.now();
       }
-
-      // Reset end plateau
-      endPlateau = false;
-    }
-
-    // Clear poses if it's been a while
-    if (millis() - timeOfLastPose > NOBODY) {
-      poses = [];
-      itsBeenAWhile = true;
-      console.log("Nothing to see here!");
-    } else {
-      itsBeenAWhile = false;
     }
   }
 
@@ -292,6 +267,32 @@ function draw() {
   let confidenceAvg =
     confidenceCache.reduce((a, b) => a + b) / confidenceCache.length;
   cPanel.update(confidenceAvg, 100);
+}
+
+// Helper functions for deciding what data to send.
+function stableNewClass() {
+  return bestCount >= BEST_COUNT_TH && bestClass != pbestClass && bestClass != TRASHCLASS;
+}
+
+function interruptPlateau() {
+  return endPlateau || itsBeenAwhile();
+}
+
+function completedPlateau() {
+  return plateauStarted && bestCount >= BEST_COUNT_TH;
+}
+
+function newPlateau() {
+  return !plateauStarted && bestCount >= BEST_COUNT_TH;
+}
+
+function itsBeenAwhile() {
+  let itHas = millis() - timeOfLastPose > NOBODY;
+  if(itHas) {
+    poses = [];
+    console.log("NOBODY HERE!");
+  }
+  return itHas;
 }
 
 //---------calibration & normalization----------
@@ -440,9 +441,10 @@ function gotResults(err, result) {
     const confidences = result.confidences;
     const label = result.label;
     const confidence = round(confidences[label] * 100);
-
-    select("#result").html(label);
-    select("#confidence").html(confidence + "%");
+    // Update the RAW result
+    select("#raw-class-billboard").html(label);
+    select("#raw-class").html(label);
+    select("#raw-confidence").html(confidence + "%");
 
     //---------------------------add confidence filter based on current confidenceThres------------------
     //-----there are two ways we can use it:
@@ -485,21 +487,21 @@ function gotResults(err, result) {
   }
 }
 
-function getMaxClass(array) {
+function getBestClass(array) {
   if (array.length == 0) return [undefined, undefined];
-  var modeMap = {};
-  var maxEl = array[0],
-    maxCount = 1;
-  for (var i = 0; i < array.length; i++) {
-    var el = array[i];
+  let modeMap = {};
+  let bestEl = array[0],
+    bestCount = 1;
+  for (let i = 0; i < array.length; i++) {
+    let el = array[i];
     if (modeMap[el] == null) modeMap[el] = 1;
     else modeMap[el]++;
-    if (modeMap[el] > maxCount) {
-      maxEl = el;
-      maxCount = modeMap[el];
+    if (modeMap[el] > bestCount) {
+      bestEl = el;
+      bestCount = modeMap[el];
     }
   }
-  return [maxEl, maxCount];
+  return [bestEl, bestCount];
 }
 
 //---------------------Classification Helpers----------------------
@@ -511,15 +513,18 @@ function setClassifier(state) {
   endPlateau = !state;
   if (isClassifying) classify();
 
-  if(state == undefined) socket.emit("classifying", isClassifying); //tells the controller sketch if classifying analysis is ready
+  if (state == undefined) socket.emit("classifying", isClassifying); //tells the controller sketch if classifying analysis is ready
 }
 
 function setSender(state) {
   sending = state !== undefined ? state : sending == CLASSES ? PLATEAUS : CLASSES;
   endPlateau = sending == CLASSES;
 
-  console.log("Sending: ", sending == CLASSES ? "Plateaus" : "Classes");
-  if(state == undefined) socket.emit("sending", sending); // inform controller whether sending class or not
+  console.log("Sending: ", sending == CLASSES ? "Classes" : "Plateaus");
+  if (state == undefined) socket.emit("sending", sending); // inform controller whether sending class or not
+
+  // Update Status
+  select("#sending").html(sending == CLASSES ? "Classes" : "Plateaus");
 }
 
 //------------load KNN classes---------------
@@ -627,7 +632,7 @@ function setupSocket() {
   socket.on("updateWindow", function(msg) {
     console.log("updating window to: " + msg);
     cacheLength = msg;
-    newClassCountBaseline = cacheLength * classThreshold; //recalculate the baseline for deciding how much we count as a new class
+    BEST_COUNT_TH = cacheLength * CONFIDENCE_TH; //recalculate the baseline for deciding how much we count as a new class
     classCacheLengthSlider.value(int(msg));
     select("#window-label").html(msg);
   });
