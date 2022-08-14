@@ -211,7 +211,7 @@ function jumpToThisAction(newShowTimeInSeconds) {
   } catch (e) {
     console.log("Nothing to emit in mode.");
   }
-  stage.emit();
+  setTimeout(()=>{ stage.emit() }, 20);
 }
 
 function executeNextAction(idx, jumping) {
@@ -266,7 +266,7 @@ function keyPressed(e) {
     case 51: //----3------
       mode = PLATEAU;
       break;
-    case 52: //----5------
+    case 52: //----4------
       mode = BOOKMARK;
       break;
     case 53: //----5------

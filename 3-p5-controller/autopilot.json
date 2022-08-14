@@ -113,40 +113,46 @@
       "note": "switch to preset 4 sec (voice: when ppl leave)"
     },
     {
+      "time": 724,
+      "key": "0",
+      "setting": 3,
+      "note": "switch to preset 6 sec"
+    },
+    {
       "time": 726,
       "key": "K",
       "note": "[PLATEAU RECORDING: false] "
     },
     {
-      "time": 731,
+      "time": 733,
       "key": "S",
       "note": "blackout left"
     },
     {
-      "time": 735,
+      "time": 739,
       "key": "D",
       "note": "blackout right"
     },
     {
-      "time": 739,
+      "time": 743,
       "key": "S",
       "note": "unblackout left"
     },
     {
-      "time": 739,
+      "time": 743,
       "key": "2",
       "setting": 1,
       "note": "switch to speed"
     },
     {
-      "time": 744,
-      "key": "D",
-      "note": "unblackout right"
-    },
-    {
       "time": 746,
       "key": "K",
       "note": "[PLATEAU RECORDING: true] pulling bus and hair on face"
+    },
+    {
+      "time": 748,
+      "key": "D",
+      "note": "unblackout right"
     },
     {
       "time": 785,
@@ -188,11 +194,6 @@
       "note": "blackout all"
     },
     {
-      "time": 863,
-      "key": "S",
-      "note": "unblackout left"
-    },
-    {
       "time": 865,
       "key": "2",
       "setting": 0.75,
@@ -200,6 +201,11 @@
     },
     {
       "time": 870,
+      "key": "S",
+      "note": "unblackout left"
+    },
+    {
+      "time": 885,
       "key": "D",
       "note": "unblackout right"
     },
@@ -210,8 +216,18 @@
     },
     {
       "time": 1099,
+      "key": "L",
+      "note": "DMX light shut off"
+    },
+    {
+      "time": 1099,
       "key": "5",
       "note": "switch to other mode to get ready to play video"
+    },
+    {
+      "time": 1099,
+      "key": "G",
+      "note": "unblackout all"
     },
     {
       "time": 1099,
@@ -219,129 +235,134 @@
       "note": "play flashing video"
     },
     {
-      "time": 1100,
+      "time": 1246,
+      "key": "L",
+      "note": "DMX light fade in"
+    },
+    {
+      "time": 1296,
       "key": "D",
-      "note": "unblackout right"
+      "note": "blackout right"
     },
     {
-      "time": 1286,
-      "key": "F",
-      "note": "blackout all"
+      "time": 1361,
+      "key": "S",
+      "note": "unblackout left"
     },
     {
-      "time": 1290,
+      "time": 1361,
       "key": "0",
       "setting": 3,
       "note": "switch to preset 6 (echo circling)"
     },
     {
-      "time": 1351,
-      "key": "S",
-      "note": "unblackout left"
-    },
-    {
-      "time": 1359,
+      "time": 1369,
       "key": "D",
       "note": "unblackout right"
     },
     {
-      "time": 1445,
+      "time": 1455,
       "key": "0",
       "setting": 4,
       "note": "switch to preset 10 (humming)"
     },
     {
-      "time": 1485,
+      "time": 1495,
       "key": "F",
       "note": "blackout all"
     },
     {
-      "time": 1488,
+      "time": 1498,
       "key": "0",
       "setting": 1,
       "note": "go to preset 4 to get ready"
     },
     {
-      "time": 1488,
+      "time": 1498,
       "key": "S",
       "note": "unblackout left"
     },
     {
-      "time": 1519,
+      "time": 1529,
       "key": "D",
       "note": "unblackout right (need to investigate why need 8 sec)"
     },
     {
-      "time": 1528,
+      "time": 1538,
       "key": "2",
       "setting": 0.75,
       "note": "switch to speed"
     },
     {
-      "time": 1587,
+      "time": 1597,
       "key": "0",
       "setting": 1,
       "note": "switch to preset 4 sec to get ready"
     },
     {
-      "time": 1803,
+      "time": 1813,
       "key": "N",
       "setting": 20,
       "note": "set window frame to 20"
     },
     {
-      "time": 1804,
+      "time": 1814,
       "key": "B",
       "setting": 10,
       "note": "change confidence to 10"
     },
     {
-      "time": 1809,
+      "time": 1819,
       "key": "E",
       "note": "mark real nini standing "
     },
     {
-      "time": 1813,
+      "time": 1823,
       "key": "4",
       "note": "switch to bookmark"
     },
     {
-      "time": 1813,
+      "time": 1823,
       "key": "Y",
       "note": "jump to bookmark E (which is standing)"
     },
     {
-      "time": 1817,
+      "time": 1827,
       "key": "Y",
       "note": "jump to bookmark E (which is standing)"
     },
     {
-      "time": 1821,
+      "time": 1831,
       "key": "Y",
       "note": "jump to bookmark E (which is standing)"
     },
     {
-      "time": 1825,
+      "time": 1835,
       "key": "Y",
       "note": "jump to bookmark E (which is standing)"
     },
     {
-      "time": 1828,
+      "time": 1838,
       "key": "F",
       "note": "blackout all "
     },
     {
-      "time": 1885,
+      "time": 1842,
+      "key": "L",
+      "note": "DMX light blackout"
+    },
+    {
+      "time": 1939,
       "key": "3",
       "note": "switch to plateau"
     },
     {
-      "time": 1885,
+      "time": 1939,
       "key": "G",
       "note": "unblackout all"
     },
     {
-      "time": 2093,
+      "time": 2148,
       "key": "F",
       "note": "blackout all (end of show)"
     }
