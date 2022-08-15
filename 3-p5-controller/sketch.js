@@ -211,30 +211,37 @@ function jumpToThisAction(newShowTimeInSeconds) {
   } catch (e) {
     console.log("Nothing to emit in mode.");
   }
-  setTimeout(()=>{ stage.emit() }, 20);
+  setTimeout(() => {
+    stage.emit()
+  }, 20);
 }
 
 function executeNextAction(idx, jumping) {
   if (idx <= autopilotData.actions.length - 1) {
-    let nextAction = autopilotData.actions[idx];
-    //console.log("IDX:", idx, nextAction, scrubbing);
-    //console.log("NEXT!", idx, nextAction);
-    let actionMin = floor(nextAction.time / 60);
-    let actionSec = nextAction.time % 60;
-    text("Next: " + nf(actionMin, 2, 0) + ":" + nf(actionSec, 2, 0) + " press " + nextAction.key + "-" + nextAction.note + (nextAction.sound ? ", " + nextAction.sound : ""), INFOX, INFOY - 100, W - 50);
-    if (jumping || recordedSeconds == nextAction.time) {
-      console.log("Executing:", idx, nextAction.time, nextAction.key, nextAction.setting, nextAction.note);
-      let kc = nextAction.key.charCodeAt(0);
-      let evt = new KeyboardEvent("keydown", {
-        keyCode: kc,
-        which: kc,
-      });
-      // Attach setting to the event
-      evt.data = nextAction.setting;
-      window.dispatchEvent(evt);
+    try {
+      let nextAction = autopilotData.actions[idx];
+      //console.log("IDX:", idx, nextAction, scrubbing);
+      //console.log("NEXT!", idx, nextAction);
+      let actionMin = floor(nextAction.time / 60);
+      let actionSec = nextAction.time % 60;
+      text("Next: " + nf(actionMin, 2, 0) + ":" + nf(actionSec, 2, 0) + " press " + nextAction.key + "-" + nextAction.note + (nextAction.sound ? ", " + nextAction.sound : ""), INFOX, INFOY - 100, W - 50);
+      if (jumping || recordedSeconds == nextAction.time) {
+        console.log("Executing:", idx, nextAction.time, nextAction.key, nextAction.setting, nextAction.note);
+        let kc = nextAction.key.charCodeAt(0);
+        let evt = new KeyboardEvent("keydown", {
+          keyCode: kc,
+          which: kc,
+        });
+        // Attach setting to the event
+        evt.data = nextAction.setting;
+        window.dispatchEvent(evt);
+        return idx + 1;
+      }
+      return idx;
+    } catch (e) {
+      console.log("Fatal error with FF.");
       return idx + 1;
     }
-    return idx;
   } else {
     text("Autopilot is On. No more actions", INFOX, INFOY - 75);
     return idx;
@@ -391,7 +398,7 @@ function connect() {
   });
 
   socket.on("classNew", (c) => {
-    if(mode == PLATEAU) modes[PLATEAU].updateClass(c);
+    if (mode == PLATEAU) modes[PLATEAU].updateClass(c);
   });
 
   socket.on("jointDist", (jd) => {
