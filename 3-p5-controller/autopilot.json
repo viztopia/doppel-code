@@ -2,687 +2,370 @@
   "version": 1,
   "actions": [
     {
-      "time": 0,
-      "minInNiniVideo": 0,
-      "secInNiniVideo": 0,
-      "key": "1",
-      "note": "start in manual mode",
-      "movement": "sitting straight front",
-      "undefined": 0
-  },
-  {
-      "timetonext": 27,
-      "time": 27,
-      "minInNiniVideo": "0",
-      "secInNiniVideo": "27",
-      "key": "H",
-      "note": "fade in left",
-      "sound": "\n0.42 \"a friend of mine once told me\""
-  },
-  {
-      "timetonext": 11,
-      "time": 38,
-      "minInNiniVideo": "0",
-      "secInNiniVideo": "38",
-      "key": "K",
-      "note": "[PLATEAU RECORDING: true] waiting room 1: Front, BodyLeft"
-  },
-  {
-      "timetonext": 18,
-      "time": 56,
-      "minInNiniVideo": "0",
-      "secInNiniVideo": "56",
-      "key": "0",
-      "setting": 6,
-      "note": "go to preset 55 sec (updated presets as: 0, 4, 4.5, 6, 10, 55)",
-      "sound": "0.56 \"travel long distances of silence\"\n1.15 \"I'm always hearing echoes\"",
-      "movement": "First turn to the left"
-  },
-  {
-      "timetonext": 91,
-      "time": 147,
-      "minInNiniVideo": "2",
-      "secInNiniVideo": "27",
-      "key": "D",
-      "note": "unblackout right",
-      "movement": "2.25 First bowing down\n3.22 Sit with hands to sides"
-  },
-  {
-      "timetonext": 104,
-      "time": 251,
-      "minInNiniVideo": "4",
-      "secInNiniVideo": "11",
-      "key": "K",
-      "note": "[PLATEAU RECORDING: false] "
-  },
-  {
-      "timetonext": 5,
-      "time": 256,
-      "minInNiniVideo": 4,
-      "secInNiniVideo": "16",
-      "key": "F",
-      "note": "blackout all ",
-      "sound": "CLICK right after",
-      "movement": "bend over",
-      "lightCuesForKate": "All lights off"
-  },
-  {
-      "timetonext": 1,
-      "time": 257,
-      "minInNiniVideo": 4,
-      "secInNiniVideo": "17",
-      "key": "0",
-      "setting": 1,
-      "note": "go to preset 4 sec"
-  },
-  {
-      "timetonext": 10,
-      "time": 267,
-      "minInNiniVideo": 4,
-      "secInNiniVideo": "27",
-      "key": "S",
-      "note": "unblackout left ",
-      "movement": "first face wipe"
-  },
-  {
-      "timetonext": 5,
-      "time": 272,
-      "minInNiniVideo": 4,
-      "secInNiniVideo": "32",
-      "key": "D",
-      "note": "unblackout right",
-      "sound": "The moment \nI’m leaving \nthe thing or place.\n\nI park…\nnear a big rock.",
-      "movement": "First face wipe\nSecond face wipe",
-      "offset": "color-issue: unblackout left and right separately"
-  },
-  {
-      "timetonext": 1,
-      "time": 273,
-      "minInNiniVideo": "4",
-      "secInNiniVideo": "33",
-      "key": "N",
-      "note": 60
-  },
-  {
-      "timetonext": 1,
-      "time": 274,
-      "minInNiniVideo": "4",
-      "secInNiniVideo": "34",
-      "key": "K",
-      "note": "[PLATEAU RECORDING: true]  face wipe and prayer: HandFace, RightFoward"
-  },
-  {
-      "timetonext": 49,
-      "time": 323,
-      "minInNiniVideo": "5",
-      "secInNiniVideo": "23",
-      "key": "0",
-      "setting": 2,
-      "note": "go to preset 4.5 sec",
-      "sound": "praying - I see (very clearly)"
-  },
-  {
-      "timetonext": 9,
-      "time": 332,
-      "minInNiniVideo": "5",
-      "secInNiniVideo": "32",
-      "key": "0",
-      "setting": 3,
-      "note": "go to preset 6 sec",
-      "sound": "CLICK",
-      "movement": "Third face wipe"
-  },
-  {
-      "timetonext": 57,
-      "time": 389,
-      "minInNiniVideo": "6",
-      "secInNiniVideo": "29",
-      "key": "K",
-      "note": "[PLATEAU RECORDING: false] "
-  },
-  {
-      "timetonext": 5,
-      "time": 394,
-      "minInNiniVideo": "6",
-      "secInNiniVideo": "34",
-      "key": "F",
-      "note": "blackout all ",
-      "sound": "my first apartment (right after)\n",
-      "movement": "6.18 Hands on stomach\n6.28 Bend backwards"
-  },
-  {
-      "timetonext": 4,
-      "time": 398,
-      "minInNiniVideo": 6,
-      "secInNiniVideo": 38,
-      "key": "2",
-      "setting": 1,
-      "note": "switch to speed"
-  },
-  {
-      "timetonext": 0,
-      "time": 398,
-      "minInNiniVideo": 6,
-      "secInNiniVideo": 38,
-      "key": "S",
-      "note": "unblackout left - collapsy down",
-      "sound": "6:39 CLICK",
-      "movement": "collapse down"
-  },
-  {
-      "timetonext": 5,
-      "time": 403,
-      "minInNiniVideo": "6",
-      "secInNiniVideo": "43",
-      "key": "D",
-      "note": " ",
-      "sound": "6.50 \nThe first day.\nThe last day —\n\nI’ve learned\nLeaving and coming is a normal thing.\n\nI’m always having serious emotional problems in airports. "
-  },
-  {
-      "timetonext": 2,
-      "time": 405,
-      "minInNiniVideo": "6",
-      "secInNiniVideo": "45",
-      "key": "K",
-      "note": "[PLATEAU RECORDING: true]  Collapse, Airplane, Michael Jackson: LeanForward, HandSides, BodyLeft"
-  },
-  {
-      "timetonext": 85,
-      "time": 490,
-      "minInNiniVideo": 8,
-      "secInNiniVideo": "10",
-      "key": "0",
-      "setting": 1,
-      "note": "switch to preset 4 sec (voice: when ppl leave)",
-      "sound": "8.14 CLICK\nWhen people leave, it’s not actually leaving.\n\nIt’s just the time and space they occupy… diminishes. \n\nHUMMING\n\nThe people who leave are like… background music. \n\nNow looking back, it’s a little funny.\n\nI need to tell myself to calm down. \n\nWe’re all selfish. We can’t help it.\n\nHUMMING\n\nBetween here and there, the distance is shorter. \nWhen I leave. I’m looking forward. \nWhen I sit down…. I think about...\n\nHUMMING",
-      "movement": "8.30 1st airplane..time and space they occupy\n\n9:12 2nd airplane\n10.08 standing hand chest (we're all selfish)\n10.46 sit back down\n\n11.00 3rd airplane\n11:05 closing arms (...the distance is shorter)\n11.17 big stepping in place\n\n11:30 sitting down / standing up (I'm looking forward)\n\n11:40 4th airplane \n12:00 big stepping in place",
-      "offset": "color issue"
-  },
-  {
-      "timetonext": 232,
-      "time": 722,
-      "minInNiniVideo": "12",
-      "secInNiniVideo": "2",
-      "key": "0",
-      "setting": 3,
-      "note": "switch to preset 6 sec",
-      "sound": "2 seconds after last hum"
-  },
-  {
-      "timetonext": 4,
-      "time": 726,
-      "minInNiniVideo": "12",
-      "secInNiniVideo": "6",
-      "key": "K",
-      "note": "[PLATEAU RECORDING: false] "
-  },
-  {
-      "timetonext": 6,
-      "time": 732,
-      "minInNiniVideo": "12",
-      "secInNiniVideo": "12",
-      "key": "S",
-      "note": "blackout left",
-      "sound": "12:07 \"the home sickness\"\n\"12.11  it's just with me one day\"\"\n",
-      "movement": "after 2nd big stepping in place"
-  },
-  {
-      "timetonext": 5,
-      "time": 737,
-      "minInNiniVideo": "12",
-      "secInNiniVideo": "17",
-      "key": "D",
-      "note": "blackout right",
-      "movement": "after DOPPEL finishes stepping"
-  },
-  {
-      "timetonext": 4,
-      "time": 741,
-      "minInNiniVideo": 12,
-      "secInNiniVideo": "21",
-      "key": "2",
-      "setting": 1,
-      "note": "switch to speed"
-  },
-  {
-      "timetonext": 0,
-      "time": 741,
-      "minInNiniVideo": "12",
-      "secInNiniVideo": "21",
-      "key": "S",
-      "note": "unblackout left",
-      "movement": "seated ready to standup-collapse"
-  },
-  {
-      "timetonext": 5,
-      "time": 746,
-      "minInNiniVideo": "12",
-      "secInNiniVideo": "26",
-      "key": "K",
-      "note": "[PLATEAU RECORDING: true] pulling bus and hair on face"
-  },
-  {
-      "timetonext": 0,
-      "time": 746,
-      "minInNiniVideo": "12",
-      "secInNiniVideo": "26",
-      "key": "D",
-      "note": "unblackout right",
-      "sound": "12:41 and time is frozen",
-      "movement": "stand-up collapse\nhead-wrap\nlook every direction"
-  },
-  {
-      "timetonext": 39,
-      "time": 785,
-      "minInNiniVideo": "13",
-      "secInNiniVideo": "05",
-      "key": "2",
-      "setting": 0.5,
-      "note": "switch to speed",
-      "sound": "13:02 I had this thought"
-  },
-  {
-      "timetonext": 31,
-      "time": 816,
-      "minInNiniVideo": "13",
-      "secInNiniVideo": "36",
-      "key": "K",
-      "note": "[PLATEAU RECORDING: false]"
-  },
-  {
-      "timetonext": 5,
-      "time": 821,
-      "minInNiniVideo": "13",
-      "secInNiniVideo": "41",
-      "key": "0",
-      "setting": 1,
-      "note": "go to preset 4 sec"
-  },
-  {
-      "timetonext": 1,
-      "time": 822,
-      "minInNiniVideo": "13",
-      "secInNiniVideo": "42",
-      "key": "Q",
-      "note": "mark real nini about to stands up",
-      "sound": "because it happened",
-      "movement": "stand - first walking"
-  },
-  {
-      "timetonext": 0,
-      "time": 822,
-      "minInNiniVideo": "13",
-      "secInNiniVideo": "42",
-      "key": "0",
-      "setting": 0,
-      "note": "go to preset 0 sec",
-      "movement": "stand"
-  },
-  {
-      "timetonext": 5,
-      "time": 827,
-      "minInNiniVideo": "13",
-      "secInNiniVideo": "47",
-      "key": "0",
-      "setting": 1,
-      "note": "go to preset 4 sec",
-      "sound": "change from 45 to 47 \"the feeling\"",
-      "movement": "NiNi wait until after 2nd \"feeling\""
-  },
-  {
-      "timetonext": 33,
-      "time": 860,
-      "minInNiniVideo": "14",
-      "secInNiniVideo": "20",
-      "key": "F",
-      "note": "blackout all"
-  },
-  {
-      "timetonext": 5,
-      "time": 865,
-      "minInNiniVideo": 14,
-      "secInNiniVideo": "25",
-      "key": "2",
-      "setting": 0.75,
-      "note": "switch to speed",
-      "sound": "14:25 robot \"when I was young\"",
-      "movement": "first stand-collapse AB"
-  },
-  {
-      "timetonext": 5,
-      "time": 870,
-      "minInNiniVideo": "14",
-      "secInNiniVideo": "30",
-      "key": "S",
-      "note": "unblackout left",
-      "movement": "start last B at the beginning of reverse sound"
-  },
-  {
-      "timetonext": 15,
-      "time": 885,
-      "minInNiniVideo": "14",
-      "secInNiniVideo": "45",
-      "key": "D",
-      "note": "unblackout right"
-  },
-  {
-      "timetonext": 179,
-      "time": 1064,
-      "minInNiniVideo": 17,
-      "secInNiniVideo": "44",
-      "key": "D",
-      "note": "blackout right",
-      "sound": "\"and I never cried after\"",
-      "movement": "big kick forward - beginning of first solo"
-  },
-  {
-      "timetonext": 35,
-      "time": 1099,
-      "minInNiniVideo": "18",
-      "secInNiniVideo": "19",
-      "key": "L",
-      "setting": "1, 0, 1000, 2, 0, 1000, 3, 0, 1000",
-      "note": "DMX light shut off all",
-      "sound": "to show flashing video"
-  },
-  {
-      "timetonext": 0,
-      "time": 1099,
-      "minInNiniVideo": 18,
-      "secInNiniVideo": "19",
-      "key": "5",
-      "note": "switch to other mode to get ready to play video",
-      "sound": "\"the moment\""
-  },
-  {
-      "timetonext": 0,
-      "time": 1099,
-      "minInNiniVideo": "18",
-      "secInNiniVideo": "19",
-      "key": "G",
-      "note": "unblackout all",
-      "sound": "to show flashing video"
-  },
-  {
-      "timetonext": 0,
-      "time": 1099,
-      "minInNiniVideo": 18,
-      "secInNiniVideo": "19",
-      "key": "P",
-      "note": "play flashing video",
-      "movement": "right arm pull down"
-  },
-  {
-      "timetonext": 147,
-      "time": 1246,
-      "minInNiniVideo": "20",
-      "secInNiniVideo": "46",
-      "key": "L",
-      "note": "DMX light fade in - low"
-  },
-  {
-      "timetonext": 50,
-      "time": 1296,
-      "minInNiniVideo": "21",
-      "secInNiniVideo": "36",
-      "key": "D",
-      "note": "blackout right",
-      "sound": "after flashing movie"
-  },
-  {
-      "timetonext": 65,
-      "time": 1361,
-      "minInNiniVideo": "22",
-      "secInNiniVideo": "41",
-      "key": "S",
-      "note": "unblackout left",
-      "sound": "i can no longer wait for your reply - blackout"
-  },
-  {
-      "timetonext": 0,
-      "time": 1361,
-      "minInNiniVideo": "22",
-      "secInNiniVideo": "41",
-      "key": "0",
-      "setting": 3,
-      "note": "switch to preset 6 (echo circling)",
-      "sound": "\"circling always returning, going round and round\" ",
-      "movement": "second solo"
-  },
-  {
-      "timetonext": 8,
-      "time": 1369,
-      "minInNiniVideo": "22",
-      "secInNiniVideo": "49",
-      "key": "D",
-      "note": "unblackout right",
-      "sound": "\"circling\""
-  },
-  {
-      "timetonext": 131,
-      "time": 1500,
-      "minInNiniVideo": "25",
-      "secInNiniVideo": "00",
-      "key": "0",
-      "setting": 0,
-      "note": "switch to preset 0"
-  },
-  {
-      "timetonext": 10,
-      "time": 1525,
-      "minInNiniVideo": "25",
-      "secInNiniVideo": "10",
-      "key": "0",
-      "setting": 5,
-      "note": "switch to preset 20"
-  },
-  {
-      "timetonext": 41,
-      "time": 1551,
-      "minInNiniVideo": 25,
-      "secInNiniVideo": 51,
-      "key": "0",
-      "setting": 4,
-      "note": "switch to preset 10 (humming)",
-      "sound": "\"centrifuge in search of a gravitational center\" ",
-      "movement": "running in circles"
-  },
-  {
-      "timetonext": 56,
-      "time": 1607,
-      "minInNiniVideo": 26,
-      "secInNiniVideo": 47,
-      "key": "F",
-      "note": "blackout all",
-      "sound": "\"our path is uncertain yet predetermined\" ",
-      "movement": "end of running in circles"
-  },
-  {
-      "timetonext": 5,
-      "time": 1612,
-      "minInNiniVideo": 26,
-      "secInNiniVideo": 52,
-      "key": "0",
-      "setting": 1,
-      "note": "go to preset 4 to get ready"
-  },
-  {
-      "timetonext": 0,
-      "time": 1612,
-      "minInNiniVideo": 26,
-      "secInNiniVideo": 52,
-      "key": "S",
-      "note": "unblackout left",
-      "sound": "\"when I was young\"",
-      "movement": "face wipes"
-  },
-  {
-      "timetonext": 31,
-      "time": 1643,
-      "minInNiniVideo": 27,
-      "secInNiniVideo": 23,
-      "key": "D",
-      "note": "unblackout right (need to investigate why need 8 sec)"
-  },
-  {
-      "timetonext": 9,
-      "time": 1652,
-      "minInNiniVideo": 27,
-      "secInNiniVideo": 32,
-      "key": "2",
-      "setting": 0.75,
-      "note": "switch to speed",
-      "sound": "\"you're so scared\"",
-      "movement": "right when fingers pass over top of head\nhead wraps"
-  },
-  {
-      "timetonext": 38,
-      "time": 1690,
-      "minInNiniVideo": 28,
-      "secInNiniVideo": 10,
-      "key": "0",
-      "setting": 0,
-      "note": "switch to preset 0",
-      "sound": "\"i'm so scared\"",
-      "movement": "feet up on chair"
-  },
-  {
-      "timetonext": 5,
-      "time": 1695,
-      "minInNiniVideo": 28,
-      "secInNiniVideo": 15,
-      "key": "0",
-      "setting": 1,
-      "note": "switch to preset 4 sec"
-  },
-  {
-      "timetonext": 16,
-      "time": 1711,
-      "minInNiniVideo": 28,
-      "secInNiniVideo": 31,
-      "key": "0",
-      "setting": 1,
-      "note": "switch to preset 4 sec to get ready",
-      "sound": "\"will (26:27) I remember this\" PIANO BANG\n\n28:00 NiNi frantic\n\n\n\n29:00 broken therapist",
-      "movement": "26:27: Turn for airplane\n\nAirplane 3x\n\n28: 00 \nGetting up, sitting down\nPunching out, sitting down\n\n29:00 Half-turn, half-turn sit-down"
-  },
-  {
-      "timetonext": 216,
-      "time": 1927,
-      "minInNiniVideo": 32,
-      "secInNiniVideo": 7,
-      "key": "N",
-      "setting": 20,
-      "note": "set window frame to 20"
-  },
-  {
-      "timetonext": 1,
-      "time": 1928,
-      "minInNiniVideo": 32,
-      "secInNiniVideo": 8,
-      "key": "B",
-      "setting": 10,
-      "note": "change confidence to 10"
-  },
-  {
-      "timetonext": 5,
-      "time": 1933,
-      "minInNiniVideo": 32,
-      "secInNiniVideo": 13,
-      "key": "E",
-      "note": "mark real nini standing ",
-      "sound": "gap right after people who leave are like...",
-      "movement": "Stand up",
-      "offset": "color issue? - unblack out left and right separately."
-  },
-  {
-      "timetonext": 4,
-      "time": 1937,
-      "minInNiniVideo": 32,
-      "secInNiniVideo": 17,
-      "key": "4",
-      "note": "switch to bookmark",
-      "movement": "Walk downstage"
-  },
-  {
-      "timetonext": 0,
-      "time": 1937,
-      "minInNiniVideo": 32,
-      "secInNiniVideo": 17,
-      "key": "Y",
-      "note": "jump to bookmark E (which is standing)"
-  },
-  {
-      "timetonext": 4,
-      "time": 1941,
-      "minInNiniVideo": 32,
-      "secInNiniVideo": 21,
-      "key": "Y",
-      "note": "jump to bookmark E (which is standing)"
-  },
-  {
-      "timetonext": 4,
-      "time": 1945,
-      "minInNiniVideo": 32,
-      "secInNiniVideo": 25,
-      "key": "Y",
-      "note": "jump to bookmark E (which is standing)",
-      "movement": "Airplane and look behind"
-  },
-  {
-      "timetonext": 4,
-      "time": 1949,
-      "minInNiniVideo": 32,
-      "secInNiniVideo": 29,
-      "key": "Y",
-      "note": "jump to bookmark E (which is standing)"
-  },
-  {
-      "timetonext": 3,
-      "time": 1952,
-      "minInNiniVideo": 32,
-      "secInNiniVideo": 32,
-      "key": "F",
-      "note": "blackout all ",
-      "sound": "\"now looking back it's a little funny\" (humming)"
-  },
-  {
-      "timetonext": 4,
-      "time": 1956,
-      "minInNiniVideo": 32,
-      "secInNiniVideo": 36,
-      "key": "L",
-      "note": "DMX light blackout"
-  },
-  {
-      "timetonext": 97,
-      "time": 2053,
-      "minInNiniVideo": 34,
-      "secInNiniVideo": 13,
-      "key": "3",
-      "note": "switch to plateau",
-      "sound": "galuppi\nwhite noise",
-      "movement": "ML plateaus"
-  },
-  {
-      "timetonext": 0,
-      "time": 2053,
-      "minInNiniVideo": 34,
-      "secInNiniVideo": 13,
-      "key": "G",
-      "note": "unblackout all"
-  },
-  {
-      "timetonext": 209,
-      "time": 2262,
-      "minInNiniVideo": 37,
-      "secInNiniVideo": 42,
-      "key": "F",
-      "note": "blackout all (end of show)",
-      "sound": "click"
-  },
-  {
-      "offset": "color issue? - hide doppel and delay showing doppel"
-  }
-  ]
+        "time": 0,
+        "key": "1",
+        "note": "start in manual mode"
+    },
+    {
+        "time": 27,
+        "key": "H",
+        "note": "fade in left"
+    },
+    {
+        "time": 38,
+        "key": "K",
+        "note": "[PLATEAU RECORDING: true] waiting room 1: Front, BodyLeft"
+    },
+    {
+        "time": 56,
+        "key": "0",
+        "setting": 6,
+        "note": "go to preset 55 sec (updated presets as: 0, 4, 4.5, 6, 10, 55)"
+    },
+    {
+        "time": 147,
+        "key": "D",
+        "note": "unblackout right"
+    },
+    {
+        "time": 251,
+        "key": "K",
+        "note": "[PLATEAU RECORDING: false] "
+    },
+    {
+        "time": 256,
+        "key": "F",
+        "note": "blackout all "
+    },
+    {
+        "time": 257,
+        "key": "0",
+        "setting": 1,
+        "note": "go to preset 4 sec"
+    },
+    {
+        "time": 267,
+        "key": "S",
+        "note": "unblackout left "
+    },
+    {
+        "time": 272,
+        "key": "D",
+        "note": "unblackout right"
+    },
+    {
+        "time": 273,
+        "key": "N",
+        "note": 60
+    },
+    {
+        "time": 274,
+        "key": "K",
+        "note": "[PLATEAU RECORDING: true]  face wipe and prayer: HandFace, RightFoward"
+    },
+    {
+        "time": 323,
+        "key": "0",
+        "setting": 2,
+        "note": "go to preset 4.5 sec"
+    },
+    {
+        "time": 332,
+        "key": "0",
+        "setting": 3,
+        "note": "go to preset 6 sec"
+    },
+    {
+        "time": 389,
+        "key": "K",
+        "note": "[PLATEAU RECORDING: false] "
+    },
+    {
+        "time": 394,
+        "key": "F",
+        "note": "blackout all "
+    },
+    {
+        "time": 398,
+        "key": "2",
+        "setting": 1,
+        "note": "switch to speed"
+    },
+    {
+        "time": 398,
+        "key": "S",
+        "note": "unblackout left - collapsy down"
+    },
+    {
+        "time": 403,
+        "key": "D",
+        "note": " "
+    },
+    {
+        "time": 405,
+        "key": "K",
+        "note": "[PLATEAU RECORDING: true]  Collapse, Airplane, Michael Jackson: LeanForward, HandSides, BodyLeft"
+    },
+    {
+        "time": 490,
+        "key": "0",
+        "setting": 1,
+        "note": "switch to preset 4 sec (voice: when ppl leave)"
+    },
+    {
+        "time": 724,
+        "key": "0",
+        "setting": 3,
+        "note": "switch to preset 6 sec"
+    },
+    {
+        "time": 726,
+        "key": "K",
+        "note": "[PLATEAU RECORDING: false] "
+    },
+    {
+        "time": 732,
+        "key": "S",
+        "note": "blackout left"
+    },
+    {
+        "time": 737,
+        "key": "D",
+        "note": "blackout right"
+    },
+    {
+        "time": 741,
+        "key": "2",
+        "setting": 1,
+        "note": "switch to speed"
+    },
+    {
+        "time": 741,
+        "key": "S",
+        "note": "unblackout left"
+    },
+    {
+        "time": 746,
+        "key": "K",
+        "note": "[PLATEAU RECORDING: true] pulling bus and hair on face"
+    },
+    {
+        "time": 746,
+        "key": "D",
+        "note": "unblackout right"
+    },
+    {
+        "time": 785,
+        "key": "2",
+        "setting": 0.5,
+        "note": "switch to speed"
+    },
+    {
+        "time": 816,
+        "key": "K",
+        "note": "[PLATEAU RECORDING: false]"
+    },
+    {
+        "time": 821,
+        "key": "0",
+        "setting": 1,
+        "note": "go to preset 4 sec"
+    },
+    {
+        "time": 822,
+        "key": "Q",
+        "note": "mark real nini about to stands up"
+    },
+    {
+        "time": 822,
+        "key": "0",
+        "setting": 0,
+        "note": "go to preset 0 sec"
+    },
+    {
+        "time": 827,
+        "key": "0",
+        "setting": 1,
+        "note": "go to preset 4 sec"
+    },
+    {
+        "time": 860,
+        "key": "F",
+        "note": "blackout all"
+    },
+    {
+        "time": 865,
+        "key": "2",
+        "setting": 0.75,
+        "note": "switch to speed"
+    },
+    {
+        "time": 870,
+        "key": "S",
+        "note": "unblackout left"
+    },
+    {
+        "time": 885,
+        "key": "D",
+        "note": "unblackout right"
+    },
+    {
+        "time": 1064,
+        "key": "D",
+        "note": "blackout right"
+    },
+    {
+        "time": 1099,
+        "key": "L",
+        "setting": "1, 0, 1000, 2, 0, 1000, 3, 0, 1000",
+        "note": "DMX light shut off all"
+    },
+    {
+        "time": 1099,
+        "key": "5",
+        "note": "switch to other mode to get ready to play video"
+    },
+    {
+        "time": 1099,
+        "key": "G",
+        "note": "unblackout all"
+    },
+    {
+        "time": 1099,
+        "key": "P",
+        "note": "play flashing video"
+    },
+    {
+        "time": 1246,
+        "key": "L",
+        "note": "DMX light fade in - low"
+    },
+    {
+        "time": 1296,
+        "key": "D",
+        "note": "blackout right"
+    },
+    {
+        "time": 1361,
+        "key": "S",
+        "note": "unblackout left"
+    },
+    {
+        "time": 1361,
+        "key": "0",
+        "setting": 3,
+        "note": "switch to preset 6 (echo circling)"
+    },
+    {
+        "time": 1369,
+        "key": "D",
+        "note": "unblackout right"
+    },
+    {
+        "time": 1475,
+        "key": "0",
+        "setting": 0,
+        "note": "switch to preset 0"
+    },
+    {
+        "time": 1498,
+        "key": "0",
+        "setting": 5,
+        "note": "switch to preset 20"
+    },
+    {
+        "time": 1540,
+        "key": "0",
+        "setting": 4,
+        "note": "switch to preset 10 (humming)"
+    },
+    {
+        "time": 1579,
+        "key": "F",
+        "note": "blackout all"
+    },
+    {
+        "time": 1605,
+        "key": "0",
+        "setting": 1,
+        "note": "go to preset 4 to get ready"
+    },
+    {
+        "time": 1605,
+        "key": "S",
+        "note": "unblackout left"
+    },
+    {
+        "time": 1637,
+        "key": "D",
+        "note": "unblackout right (need to investigate why need 8 sec)"
+    },
+    {
+        "time": 1647,
+        "key": "2",
+        "setting": 0.75,
+        "note": "switch to speed"
+    },
+    {
+        "time": 1686,
+        "key": "0",
+        "setting": 0,
+        "note": "switch to preset 0"
+    },
+    {
+        "time": 1691,
+        "key": "0",
+        "setting": 1,
+        "note": "switch to preset 4 sec"
+    },
+    {
+        "time": 1704,
+        "key": "0",
+        "setting": 1,
+        "note": "switch to preset 4"
+    },
+    {
+        "time": 1920,
+        "key": "N",
+        "setting": 20,
+        "note": "set window frame to 20"
+    },
+    {
+        "time": 1921,
+        "key": "B",
+        "setting": 10,
+        "note": "change confidence to 10"
+    },
+    {
+        "time": 1922,
+        "key": "0",
+        "setting": 0,
+        "note": "switch to preset 0"
+    },
+    {
+        "time": 1950,
+        "key": "F",
+        "note": "blackout all "
+    },
+    {
+        "time": 1955,
+        "key": "L",
+        "note": "DMX light blackout"
+    },
+    {
+        "time": 2027,
+        "key": "3",
+        "note": "switch to plateau"
+    },
+    {
+        "time": 2027,
+        "key": "G",
+        "note": "unblackout all"
+    },
+    {
+        "time": 2248,
+        "key": "F",
+        "note": "blackout all (end of show)"
+    }
+]
 }
