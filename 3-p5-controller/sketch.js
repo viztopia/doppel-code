@@ -260,7 +260,7 @@ function keyPressed(e) {
     case 48: //----0------
       mode = PRESET;
       // Is there a setting for current mode?
-      if (setting) modes[mode].set(setting);
+      if (setting != null) modes[mode].set(setting);
       break;
     case 49: //----1------
       mode = MANUAL;
@@ -268,7 +268,7 @@ function keyPressed(e) {
     case 50: //----2------
       mode = SPEED;
       // Is there a setting for current mode?
-      if (setting) modes[mode].set(setting);
+      if (setting != null) modes[mode].set(setting);
       break;
     case 51: //----3------
       mode = PLATEAU;
