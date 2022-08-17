@@ -246,124 +246,124 @@
         "note": "blackout right"
     },
     {
-        "time": 1361,
+        "time": 1359,
         "key": "S",
         "note": "unblackout left"
     },
     {
-        "time": 1361,
+        "time": 1359,
         "key": "0",
         "setting": 3,
         "note": "switch to preset 6 (echo circling)"
     },
     {
-        "time": 1369,
+        "time": 1370,
         "key": "D",
         "note": "unblackout right"
     },
     {
-        "time": 1475,
+        "time": 1468,
         "key": "0",
         "setting": 0,
         "note": "switch to preset 0"
     },
     {
-        "time": 1498,
+        "time": 1491,
         "key": "0",
         "setting": 5,
         "note": "switch to preset 20"
     },
     {
-        "time": 1540,
+        "time": 1533,
         "key": "0",
         "setting": 4,
         "note": "switch to preset 10 (humming)"
     },
     {
-        "time": 1579,
+        "time": 1572,
         "key": "F",
         "note": "blackout all"
     },
     {
-        "time": 1605,
+        "time": 1599,
         "key": "0",
         "setting": 1,
         "note": "go to preset 4 to get ready"
     },
     {
-        "time": 1605,
+        "time": 1599,
         "key": "S",
         "note": "unblackout left"
     },
     {
-        "time": 1637,
+        "time": 1630,
         "key": "D",
         "note": "unblackout right (need to investigate why need 8 sec)"
     },
     {
-        "time": 1647,
+        "time": 1640,
         "key": "2",
         "setting": 0.75,
         "note": "switch to speed"
     },
     {
-        "time": 1686,
+        "time": 1679,
         "key": "0",
         "setting": 0,
         "note": "switch to preset 0"
     },
     {
-        "time": 1691,
+        "time": 1684,
         "key": "0",
         "setting": 1,
         "note": "switch to preset 4 sec"
     },
     {
-        "time": 1704,
+        "time": 1697,
         "key": "0",
         "setting": 1,
         "note": "switch to preset 4"
     },
     {
-        "time": 1920,
+        "time": 1913,
         "key": "N",
         "setting": 20,
         "note": "set window frame to 20"
     },
     {
-        "time": 1921,
+        "time": 1914,
         "key": "B",
         "setting": 10,
         "note": "change confidence to 10"
     },
     {
-        "time": 1922,
+        "time": 1915,
         "key": "0",
         "setting": 0,
         "note": "switch to preset 0"
     },
     {
-        "time": 1950,
+        "time": 1943,
         "key": "F",
         "note": "blackout all "
     },
     {
-        "time": 1955,
+        "time": 1948,
         "key": "L",
         "note": "DMX light blackout"
     },
     {
-        "time": 2027,
+        "time": 2020,
         "key": "3",
         "note": "switch to plateau"
     },
     {
-        "time": 2027,
+        "time": 2020,
         "key": "G",
         "note": "unblackout all"
     },
     {
-        "time": 2248,
+        "time": 2227,
         "key": "F",
         "note": "blackout all (end of show)"
     }
