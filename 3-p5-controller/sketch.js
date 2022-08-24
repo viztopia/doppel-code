@@ -356,6 +356,9 @@ function keyPressed(e) {
     case 66: //-----------B: go to next confidence level
       modes[PLATEAU].setConfidence(setting);
       break;
+    case 76: //-----------L: send DMX light commands
+    if (setting != null) stage.setDMX(DMXPRESETS[setting], DMXSendInterval);
+      break;
   }
 }
 

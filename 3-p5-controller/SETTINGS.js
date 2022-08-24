@@ -47,3 +47,18 @@ const CACHEFRAMES = CAMFPS * CACHELENGTH; //this should match the size of the Ca
 
 // FFREW
 const FFREW_INTERVAL = 50;
+
+// DMX
+const DMXSendInterval = 50; // how fast to send DMX commands, in milli secs (to prevent flooding)
+const DMXPRESETS = [
+    //using a, b, c as light IDs to not confused with their actual channel number
+
+    //instantaneous black out for all channels
+    { a: { channel: 1, level: 0, duration: 0 }, b: { channel: 2, level: 0, duration: 0 }, c: { channel: 3, level: 0, duration: 0 } },
+    //instantaneous white out for all channels
+    { a: { channel: 1, level: 255, duration: 0 }, b: { channel: 2, level: 255, duration: 0 }, c: { channel: 3, level: 255, duration: 0 } },
+    // 5 seconds fade in for all channels
+    { a: { channel: 1, level: 255, duration: 5 }, b: { channel: 2, level: 255, duration: 5 }, c: { channel: 3, level: 255, duration: 5 } },
+    // 5 seconds fade out for all channels
+    { a: { channel: 1, level: 0, duration: 5 }, b: { channel: 2, level: 0, duration: 5 }, c: { channel: 3, level: 0, duration: 5 } }
+]

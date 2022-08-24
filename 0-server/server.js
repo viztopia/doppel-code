@@ -54,43 +54,39 @@ io.sockets.on('connection', function(socket) {
   });
   socket.on('cuePoint', function(msg) {
     socket.broadcast.emit("cuePoint", msg);
-    // socket.broadcast.emit("message1", 1234);
     console.log("cuePoint is: " + msg);
   });
   socket.on('cuePulse', function(msg) {
     socket.broadcast.emit("cuePulse", msg);
-    // socket.broadcast.emit("message1", 1234);
     console.log("cuePulse is: " + msg);
   });
   socket.on('blackoutleft', function(msg) {
     socket.broadcast.emit("blackoutleft", msg);
-    // socket.broadcast.emit("message1", 1234);
     console.log("blackoutleft is: " + msg);
   });
   socket.on('blackoutright', function(msg) {
     socket.broadcast.emit("blackoutright", msg);
-    // socket.broadcast.emit("message1", 1234);
     console.log("blackoutright is: " + msg);
   });
   socket.on('fadeinleft', function() {
     socket.broadcast.emit("fadeinleft");
-    // socket.broadcast.emit("message1", 1234);
     console.log("fadeinleft");
   });
   socket.on('record', function(msg) {
     socket.broadcast.emit("record", msg);
-    // socket.broadcast.emit("message1", 1234);
     console.log("record is: " + msg);
   });
   socket.on('resumerecord', function(msg) {
     socket.broadcast.emit("resumerecord", msg);
-    // socket.broadcast.emit("message1", 1234);
     console.log("resume recording starting from: " + msg);
   });
   socket.on('showdoppel', function(msg) {
     socket.broadcast.emit("showdoppel", msg);
-    // socket.broadcast.emit("message1", 1234);
     console.log("show doppel: " + msg);
+  });
+  socket.on('DMX', function(msg) {
+    socket.broadcast.emit("DMX", msg);
+    console.log("DMX: " + msg);
   });
 
 
@@ -99,58 +95,49 @@ io.sockets.on('connection', function(socket) {
   //update classification window
   socket.on('updateWindow', function(msg) {
     socket.broadcast.emit("updateWindow", msg);
-    // socket.broadcast.emit("message1", 1234);
     console.log("update window to to: " + msg);
   });
 
   //update classification confidence
   socket.on('updateConfidence', function(msg) {
     socket.broadcast.emit("updateConfidence", msg);
-    // socket.broadcast.emit("message1", 1234);
     console.log("update confidence to to: " + msg);
   });
 
   //control classification
   socket.on('setclassifier', function(msg) {
     socket.broadcast.emit("setclassifier", msg);
-    // socket.broadcast.emit("message1", 1234);
     console.log("set classifier to: " + msg);
   });
 
   socket.on('setsender', function(msg) {
     socket.broadcast.emit("setsender", msg);
-    // socket.broadcast.emit("message1", 1234);
     console.log("set send class to: " + msg == CLASSES ? "Plateaus" : "Classes");
   });
 
   //broadcast plateau stuff
   socket.on('classifying', function(msg) {
     socket.broadcast.emit("classifying", msg);
-    // socket.broadcast.emit("message1", 1234);
     console.log("classification is: " + (msg ? "On" : "Off"));
     plateauStatus = msg;
   });
   socket.on('sending', function(msg) {
     socket.broadcast.emit("sending", msg);
-    // socket.broadcast.emit("message1", 1234);
     console.log("sending: " + msg == CLASSES ? "Plateaus" : "Classes");
     classStatus = msg;
   });
   socket.on('plateauNew', function(msg) {
     socket.broadcast.emit("plateauNew", msg);
-    // socket.broadcast.emit("message1", 1234);
     console.log("new plateau data: " + msg);
   });
 
   socket.on('classNew', function(msg) {
     socket.broadcast.emit("classNew", msg);
-    // socket.broadcast.emit("message1", 1234);
     currentClass = msg;
     console.log("new class: " + msg);
   });
   socket.on('queryClass', function() {
     socket.emit("queriedClass", currentClass);
-    // socket.broadcast.emit("message1", 1234);
     console.log("queried class: " + currentClass);
   });
   socket.on('jointDist', function(msg) {

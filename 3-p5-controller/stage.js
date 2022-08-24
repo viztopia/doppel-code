@@ -4,6 +4,7 @@ let stage = {
     this.blackoutLeft = true;
     this.blackoutRight = true;
     this.fadeints = undefined;
+    this.DMXLights = {a: {level:0, increment: 0, fading:undefined}, b: {level:0, increment: 0, fading:undefined}, c:{level:0, increment: 0, fading:undefined}};
     this.emit();
   },
   emit: function() {
@@ -34,6 +35,39 @@ let stage = {
     this.fadeints = Date.now();
     this.blackoutLeft = false;
     emit("fadeinleft");
+  },
+  setDMX: function(preset, interval) {
+    // 1. compare the current level of each channel to the preset target's level
+    // 2. calculate the increment for each channel to reach the target's level at the given interval and duration
+    // 3. this is linear fading. not sure if we avoid do easing for DMX bc of potential flooding issue, need to test out
+
+    for (const lightID in this.DMXLights) {
+
+      let current = this.DMXLights[lightID];
+      let target = preset[lightID];
+      console.log(current, target);
+      console.log(target.duration);
+
+      let diff = target.level - current.level;
+      if (diff != 0){
+        current.increment = diff / (target.duration * 1000 / interval); //didn't floor the increment here just yet
+        console.log(current.increment);
+        //if there's a fading happening at the moment, clear it
+        if (current.fading) clearInterval(current.fading);
+
+        current.fading = setInterval(() => {
+          current.level += current.increment;
+          current.level = constrain(current.level, 0, 255);
+  
+          emit("DMX", {channel:target.channel, value:floor(current.level)}) //only floor the level when emiting to preserve its maximum accuracy while increment is not an integer
+          if (abs(target.level - current.level) <= 1) {
+            clearInterval(current.fading);
+            current.level = target.level //force saving target level to current, so the next DMX cue can be triggered
+          }
+
+        }, interval);
+      }
+    }
   },
   playVideo: function() {
     emit("source", VIDEO);
