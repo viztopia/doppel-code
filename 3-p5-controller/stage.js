@@ -1,84 +1,92 @@
 let stage = {
-  reset: function() {
+  reset: function () {
     this.showDoppel = true;
     this.blackoutLeft = true;
     this.blackoutRight = true;
     this.fadeints = undefined;
-    this.DMXLights = {a: {level:0, increment: 0, fading:undefined}, b: {level:0, increment: 0, fading:undefined}, c:{level:0, increment: 0, fading:undefined}};
+    this.DMXLights = { a: { level: 0, increment: 0, fading: undefined }, b: { level: 0, increment: 0, fading: undefined }, c: { level: 0, increment: 0, fading: undefined } };
     this.emit();
   },
-  emit: function() {
+  emit: function () {
     // Send state to TD
     emit("showdoppel", this.showDoppel);
     emit("blackoutleft", this.blackoutLeft);
     emit("blackoutright", this.blackoutRight);
   },
-  toggleDoppel: function() {
+  toggleDoppel: function () {
     this.showDoppel = !this.showDoppel;
     emit("showdoppel", this.showDoppel);
   },
-  toggleBlackoutLeft: function() {
+  toggleBlackoutLeft: function () {
     this.blackoutLeft = !this.blackoutLeft;
     emit("blackoutleft", this.blackoutLeft);
   },
-  toggleBlackoutRight: function() {
+  toggleBlackoutRight: function () {
     this.blackoutRight = !this.blackoutRight;
     emit("blackoutright", this.blackoutRight);
   },
-  setBlackoutAll: function(state) {
+  setBlackoutAll: function (state) {
     this.blackoutLeft = state;
     this.blackoutRight = state;
     emit("blackoutleft", this.blackoutLeft);
     emit("blackoutright", this.blackoutRight);
+    this.setDMX(DMXPRESETS["cut"], DMXSendInterval);
   },
-  fadeInLeft: function() {
+  fadeInLeft: function () {
     this.fadeints = Date.now();
     this.blackoutLeft = false;
     emit("fadeinleft");
   },
-  setDMX: function(preset, interval) {
+  setDMX: function (preset, interval) {
     // 1. compare the current level of each channel to the preset target's level
     // 2. calculate the increment for each channel to reach the target's level at the given interval and duration
     // 3. this is linear fading. not sure if we avoid do easing for DMX bc of potential flooding issue, need to test out
 
     for (const lightID in this.DMXLights) {
-
       let current = this.DMXLights[lightID];
       let target = preset[lightID];
-      console.log(current, target);
-      console.log(target.duration);
+      emit("DMX", { channel: target.channel, value: target.level, duration: target.duration })
 
-      let diff = target.level - current.level;
-      if (diff != 0){
-        current.increment = diff / (target.duration * 1000 / interval); //didn't floor the increment here just yet
-        console.log(current.increment);
-        //if there's a fading happening at the moment, clear it
-        if (current.fading) clearInterval(current.fading);
 
-        current.fading = setInterval(() => {
-          current.level += current.increment;
-          current.level = constrain(current.level, 0, 255);
-  
-          emit("DMX", {channel:target.channel, value:floor(current.level)}) //only floor the level when emiting to preserve its maximum accuracy while increment is not an integer
-          if (abs(target.level - current.level) <= 1) {
-            clearInterval(current.fading);
-            current.level = target.level //force saving target level to current, so the next DMX cue can be triggered
-          }
+      // console.log(current, target);
+      // console.log(target.duration);
 
-        }, interval);
-      }
+      // let diff = target.level - current.level;
+      // // if (diff != 0){
+      // // }
+      // if (target.duration == 0 ) {
+      //   current.increment = diff; //didn't floor the increment here just yet
+      // } else {
+      //   current.increment = diff / (target.duration * 1000 / interval); //didn't floor the increment here just yet
+      // }
+
+      // console.log(current.increment);
+      // //if there's a fading happening at the moment, clear it
+      // if (current.fading) clearInterval(current.fading);
+
+      // current.fading = setInterval(() => {
+      //   current.level += current.increment;
+      //   current.level = constrain(current.level, 0, 255);
+
+      //   emit("DMX", {channel:target.channel, value:floor(current.level)}) //only floor the level when emiting to preserve its maximum accuracy while increment is not an integer
+      //   if (abs(target.level - current.level) <= 1) {
+      //     clearInterval(current.fading);
+      //     current.level = target.level //force saving target level to current, so the next DMX cue can be triggered
+      //   }
+
+      // }, interval);
     }
   },
-  playVideo: function() {
+  playVideo: function () {
     emit("source", VIDEO);
   },
   display: function stage() {
     // Display current delay and file
     text("Delayed frame: " + floor(cue.delayFrameIdx) + "      File: " + cue.fileIdx + " cuePoint: " + nfs(cue.cuePoint, 0, 2), INFOX, INFOY + 125);
     text("Doppel (A): " + (this.showDoppel ? "On" : "Off"), INFOX, INFOY + 150);
-    let timeElapsed = this.fadeints ? constrain(floor(this.fadeints - Date.now()/1000), 0, 30) : 0;
-    text("Blackout (S,D,F,G): " + (this.blackoutLeft ? " Left" : "") + (this.blackoutRight ? " Right" : "" + "\t\Fade: " + timeElapsed), INFOX, INFOY + 175);
+    let timeElapsed = this.fadeints ? constrain(floor(this.fadeints - Date.now() / 1000), 0, 30) : 0;
+    text("Blackout (S,D,F,G): " + (this.blackoutLeft ? " Left" : "") + (this.blackoutRight ? " Right" : "" + "\t\Fade: " + timeElapsed) + "\t\tSetup(,) JokeFade(.) JokeCut(/) Cut(;)", INFOX, INFOY + 175);
     text("Bookmarks (4): " + modes[BOOKMARK].str, INFOX, INFOY + 200);
-    text("Classify (J): " + (modes[PLATEAU].classify ? "On" : "Off") + "\t\tSend (K): " + (modes[PLATEAU].sending == modes[PLATEAU].CLASSES ? "Plateaus" : "Classes" + "\t\tWindow (N): " + modes[PLATEAU].window +  "\t\tConfidence (B): " + modes[PLATEAU].confidence), INFOX, INFOY + 225);
+    text("Classify (J): " + (modes[PLATEAU].classify ? "On" : "Off") + "\t\tSend (K): " + (modes[PLATEAU].sending == modes[PLATEAU].CLASSES ? "Plateaus" : "Classes" + "\t\tWindow (N): " + modes[PLATEAU].window + "\t\tConfidence (B): " + modes[PLATEAU].confidence), INFOX, INFOY + 225);
   }
 }

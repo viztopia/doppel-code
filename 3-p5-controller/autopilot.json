@@ -14,7 +14,7 @@
         {
             "time": 27,
             "key": "L",
-            "setting": 1,
+            "setting": "normalfade",
             "note": "lights on"
         },
         {
@@ -46,7 +46,7 @@
         {
             "time": 256,
             "key": "L",
-            "setting": 0,
+            "setting": "cut",
             "note": "lights off"
         },
         {
@@ -63,7 +63,7 @@
         {
             "time": 267,
             "key": "L",
-            "setting": 1,
+            "setting": "normalcut",
             "note": "lights on"
         },
         {
@@ -106,6 +106,7 @@
         {
             "time": 394,
             "key": "L",
+            "setting": "cut",
             "note": "lights off"
         },
         {
@@ -122,7 +123,7 @@
         {
             "time": 398,
             "key": "L",
-            "setting": 1,
+            "setting": "normalcut",
             "note": "lights on"
         },
         {
@@ -160,7 +161,7 @@
         {
             "time": 732,
             "key": "L",
-            "setting": 0,
+            "setting": "cut",
             "note": "lights off"
         },
         {
@@ -182,7 +183,7 @@
         {
             "time": 741,
             "key": "L",
-            "setting": 1,
+            "setting": "normalcut",
             "note": "lights on"
         },
         {
@@ -237,7 +238,7 @@
         {
             "time": 860,
             "key": "L",
-            "setting": 0,
+            "setting": "cut",
             "note": "lights off"
         },
         {
@@ -254,7 +255,7 @@
         {
             "time": 870,
             "key": "L",
-            "setting": 1,
+            "setting": "normalcut",
             "note": "lights on"
         },
         {
@@ -280,7 +281,7 @@
         {
             "time": 1098,
             "key": "L",
-            "setting": 0,
+            "setting": "cut",
             "note": "lights off"
         },
         {
@@ -291,7 +292,7 @@
         {
             "time": 1246,
             "key": "L",
-            "setting": 2,
+            "setting": "solo",
             "note": "lights on: long fade in"
         },
         {
@@ -341,7 +342,7 @@
         {
             "time": 1572,
             "key": "L",
-            "setting": 0,
+            "setting": "cut",
             "note": "lights off"
         },
         {
@@ -358,7 +359,13 @@
         {
             "time": 1599,
             "key": "L",
-            "setting": 1,
+            "setting": "stripe",
+            "note": "lights on"
+        },
+        {
+            "time": 1605,
+            "key": "L",
+            "setting": "normalfade",
             "note": "lights on"
         },
         {
@@ -369,36 +376,43 @@
         {
             "time": 1640,
             "key": "2",
+            "setting": 0.75,
             "note": "switch to speed"
         },
         {
             "time": 1679,
             "key": "0",
+            "setting": 0,
             "note": "switch to preset 0"
         },
         {
             "time": 1684,
             "key": "2",
+            "setting": 0.75,
             "note": "switch to speed"
         },
         {
             "time": 1697,
             "key": "0",
+            "setting": 1,
             "note": "switch to preset 4"
         },
         {
             "time": 1913,
             "key": "N",
+            "setting": 20,
             "note": "set window frame to 20"
         },
         {
             "time": 1914,
             "key": "B",
+            "setting": 10,
             "note": "change confidence to 10"
         },
         {
             "time": 1915,
             "key": "0",
+            "setting": 0,
             "note": "switch to preset 0"
         },
         {
@@ -409,6 +423,7 @@
         {
             "time": 1949,
             "key": "L",
+            "setting": "fadeout",
             "note": "lights fade out very slowly"
         },
         {
@@ -424,6 +439,7 @@
         {
             "time": 2020,
             "key": "L",
+            "setting": "normalfade",
             "note": "lights on"
         },
         {

@@ -357,7 +357,19 @@ function keyPressed(e) {
       modes[PLATEAU].setConfidence(setting);
       break;
     case 76: //-----------L: send DMX light commands
-    if (setting != null) stage.setDMX(DMXPRESETS[setting], DMXSendInterval);
+      if (setting != null) stage.setDMX(DMXPRESETS[setting], DMXSendInterval);
+      break;
+    case 188: //---------- ,: set DMX to setup present
+      stage.setDMX(DMXPRESETS["setup"], DMXSendInterval);
+      break;
+    case 190: //---------- .: set DMX to jokefade present
+      stage.setDMX(DMXPRESETS["jokefade"], DMXSendInterval);
+      break;
+    case 191: //---------- /: set DMX to jokecut present
+      stage.setDMX(DMXPRESETS["jokecut"], DMXSendInterval);
+      break;
+    case 186: //---------- ;: set DMX to setup present
+      stage.setDMX(DMXPRESETS["cut"], DMXSendInterval);
       break;
   }
 }

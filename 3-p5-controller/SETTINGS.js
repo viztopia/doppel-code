@@ -1,6 +1,6 @@
 // Display
 const W = 600;
-const H = 500;
+const H = 600;
 const INFOX = W / 2 - 250;
 const INFOY = H / 2;
 
@@ -50,15 +50,26 @@ const FFREW_INTERVAL = 50;
 
 // DMX
 const DMXSendInterval = 50; // how fast to send DMX commands, in milli secs (to prevent flooding)
-const DMXPRESETS = [
+const DMXPRESETS = {
     //using a, b, c as light IDs to not confused with their actual channel number
 
-    //instantaneous black out for all channels
-    { a: { channel: 1, level: 0, duration: 0 }, b: { channel: 2, level: 0, duration: 0 }, c: { channel: 3, level: 0, duration: 0 } },
-    //instantaneous white out for all channels
-    { a: { channel: 1, level: 255, duration: 0 }, b: { channel: 2, level: 255, duration: 0 }, c: { channel: 3, level: 255, duration: 0 } },
-    // 5 seconds fade in for all channels
-    { a: { channel: 1, level: 255, duration: 5 }, b: { channel: 2, level: 255, duration: 5 }, c: { channel: 3, level: 255, duration: 5 } },
-    // 5 seconds fade out for all channels
-    { a: { channel: 1, level: 0, duration: 5 }, b: { channel: 2, level: 0, duration: 5 }, c: { channel: 3, level: 0, duration: 5 } }
-]
+    "setup": { a: { channel: 4, level: 255, duration: 0.1 }, b: { channel: 10, level: 255, duration: 0.1 }, c: { channel: 16, level: 255, duration: 0.1 } },
+
+    //joke should turn off back stage light. TBD
+    "jokecut": { a: { channel: 4, level: 255, duration: 0.1 }, b: { channel: 10, level: 255, duration: 0.1 }, c: { channel: 16, level: 255, duration: 0.1 } },
+
+    "normalcut": { a: { channel: 4, level: 128, duration: 0.1 }, b: { channel: 10, level: 128, duration: 0.1 }, c: { channel: 16, level: 128, duration: 0.1 } },
+
+    "normalfade": { a: { channel: 4, level: 128, duration: 5 }, b: { channel: 10, level: 128, duration: 5 }, c: { channel: 16, level: 128, duration: 5 } },
+
+    "stripe" : { a: { channel: 4, level: 0, duration: 0.1 }, b: { channel: 10, level: 0, duration: 0.1 }, c: { channel: 16, level: 64, duration: 0.1 } },
+
+    "cut" : { a: { channel: 4, level: 0, duration: 0.1 }, b: { channel: 10, level: 0, duration: 0.1 }, c: { channel: 16, level: 0, duration: 0.1 } },
+
+    "fadeout" : { a: { channel: 4, level: 0, duration: 5 }, b: { channel: 10, level: 0, duration: 5 }, c: { channel: 16, level: 0, duration: 5 } },
+
+    "jokefade": { a: { channel: 4, level: 255, duration: 5 }, b: { channel: 10, level: 255, duration: 5 }, c: { channel: 16, level: 255, duration: 5 } },
+
+    "solo": { a: { channel: 4, level: 0, duration: 0.1 }, b: { channel: 10, level: 96, duration: 10 }, c: { channel: 16, level: 96, duration: 10 } },
+
+}
