@@ -138,6 +138,9 @@ function stopPerformance() {
   //clear auto save
   if (autoSaveIntervalID) clearInterval(autoSaveIntervalID);
 
+  //cut DMX
+  stage.setDMX(DMXPRESETS["cut"], DMXSendInterval);
+
   //we don't reset startTime, recordedSeconds, delayFrameIdx, pleateaus, and bookmarks just so we can save them if needed
 }
 
@@ -368,7 +371,7 @@ function keyPressed(e) {
     case 191: //---------- /: set DMX to jokecut present
       stage.setDMX(DMXPRESETS["jokecut"], DMXSendInterval);
       break;
-    case 186: //---------- ;: set DMX to setup present
+    case 186: //---------- ;: set DMX to cut present
       stage.setDMX(DMXPRESETS["cut"], DMXSendInterval);
       break;
   }

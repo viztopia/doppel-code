@@ -14,8 +14,13 @@ let preset = {
     // Update current preset
     this.idx += step;
     this.idx = constrain(this.idx, 0, PRESETS.length - 1);
-    cue.ease(PRESETS[this.idx]);
-    // cue.set(PRESETS[this.idx]);
+    // cue.ease(PRESETS[this.idx]);
+    cue.set(PRESETS[this.idx]);
+  },
+  emit: function(){
+    console.log("preset emit now!")
+    console.log(this.idx)
+    this.set(this.idx)
   }
 }
 
@@ -236,23 +241,27 @@ let plateau = { //-------------plateau-based----------------
 
 let bookmark = { //------------bookmark---------------------
   reset: function() {
-    this.bookmarks = [];
+    this.bookmarks = [undefined, undefined, undefined];
     this.idx = 0;
     this.str = "";
   },
-
-  save: function(ts) {
-    this.bookmarks.push(ts);
-    this.idx++;
+  save: function(idx, ts) {
+    console.log("saving bookmark " + idx)
+    this.bookmarks[idx] = ts;
+    this.updateStr();
   },
-  run: function() {
+  updateStr: function() {
     this.str = "";
     this.bookmarks.forEach((bm) => {
+      if (!bm) return;
       this.str += (nf(floor(bm / 1000 / 60), 2, 0) + ":" + nf(floor(bm / 1000 % 60), 2, 0) + "(" + bm + ")\t")
     });
+  },
+  run: function() {
+    this.updateStr();
     text("Press Q, W, E to add/overwrite, press R, T, Y to jump.", INFOX, INFOY + 50);
   },
-  set: function(idx) {
+  set: function(idx) {  // this function seems obsolete
     // Set current bookmark
     this.idx = idx;
     this.idx = constrain(this.idx, 0, this.bookmarks.length - 1);

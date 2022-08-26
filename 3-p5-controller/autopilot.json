@@ -23,6 +23,11 @@
             "note": "[PLATEAU RECORDING: true] waiting room 1: Front, BodyLeft"
         },
         {
+            "time": 45,
+            "key": "E",
+            "note": "bookmark doppel looking at nini"
+        },
+        {
             "time": 56,
             "key": "0",
             "setting": 6,
@@ -307,6 +312,12 @@
         },
         {
             "time": 1360,
+            "key": "L",
+            "setting": "normalfade",
+            "note": "lights to normal fade"
+        },
+        {
+            "time": 1360,
             "key": "0",
             "setting": 3,
             "note": "switch to preset 6 (echo circling)"
@@ -335,15 +346,15 @@
             "note": "switch to preset 10 (humming)"
         },
         {
-            "time": 1572,
-            "key": "F",
-            "note": "blackout all"
-        },
-        {
-            "time": 1572,
+            "time": 1578,
             "key": "L",
             "setting": "cut",
             "note": "lights off"
+        },
+        {
+            "time": 1587,
+            "key": "F",
+            "note": "blackout all"
         },
         {
             "time": 1599,
@@ -363,13 +374,13 @@
             "note": "lights on"
         },
         {
-            "time": 1605,
+            "time": 1618,
             "key": "L",
             "setting": "normalfade",
             "note": "lights on"
         },
         {
-            "time": 1630,
+            "time": 1632,
             "key": "D",
             "note": "unblackout right (need to investigate why need 8 sec)"
         },
@@ -443,6 +454,16 @@
             "note": "lights on"
         },
         {
+            "time": 2223,
+            "key": "4",
+            "note": "switch to bookmark mode"
+        },
+        {
+            "time": 2223,
+            "key": "Y",
+            "note": "jump back to bookmark E (doppel looking at nini)"
+        },
+        {
             "time": 2228,
             "key": "F",
             "note": "blackout all (end of show)"
@@ -450,6 +471,7 @@
         {
             "time": 2228,
             "key": "L",
+            "setting": "cut",
             "note": "lights off"
         }
     ]

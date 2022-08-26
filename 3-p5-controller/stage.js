@@ -4,7 +4,7 @@ let stage = {
     this.blackoutLeft = true;
     this.blackoutRight = true;
     this.fadeints = undefined;
-    this.DMXLights = { a: { level: 0, increment: 0, fading: undefined }, b: { level: 0, increment: 0, fading: undefined }, c: { level: 0, increment: 0, fading: undefined } };
+    this.dmx = {};
     this.emit();
   },
   emit: function () {
@@ -12,6 +12,7 @@ let stage = {
     emit("showdoppel", this.showDoppel);
     emit("blackoutleft", this.blackoutLeft);
     emit("blackoutright", this.blackoutRight);
+    this.setDMX(this.dmx);
   },
   toggleDoppel: function () {
     this.showDoppel = !this.showDoppel;
@@ -30,21 +31,19 @@ let stage = {
     this.blackoutRight = state;
     emit("blackoutleft", this.blackoutLeft);
     emit("blackoutright", this.blackoutRight);
-    this.setDMX(DMXPRESETS["cut"], DMXSendInterval);
   },
   fadeInLeft: function () {
     this.fadeints = Date.now();
     this.blackoutLeft = false;
     emit("fadeinleft");
   },
-  setDMX: function (preset, interval) {
+  setDMX: function (preset) {
     // 1. compare the current level of each channel to the preset target's level
     // 2. calculate the increment for each channel to reach the target's level at the given interval and duration
     // 3. this is linear fading. not sure if we avoid do easing for DMX bc of potential flooding issue, need to test out
-
-    for (const lightID in this.DMXLights) {
-      let current = this.DMXLights[lightID];
-      let target = preset[lightID];
+    this.dmx = preset;
+    for (const lightID in this.dmx) {
+      let target = this.dmx[lightID];
       emit("DMX", { channel: target.channel, value: target.level, duration: target.duration })
 
 
