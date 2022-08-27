@@ -79,7 +79,8 @@
         {
             "time": 273,
             "key": "N",
-            "note": 60
+            "setting": 60,
+            "note": "set window frame to 60"
         },
         {
             "time": 274,
