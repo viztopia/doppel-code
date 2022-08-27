@@ -18,9 +18,7 @@ let preset = {
     cue.set(PRESETS[this.idx]);
   },
   emit: function(){
-    console.log("preset emit now!")
-    console.log(this.idx)
-    this.set(this.idx)
+    cue.emit();
   }
 }
 
@@ -107,15 +105,15 @@ let plateau = { //-------------plateau-based----------------
     this.confidence = 90; //idx 0 is 90% classification confidence
   },
   emit: function(){
-    socket.emit("setclassifier", this.classify);
-    socket.emit("setsender", this.sending);
-    socket.emit("updateWindow", this.window);
-    socket.emit("updateConfidence", this.confidence);
+    emit("setclassifier", this.classify);
+    emit("setsender", this.sending);
+    emit("updateWindow", this.window);
+    emit("updateConfidence", this.confidence);
   },
   run: function() {
     if (!this.currentClass) {
       console.log("querying class");
-      socket.emit("queryClass");
+      emit("queryClass");
     }
 
     //----------------------auto controlling TD using plateau data------------------------

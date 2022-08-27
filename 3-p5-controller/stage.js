@@ -44,36 +44,7 @@ let stage = {
     this.dmx = preset;
     for (const lightID in this.dmx) {
       let target = this.dmx[lightID];
-      emit("DMX", { channel: target.channel, value: target.level, duration: target.duration })
-
-
-      // console.log(current, target);
-      // console.log(target.duration);
-
-      // let diff = target.level - current.level;
-      // // if (diff != 0){
-      // // }
-      // if (target.duration == 0 ) {
-      //   current.increment = diff; //didn't floor the increment here just yet
-      // } else {
-      //   current.increment = diff / (target.duration * 1000 / interval); //didn't floor the increment here just yet
-      // }
-
-      // console.log(current.increment);
-      // //if there's a fading happening at the moment, clear it
-      // if (current.fading) clearInterval(current.fading);
-
-      // current.fading = setInterval(() => {
-      //   current.level += current.increment;
-      //   current.level = constrain(current.level, 0, 255);
-
-      //   emit("DMX", {channel:target.channel, value:floor(current.level)}) //only floor the level when emiting to preserve its maximum accuracy while increment is not an integer
-      //   if (abs(target.level - current.level) <= 1) {
-      //     clearInterval(current.fading);
-      //     current.level = target.level //force saving target level to current, so the next DMX cue can be triggered
-      //   }
-
-      // }, interval);
+      emit("DMX", { channel: target.channel, value: target.level, duration: target.duration });
     }
   },
   playVideo: function () {

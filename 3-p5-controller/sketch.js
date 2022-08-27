@@ -211,6 +211,7 @@ function jumpToThisAction(newShowTimeInSeconds) {
   // Send out key emissions
   for (let mode of modes) try {
     mode.emit();
+    console.log("Emitting: ", mode);
   } catch (e) {
     console.log("Nothing to emit in mode.");
   }

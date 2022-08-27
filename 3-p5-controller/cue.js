@@ -1,6 +1,7 @@
 // Manages playback of cache and recorded video in TD
 let cue = {
   reset: function() {
+    this.source = CACHE;
     this.delayFrameIdx = 0;
     this.pDelayFrameIdx = 0;
     this.intermediateDelayFrameIdx = 0;
@@ -23,21 +24,20 @@ let cue = {
 
   setFrames: function(frames) {
     // Ignore if there has been no change
-    
-    if(floor(frames) == this.delayFrameIdx) {
-      console.log("frame is" + frames)
-      return;
-    }
+
+    if (floor(frames) == this.delayFrameIdx) return;
+
 
     this.pDelayFrameIdx = this.delayFrameIdx;
     this.delayFrameIdx = floor(frames);
     this.update();
+    this.emit();
   },
 
   ease: function(seconds) {
 
     // if there's an easing happening at the moment, clear it
-    if(this.easing) clearInterval(this.easing);
+    if (this.easing) clearInterval(this.easing);
 
     // Calculate target
     let target = seconds * RECORDINGFPS;
@@ -62,23 +62,18 @@ let cue = {
 
     if (this.delayFrameIdx == undefined) {
       text("No available delay frames yet. Showing TD current frame", INFOX, INFOY + 125);
-      emit("source", CACHE);
-      emit("frameIdx", 0);
+      this.source = CACHE;
+      this.delayFrameIdx = 0;
     } else {
       // If delay frame is within what is cached...
       if (this.delayFrameIdx <= CACHEFRAMES) {
         // console.log("SENDING IT OUT");
-        emit("source", CACHE);
+        this.source = CACHE;
         this.fileIdx = -99;
         this.pfileIdx = this.fileIdx;
         this.cuePoint = 1 - this.delayFrameIdx / RECORDINGFRAMES;
-        emit("frameIdx", this.delayFrameIdx);
-
       } else {
-        emit("source", RECORDINGS);
-        // let idxOfRecordingFromTD = floor((delayFrameIdx - CACHEFRAMES) / RECORDINGFRAMES)
-        // this.fileIdx = this.availableRecordingNum - (idxOfRecordingFromTD + 1) ; // 1 bc number of recordings starts at 1 and TD file idx starts at 0
-        // this.cuePoint = 1 - (delayFrameIdx - CACHEFRAMES - idxOfRecordingFromTD * RECORDINGFRAMES) / RECORDINGFRAMES;
+        this.source = RECORDINGS;
 
         //new method of calculating file Idx and cue point
         let totalavailableFrames = (recordedSeconds - CACHELENGTH) * RECORDINGFPS + CACHEFRAMES;
@@ -92,14 +87,23 @@ let cue = {
         }
         this.cuePoint = constrain(recordingStartFrame % RECORDINGFRAMES / RECORDINGFRAMES, 0, 0.98);
 
-        let pulseDelay = 0;
         if (this.fileIdx != this.pfileIdx) {
-          emit("fileIdx", this.fileIdx);
-          pulseDelay = PULSEDELAY;
+          this.fileChanged = true;
           this.pfileIdx = this.fileIdx;
         }
-        emit("cuePoint", this.cuePoint); //updated TD to pulse after cuepoint update
       }
+    }
+  },
+  emit: function() {
+    emit("source", this.source);
+    switch (this.source) {
+      case CACHE:
+        emit("frameIdx", this.delayFrameIdx);
+      break;
+      case RECORDINGS:
+        if(this.fileChanged) emit("fileIdx", this.fileIdx);
+        emit("cuePoint", this.cuePoint);
+      break;
     }
   }
 }
