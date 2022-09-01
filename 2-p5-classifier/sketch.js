@@ -8,8 +8,8 @@
 
 //------------------socket--------------------
 let socket;
-let ip = "10.23.11.152"; //the IP of the machine that runs bridge.js
-// let ip = "127.0.0.1"; //or local host
+//let ip = "10.23.11.152"; //the IP of the machine that runs bridge.js
+let ip = "127.0.0.1"; //or local host
 let port = 8081; //the port of the machine that runs bridge.js
 //--------simple UI--------------------
 let cnv;
@@ -19,12 +19,11 @@ let waiting = 180;
 let classResult = 0;
 let classCache = [];
 let cacheLength = 20; //classification window size
-let classCacheLengthSlider;
 
 let stableClass
 let pStableClass;
 const CONFIDENCE_TH = 0.8;
-const BEST_COUNT_TH = cacheLength * CONFIDENCE_TH; //calculate the baseline for deciding how much % within the window we count as a new class
+let bestCountTH = cacheLength * CONFIDENCE_TH; //calculate the baseline for deciding how much % within the window we count as a new class
 
 //--------Plateau Stuff--------------------
 let plateau = {
@@ -97,8 +96,7 @@ function preload() {
 function setup() {
   select("#window").input(function() {
     cacheLength = this.value();
-    console.log("HELLO", cacheLength);
-    BEST_COUNT_TH = cacheLength * CONFIDENCE_TH; //recalculate the baseline for deciding how much we count as a new class
+    bestCountTH = cacheLength * CONFIDENCE_TH; //recalculate the baseline for deciding how much we count as a new class
     select("#window-label").html(cacheLength);
   });
 
@@ -235,7 +233,7 @@ function draw() {
 
       if (bestClass) {
         select("#best-class").html(bestClass);
-        select("#best-count").html(bestCount + " / " + BEST_COUNT_TH);
+        select("#best-count").html(bestCount + " / " + bestCountTH);
 
         // Is current best class stable and new?
         if (bestClassIsStable(bestClass, bestCount)) {
@@ -271,6 +269,7 @@ function draw() {
 
     // Check for bodies
     if (itsBeenAwhile()) {
+      console.log("IT'S BEEN AWHILE!");
       resetClassification(NOBODY_TH);
     }
 
@@ -282,7 +281,7 @@ function draw() {
 }
 
 function bestClassIsStable(bestClass, bestCount) {
-  return bestClass != TRASHCLASS && bestCount >= BEST_COUNT_TH;
+  return bestClass != TRASHCLASS && bestCount >= bestCountTH;
 }
 // Helper functions for deciding what data to send.
 function stableClassIsNew() {
@@ -671,8 +670,8 @@ function setupSocket() {
   socket.on("updateWindow", function(msg) {
     console.log("updating window to: " + msg);
     cacheLength = msg;
-    BEST_COUNT_TH = cacheLength * CONFIDENCE_TH; //recalculate the baseline for deciding how much we count as a new class
-    classCacheLengthSlider.value(int(msg));
+    bestCountTH = cacheLength * CONFIDENCE_TH; //recalculate the baseline for deciding how much we count as a new class
+    select("#window").value(int(msg));
     select("#window-label").html(msg);
   });
 
