@@ -375,6 +375,9 @@ function keyPressed(e) {
     case 186: //---------- ;: set DMX to cut present
       stage.setDMX(DMXPRESETS["cut"], DMXSendInterval);
       break;
+    case 79: //---------- O: force stop recording in TD, used for boosting hard drive IO speed
+      socket.emit("record", 0);
+      break;
   }
 }
 

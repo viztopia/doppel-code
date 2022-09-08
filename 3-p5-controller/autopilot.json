@@ -214,6 +214,11 @@
             "note": "[PLATEAU RECORDING: false]"
         },
         {
+            "time": 817,
+            "key": "O",
+            "note": "stop recording in TD to boost hard drive IO"
+        },
+        {
             "time": 821,
             "key": "0",
             "setting": 1,
