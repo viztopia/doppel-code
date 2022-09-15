@@ -47,6 +47,15 @@ let stage = {
       emit("DMX", { channel: target.channel, value: target.level, duration: target.duration });
     }
   },
+  playSound: function(play, secs = 0) {
+    if (!play) {
+      emit("playsound", 0); 
+      return
+    } else {
+      emit("cuesound", secs);
+      emit("playsound", 1);
+    }
+  },
   playVideo: function () {
     emit("source", VIDEO);
   },

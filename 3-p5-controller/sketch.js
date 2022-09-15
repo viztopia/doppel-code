@@ -111,6 +111,9 @@ function startPerformance() {
   //start recording
   socket.emit("record", 1);
 
+  //play sound
+  if (select('#playSound').elt.checked) stage.playSound(true);
+
   //start show
   started = true;
   console.log("Show and recording started at: " + startTime);
@@ -140,6 +143,9 @@ function stopPerformance() {
 
   //cut DMX
   stage.setDMX(DMXPRESETS["cut"], DMXSendInterval);
+
+  //stop sound
+  stage.playSound(false);
 
   //we don't reset startTime, recordedSeconds, delayFrameIdx, pleateaus, and bookmarks just so we can save them if needed
 }
@@ -218,6 +224,9 @@ function jumpToThisAction(newShowTimeInSeconds) {
   setTimeout(() => {
     stage.emit()
   }, 20);
+
+  console.log(select('#playSound').elt.checked);
+  if (select('#playSound').elt.checked) stage.playSound(true, newShowTimeInSeconds);
 }
 
 function executeNextAction(idx, jumping) {

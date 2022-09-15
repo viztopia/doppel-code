@@ -88,6 +88,14 @@ io.sockets.on('connection', function(socket) {
     socket.broadcast.emit("DMX", msg);
     console.log("DMX: " + msg);
   });
+  socket.on('playsound', function(msg) {
+    socket.broadcast.emit("playsound", msg);
+    console.log("playsound: " + msg);
+  });
+  socket.on('cuesound', function(msg) {
+    socket.broadcast.emit("cuesound", msg);
+    console.log("cuesound: " + msg);
+  });
 
 
   //-----------------broadcast classification plateau stuff-----------------
