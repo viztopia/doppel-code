@@ -249,7 +249,6 @@ function draw() {
 
           // If there's a new stable class
           if (stableClassIsNew()) {
-            console.log(pStableClass, stableClass);
             pStableClass = stableClass;
             // Send it
             if (sending == CLASSES) {
@@ -337,7 +336,7 @@ function resetClassification(buffer) {
   poseNorm = undefined;
   poses = [];
   poseNorm = undefined;
-  console.log("reset")
+  // console.log("reset")
 
   // Clear out classes
   stableClass = null;
@@ -485,7 +484,7 @@ async function loadKNN() {
 async function classify() {
 
   // Any poses to classify?
-  console.log(poseNorm)
+  // console.log(poseNorm)
   if (!poseNorm) return;
   // Get the total number of labels from knnClassifier
   const numLabels = classifier.getNumClasses();
@@ -499,7 +498,7 @@ async function classify() {
   const poseArray = poseNorm.keypoints.map((p) => [p.score, p.x, p.y]);
 
   const example = tf.tensor(poseArray);
-  console.log("POSES", poseArray.length);
+  // console.log("POSES", poseArray.length);
   const result = await classifier.predictClass(example, kvalue);
   gotResults(undefined, result);
 }
