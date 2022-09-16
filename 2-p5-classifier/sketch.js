@@ -8,8 +8,10 @@
 
 //------------------socket--------------------
 let socket;
-//let ip = "10.23.11.152"; //the IP of the machine that runs bridge.js
-let ip = "127.0.0.1"; //or local host
+// let ip = "192.168.1.160"; //the IP of the machine that runs bridge.js
+
+let ip = "10.23.11.152"; //the IP of the machine that runs bridge.js
+// let ip = "127.0.0.1"; //or local host
 let port = 8081; //the port of the machine that runs bridge.js
 //--------simple UI--------------------
 let cnv;
@@ -46,7 +48,7 @@ const PLATEAUS = 1;
 let video;
 let msk;
 const MSK_MARGIN = 100;
-const SCL = 0.5;
+const SCL = 1;
 
 // let poseNet;
 let moveNet;
@@ -242,12 +244,12 @@ function draw() {
 
           // If there's a new stable class
           if (stableClassIsNew()) {
+            console.log(pStableClass, stableClass);
             pStableClass = stableClass;
-
             // Send it
             if (sending == CLASSES) {
               socket.emit("classNew", stableClass);
-              console.log("Sending new class: " + bestClass + " at " + frameCount);
+              console.log("Sending new class: " + stableClass + " at " + frameCount);
               select("#class").html(stableClass);
 
             // Process plateau
@@ -321,6 +323,8 @@ function resetClassification(buffer) {
 
   // Clear out poses data
   poses = [];
+  poseNorm = undefined;
+  console.log("reset")
 
   // Clear out classes
   stableClass = null;
@@ -444,8 +448,8 @@ async function loadKNN() {
 
 async function classify() {
   // Any poses to classify?
+  console.log(poseNorm)
   if (!poseNorm) return;
-
   // Get the total number of labels from knnClassifier
   const numLabels = classifier.getNumClasses();
   if (numLabels <= 0) {
@@ -551,6 +555,7 @@ function setClassifier(state) {
   if (isClassifying) classify();
 
 
+
   if (state == undefined) socket.emit("classifying", isClassifying); //tells the controller sketch if classifying analysis is ready
 }
 
@@ -599,7 +604,7 @@ function drawKeypoints() {
   for (let i = 0; i < poses.length; i++) {
     // For each pose detected, loop through all the keypoints
     pose = poses[i];
-    // console.log(pose.keypoints);
+    //console.log(pose.keypoints);
 
     noFill();
     stroke(255, 0, 0);
@@ -641,7 +646,6 @@ function drawKeypoints() {
       // }
     }
 
-    // console.log(poseNorm);
   }
 }
 
@@ -659,6 +663,7 @@ function setupSocket() {
   //-----------plateau classification-----------------
   // Toggle whether to classify
   socket.on("setclassifier", function(msg) {
+    console.log("got setclassifier message"); 
     setClassifier(msg);
   });
 
