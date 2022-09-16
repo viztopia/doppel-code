@@ -8,8 +8,10 @@
 
 //------------------socket--------------------
 let socket;
-//let ip = "10.23.11.152"; //the IP of the machine that runs bridge.js
-let ip = "127.0.0.1"; //or local host
+// let ip = "192.168.1.160"; //the IP of the machine that runs bridge.js
+
+let ip = "10.23.11.152"; //the IP of the machine that runs bridge.js
+// let ip = "127.0.0.1"; //or local host
 let port = 8081; //the port of the machine that runs bridge.js
 //--------simple UI--------------------
 let cnv;
@@ -247,8 +249,8 @@ function draw() {
 
           // If there's a new stable class
           if (stableClassIsNew()) {
+            console.log(pStableClass, stableClass);
             pStableClass = stableClass;
-
             // Send it
             if (sending == CLASSES) {
               socket.emit("classNew", stableClass);
@@ -334,6 +336,8 @@ function resetClassification(buffer) {
   // Empty out bodies
   poseNorm = undefined;
   poses = [];
+  poseNorm = undefined;
+  console.log("reset")
 
   // Clear out classes
   stableClass = null;
@@ -481,8 +485,8 @@ async function loadKNN() {
 async function classify() {
 
   // Any poses to classify?
+  console.log(poseNorm)
   if (!poseNorm) return;
-
   // Get the total number of labels from knnClassifier
   const numLabels = classifier.getNumClasses();
   if (numLabels <= 0) {
@@ -591,6 +595,7 @@ function setClassifier(state) {
   // First get pose and then classify
   estimatePose().then(classify);
 
+
   if (state == undefined) socket.emit("classifying", isClassifying); //tells the controller sketch if classifying analysis is ready
 }
 
@@ -645,7 +650,7 @@ function drawKeypoints() {
   for (let i = 0; i < poses.length; i++) {
     // For each pose detected, loop through all the keypoints
     pose = poses[i];
-    // console.log(pose.keypoints);
+    //console.log(pose.keypoints);
 
     noFill();
     stroke(255, 0, 0);
@@ -703,6 +708,7 @@ function setupSocket() {
   //-----------plateau classification-----------------
   // Toggle whether to classify
   socket.on("setclassifier", function(msg) {
+    console.log("got setclassifier message");
     setClassifier(msg);
   });
 
