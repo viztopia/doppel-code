@@ -22,8 +22,9 @@ let cacheLength = 20; //classification window size
 
 let stableClass
 let pStableClass;
-const CONFIDENCE_TH = 0.8;
-let bestCountTH = cacheLength * CONFIDENCE_TH; //calculate the baseline for deciding how much % within the window we count as a new class
+let confidenceTH = 90;
+let windowTH = 0.8;
+let bestCountTH; //calculate the baseline for deciding how much % within the window we count as a new class
 
 //--------Plateau Stuff--------------------
 let plateau = {
@@ -31,22 +32,22 @@ let plateau = {
   end: null,
   reset: function() {
     this.start = null;
-      this.end = null
+    this.end = null
   }
 };
 let plateaus = [];
 const PLATEAU_TH = 1000;
 
 //--------Sending Data--------------------
-let sending = -1;
 const CLASSES = 0;
 const PLATEAUS = 1;
+let sending = CLASSES;
 
 //------------------movenet & KNN----------------------
 let video;
 let msk;
 const MSK_MARGIN = 100;
-const SCL = 0.5;
+const SCL = 1; //0.5;
 
 // let poseNet;
 let moveNet;
@@ -83,7 +84,6 @@ stats.showPanel(3);
 document.body.appendChild(stats.dom);
 
 //-----------------for confidence thresholding----------------
-let th = 90; //this is percentage
 const TRASHCLASS = "trash";
 
 function preload() {
@@ -96,7 +96,7 @@ function preload() {
 function setup() {
   select("#window").input(function() {
     cacheLength = this.value();
-    bestCountTH = cacheLength * CONFIDENCE_TH; //recalculate the baseline for deciding how much we count as a new class
+    bestCountTH = cacheLength * windowTH; //recalculate the baseline for deciding how much we count as a new class
     select("#window-label").html(cacheLength);
   });
 
@@ -128,9 +128,9 @@ function setup() {
   });
 
   // Dynamic Confidence Threshold
-  select("#th").value(th);
+  select("#th").value(confidenceTH);
   select("#th").input(function() {
-    th = this.value();
+    confidenceTH = this.value();
   });
 
   //------------MoveNet & KNN----------------------
@@ -148,7 +148,7 @@ function setup() {
     // video.width *= SCL;
     // video.height *= SCL;
 
-    cnv = createCanvas(video.width*SCL, video.height*SCL);
+    cnv = createCanvas(video.width * SCL, video.height * SCL);
     // cnv = createCanvas(1440, 1080);
     // cnv = createCanvas(960, 540);
     cnv.parent("cnvDiv");
@@ -181,6 +181,11 @@ function setup() {
 
   // Set calibration
   loadCalibration();
+
+  // Set Status
+  setSender(sending);
+  setWindow(cacheLength);
+
 }
 
 //---------draw-----------------
@@ -225,15 +230,15 @@ function draw() {
       }
     }
 
+    let bestClass, bestCount;
     if (isClassifying) {
 
       //---------------for plateau-based delay, send over classification & plateau data----------------
-      let bestClass, bestCount;
       [bestClass, bestCount] = getBestClass(classCache);
 
       if (bestClass) {
-        select("#best-class").html(bestClass);
-        select("#best-count").html(bestCount + " / " + bestCountTH);
+        //select("#best-class").html(bestClass);
+        //select("#best-count").html(bestCount + " / " + bestCountTH);
 
         // Is current best class stable and new?
         if (bestClassIsStable(bestClass, bestCount)) {
@@ -247,10 +252,10 @@ function draw() {
             // Send it
             if (sending == CLASSES) {
               socket.emit("classNew", stableClass);
-              console.log("Sending new class: " + bestClass + " at " + frameCount);
+              console.log("Sending new class: " + stableClass + " at " + frameCount);
               select("#class").html(stableClass);
 
-            // Process plateau
+              // Process plateau
             } else if (sending == PLATEAUS) {
               console.log("STABLE PLATEAU");
               processPlateau();
@@ -269,9 +274,13 @@ function draw() {
 
     // Check for bodies
     if (itsBeenAwhile()) {
-      console.log("IT'S BEEN AWHILE!");
+      //console.log("IT'S BEEN AWHILE!");
       resetClassification(NOBODY_TH);
     }
+
+    // Update status
+    select("#best-class").html(bestClass ? bestClass : "None");
+    select("#best-count").html(bestClass ? bestCount + " / " + bestCountTH : "N/A");
 
     //--------graph current confidence---------
     let confidenceAvg =
@@ -319,7 +328,11 @@ function processPlateau(buffer) {
 
 function resetClassification(buffer) {
 
-  // Clear out poses data
+  // Empty out cache of classes
+  classCache = [];
+
+  // Empty out bodies
+  poseNorm = undefined;
   poses = [];
 
   // Clear out classes
@@ -328,6 +341,11 @@ function resetClassification(buffer) {
 
   // Clear out plateaus
   processPlateau(buffer);
+
+  if (isClassifying) {
+    estimatePose().then(classify);
+    //classify();
+  }
 }
 
 //---------calibration & normalization----------
@@ -428,10 +446,28 @@ async function loadMoveNet() {
 
 async function estimatePose() {
   const poseEstimation = await moveNet.estimatePoses(video.elt);
-  if (poseEstimation.length > 0) {
-    poses = poseEstimation;
-    joint = poses[0].keypoints[jointNumber];
-    timeOfLastPose = millis();
+  if (poseEstimation.length < 1) return;
+
+  poses = poseEstimation;
+  joint = poses[0].keypoints[jointNumber];
+  timeOfLastPose = millis();
+
+  //------------prepare for normalization based on Nose-------------------
+  poseNorm = {
+    keypoints: [],
+    score: pose.score
+  };
+
+  for (let j = 0; j < pose.keypoints.length; j++) {
+    // A keypoint is an object describing a body part (like rightArm or leftShoulder)
+    let keypoint = pose.keypoints[j];
+
+    let [xNorm, yNorm] = normalizePointByNose(keypoint.x, keypoint.y);
+    poseNorm.keypoints.push({
+      x: xNorm,
+      y: yNorm,
+      score: keypoint.score,
+    });
   }
 }
 
@@ -443,6 +479,7 @@ async function loadKNN() {
 }
 
 async function classify() {
+
   // Any poses to classify?
   if (!poseNorm) return;
 
@@ -458,6 +495,7 @@ async function classify() {
   const poseArray = poseNorm.keypoints.map((p) => [p.score, p.x, p.y]);
 
   const example = tf.tensor(poseArray);
+  console.log("POSES", poseArray.length);
   const result = await classifier.predictClass(example, kvalue);
   gotResults(undefined, result);
 }
@@ -475,7 +513,8 @@ function gotResults(err, result) {
     // result.label is the label that has the highest confidence
     const confidences = result.confidences;
     const label = result.label;
-    const confidence = round(confidences[label] * 100);
+    const confidence = round(confidences[label]*100);
+
     // Update the RAW result
     select("#raw-class-billboard").html(label);
     select("#raw-class").html(label);
@@ -498,8 +537,8 @@ function gotResults(err, result) {
     //-----this will make plateaus more "accurate" compared to traning data, but also make them shorter in length----
     //-----to use this method, comment method 1 above and uncomment codes below.
 
-    if (confidence > CONFIDENCE_TH) {
-      // console.log("adding a class with conf:" + confidence);
+
+    if (confidence > confidenceTH) {
       classCache.push(label);
     } else {
       classCache.push(TRASHCLASS);
@@ -548,8 +587,9 @@ function setClassifier(state) {
   isClassifying = state == undefined ? !isClassifying : state;
   console.log("isClassifying", isClassifying);
   select("#predict").html(isClassifying ? "Stop" : "Predict");
-  if (isClassifying) classify();
 
+  // First get pose and then classify
+  estimatePose().then(classify);
 
   if (state == undefined) socket.emit("classifying", isClassifying); //tells the controller sketch if classifying analysis is ready
 }
@@ -567,6 +607,12 @@ function setSender(state) {
   // Update Status
   select("#sending").html(sending == CLASSES ? "Classes" : "Plateaus");
   console.log("Sending: ", sending == CLASSES ? "Classes" : "Plateaus");
+}
+
+function setWindow(window) {
+  bestCountTH = cacheLength * windowTH; //recalculate the baseline for deciding how much we count as a new class
+  select("#window").value(cacheLength);
+  select("#window-label").html(cacheLength);
 }
 
 //------------load KNN classes---------------
@@ -640,8 +686,6 @@ function drawKeypoints() {
       );
       // }
     }
-
-    // console.log(poseNorm);
   }
 }
 
@@ -670,15 +714,13 @@ function setupSocket() {
   socket.on("updateWindow", function(msg) {
     console.log("updating window to: " + msg);
     cacheLength = msg;
-    bestCountTH = cacheLength * CONFIDENCE_TH; //recalculate the baseline for deciding how much we count as a new class
-    select("#window").value(int(msg));
-    select("#window-label").html(msg);
+    setWindow(cacheLength);
   });
 
   socket.on("updateConfidence", function(msg) {
     console.log("updating confidence to: " + msg);
-    th = msg;
-    select("#th").value(th);
+    confidenceTH = msg;
+    select("#th").value(msg);
   });
 
   //-------------In Progress: used for video mode-------------
