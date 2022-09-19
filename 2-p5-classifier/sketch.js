@@ -43,7 +43,7 @@ const PLATEAU_TH = 1000;
 //--------Sending Data--------------------
 const CLASSES = 0;
 const PLATEAUS = 1;
-let sending = CLASSES;
+let sending = PLATEAUS;
 
 //------------------movenet & KNN----------------------
 let video;
@@ -53,7 +53,6 @@ const SCL = 1; //0.5;
 
 // let poseNet;
 let moveNet;
-let netReady = false;
 let poses = [];
 let classifier;
 let kvalue = 20;
@@ -63,9 +62,9 @@ let timeOfLastPose = 0;
 const NOBODY_TH = 500;
 
 //-----------------speed-based delay----------------------
-let joint, jointPrev;
-let jointNumber = 0;
-let jointThreshold = 0.6;
+let jointPrev;
+const NOSE = 0;
+const NOSE_TH = 0.6;
 
 //------------------normalization & calibration-------------------
 // bounding box
@@ -97,9 +96,7 @@ function preload() {
 
 function setup() {
   select("#window").input(function() {
-    cacheLength = this.value();
-    bestCountTH = cacheLength * windowTH; //recalculate the baseline for deciding how much we count as a new class
-    select("#window-label").html(cacheLength);
+    setWindow(this.value());
   });
 
   select("#clear").mousePressed(() => {
@@ -130,9 +127,9 @@ function setup() {
   });
 
   // Dynamic Confidence Threshold
-  select("#th").value(confidenceTH);
+  setConfidence(confidenceTH);
   select("#th").input(function() {
-    confidenceTH = this.value();
+    setConfidence(this.value());
   });
 
   //------------MoveNet & KNN----------------------
@@ -170,7 +167,7 @@ function setup() {
     loadJSON("classes.json", loadClassesJSON);
   });
 
-  select("#predict").mousePressed(setClassifier);
+  select("#classify").mousePressed(setClassifier);
 
   //----------speed-based delay setup----------------
   jointPrev = {
@@ -195,11 +192,13 @@ function draw() {
   // background(200);
   scale(SCL, SCL);
 
-  if (netReady) estimatePose();
 
   // If the mask is loaded, mask out the camera image
   if (msk) video.copy(msk, 0, 0, 100, height, video.width - MSK_MARGIN, 0, 100, video.height);
   image(video, 0, 0, video.width, video.height);
+
+
+  // Draw skeleton
   if (poses.length > 0) {
     drawKeypoints();
     // Find the bounding box anchored on the nose
@@ -221,67 +220,6 @@ function draw() {
       height / 2
     );
   } else {
-    //---------------for speed-based delay, send over joint dist----------------
-    if (joint && joint.score > jointThreshold) {
-      let jointDist = dist(joint.x, joint.y, jointPrev.x, jointPrev.y);
-      jointPrev = joint;
-
-      if (jointDist > 0) {
-        // select('#jointDist').elt.innerText = jointDist;
-        socket.emit("jointDist", jointDist / bboxW);
-      }
-    }
-
-    let bestClass, bestCount;
-    if (isClassifying) {
-
-      //---------------for plateau-based delay, send over classification & plateau data----------------
-      [bestClass, bestCount] = getBestClass(classCache);
-
-      if (bestClass) {
-        //select("#best-class").html(bestClass);
-        //select("#best-count").html(bestCount + " / " + bestCountTH);
-
-        // Is current best class stable and new?
-        if (bestClassIsStable(bestClass, bestCount)) {
-          stableClass = bestClass;
-          select("#best-class").addClass("stable");
-
-          // If there's a new stable class
-          if (stableClassIsNew()) {
-            pStableClass = stableClass;
-            // Send it
-            if (sending == CLASSES) {
-              socket.emit("classNew", stableClass);
-              console.log("Sending new class: " + stableClass + " at " + frameCount);
-              select("#class").html(stableClass);
-
-              // Process plateau
-            } else if (sending == PLATEAUS) {
-              console.log("STABLE PLATEAU");
-              processPlateau();
-              plateau.start = Date.now();
-              console.log(stableClass + " started at frame " + frameCount);
-            }
-          }
-        }
-        // If data is too noisy, end plateau
-        else {
-          processPlateau();
-          select("#best-class").removeClass("stable");
-        }
-      }
-    }
-
-    // Check for bodies
-    if (itsBeenAwhile()) {
-      //console.log("IT'S BEEN AWHILE!");
-      resetClassification(NOBODY_TH);
-    }
-
-    // Update status
-    select("#best-class").html(bestClass ? bestClass : "None");
-    select("#best-count").html(bestClass ? bestCount + " / " + bestCountTH : "N/A");
 
     //--------graph current confidence---------
     let confidenceAvg =
@@ -332,11 +270,11 @@ function resetClassification(buffer) {
   // Empty out cache of classes
   classCache = [];
 
-  // Empty out bodies
-  poseNorm = undefined;
+  // Empty out poses
+  nobody = true;
   poses = [];
-  poseNorm = undefined;
-  // console.log("reset")
+  pose = undefined;
+  poseNorm = {};
 
   // Clear out classes
   stableClass = null;
@@ -345,10 +283,7 @@ function resetClassification(buffer) {
   // Clear out plateaus
   processPlateau(buffer);
 
-  if (isClassifying) {
-    estimatePose().then(classify);
-    //classify();
-  }
+  console.log("RESET CLASSIFICATION")
 }
 
 //---------calibration & normalization----------
@@ -382,11 +317,11 @@ function normalizePoints(x, y) {
   ny = nf((y - minY) / bboxH, 1, 2);
 }
 
-function normalizePointByNose(x, y) {
-  minX = pose.keypoints[0].x - 0.5 * bboxW;
-  minY = pose.keypoints[0].y;
-  let xNorm = nf((x - minX) / bboxW, 1, 2);
-  let yNorm = nf((y - minY) / bboxH, 1, 2);
+function normalizeJointToAnchor(joint) {
+  minX = pose.keypoints[NOSE].x - 0.5 * bboxW;
+  minY = pose.keypoints[NOSE].y;
+  let xNorm = nf((joint.x - minX) / bboxW, 1, 2);
+  let yNorm = nf((joint.y - minY) / bboxH, 1, 2);
   return [xNorm, yNorm];
 }
 
@@ -443,17 +378,33 @@ async function loadMoveNet() {
     detectorConfig
   );
 
-  netReady = true;
+  // Kick off fetching poses
+  setInterval(estimatePose, 30);
+
   select("#status").html("MoveNet Loaded. ", true);
 }
 
 async function estimatePose() {
+
   const poseEstimation = await moveNet.estimatePoses(video.elt);
-  if (poseEstimation.length < 1) return;
+
+  // Nobody there...
+  if (poseEstimation.length < 1) {
+    if (itsBeenAwhile()) {
+      //console.log("IT'S BEEN AWHILE!");
+      resetClassification(NOBODY_TH);
+    }
+    return;
+  }
+
+  // There are bodies!
+  nobody = false;
 
   poses = poseEstimation;
-  joint = poses[0].keypoints[jointNumber];
   timeOfLastPose = millis();
+
+  // Grab 1st body
+  pose = poses[0];
 
   //------------prepare for normalization based on Nose-------------------
   poseNorm = {
@@ -463,29 +414,49 @@ async function estimatePose() {
 
   for (let j = 0; j < pose.keypoints.length; j++) {
     // A keypoint is an object describing a body part (like rightArm or leftShoulder)
-    let keypoint = pose.keypoints[j];
+    let joint = pose.keypoints[j];
 
-    let [xNorm, yNorm] = normalizePointByNose(keypoint.x, keypoint.y);
+    let [xNorm, yNorm] = normalizeJointToAnchor(joint);
     poseNorm.keypoints.push({
       x: xNorm,
       y: yNorm,
-      score: keypoint.score,
+      score: joint.score,
     });
   }
+
+  // Calculate and send speed data
+  let anchor = pose.keypoints[NOSE];
+  sendSpeed(anchor, NOSE_TH);
+
 }
 
+//---------Speed stuff------------
+function sendSpeed(joint, jointTH) {
+  //---------------for speed-based delay, send over joint dist----------------
+  if (joint && joint.score > jointTH) {
+    let jointDist = dist(joint.x, joint.y, jointPrev.x, jointPrev.y);
+    jointPrev = joint;
+
+    if (jointDist > 0) {
+      // select('#jointDist').elt.innerText = jointDist;
+      socket.emit("jointDist", jointDist / bboxW);
+    }
+  }
+}
 //---------KNN stuff------------
 async function loadKNN() {
   classifier = knnClassifier.create();
-
   select("#status").html("KNN Loaded. ", true);
 }
 
 async function classify() {
 
   // Any poses to classify?
-  // console.log(poseNorm)
-  if (!poseNorm) return;
+  if (nobody) {
+    // Try again in a little bit
+    setTimeout(classify, 100);
+    return;
+  }
   // Get the total number of labels from knnClassifier
   const numLabels = classifier.getNumClasses();
   if (numLabels <= 0) {
@@ -498,7 +469,6 @@ async function classify() {
   const poseArray = poseNorm.keypoints.map((p) => [p.score, p.x, p.y]);
 
   const example = tf.tensor(poseArray);
-  // console.log("POSES", poseArray.length);
   const result = await classifier.predictClass(example, kvalue);
   gotResults(undefined, result);
 }
@@ -516,7 +486,7 @@ function gotResults(err, result) {
     // result.label is the label that has the highest confidence
     const confidences = result.confidences;
     const label = result.label;
-    const confidence = round(confidences[label]*100);
+    const confidence = round(confidences[label] * 100);
 
     // Update the RAW result
     select("#raw-class-billboard").html(label);
@@ -559,9 +529,65 @@ function gotResults(err, result) {
     }
   }
 
+  // Still classifying?
   if (isClassifying) {
+    // Process classification
+    processClasses();
     classify();
   }
+}
+
+//------------Process Classification--------------
+function processClasses() {
+  let bestClass, bestCount;
+
+  //---------------for plateau-based delay, send over classification & plateau data----------------
+  [bestClass, bestCount] = getBestClass(classCache);
+
+  if (bestClass) {
+    //select("#best-class").html(bestClass);
+    //select("#best-count").html(bestCount + " / " + bestCountTH);
+
+    // Is current best class stable and new?
+    if (bestClassIsStable(bestClass, bestCount)) {
+      stableClass = bestClass;
+
+      // If there's a new stable class
+      if (stableClassIsNew()) {
+        pStableClass = stableClass;
+        // Send it
+        if (sending == CLASSES) {
+          socket.emit("classNew", stableClass);
+          console.log("Sending new class: " + stableClass + " at " + frameCount);
+
+          // Process plateau
+        } else if (sending == PLATEAUS) {
+          console.log("STABLE PLATEAU");
+          processPlateau();
+          plateau.start = Date.now();
+          console.log(stableClass + " started at frame " + frameCount);
+        }
+      }
+    }
+    // If data is too noisy, end plateau
+    else {
+      processPlateau();
+    }
+  }
+
+  // Update status
+  updateClassStatus(bestClass, bestCount);
+}
+
+let bestClassEl = document.getElementById("best-class");
+let bestCountEl = document.getElementById("best-count");
+let classEl = document.getElementById("class");
+
+function updateClassStatus(bestClass, bestCount) {
+  bestClassEl.className = bestClass == stableClass ? "stable" : "";
+  bestClassEl.innerText = bestClass ? bestClass : "None";
+  bestCountEl.innerText = bestClass ? bestCount + " / " + bestCountTH : "N/A";
+  classEl.innerText = stableClass;
 }
 
 function getBestClass(array) {
@@ -589,13 +615,13 @@ function setClassifier(state) {
 
   isClassifying = state == undefined ? !isClassifying : state;
   console.log("isClassifying", isClassifying);
-  select("#predict").html(isClassifying ? "Stop" : "Predict");
+  select("#classify").html(isClassifying ? "Stop" : "Classify");
 
-  // First get pose and then classify
-  estimatePose().then(classify);
+  //Kick off classification
+  classify();
 
-
-  if (state == undefined) socket.emit("classifying", isClassifying); //tells the controller sketch if classifying analysis is ready
+  //tells the controller sketch if classifying analysis is ready
+  if (state == undefined) socket.emit("classifying", isClassifying);
 }
 
 function setSender(state) {
@@ -605,18 +631,24 @@ function setSender(state) {
     sending == CLASSES ? PLATEAUS : CLASSES;
   } else sending = state;
 
-  // End active plateau
-  if (sending == CLASSES) resetClassification();
+  // End active plateau if any...
+  processPlateau();
 
   // Update Status
   select("#sending").html(sending == CLASSES ? "Classes" : "Plateaus");
   console.log("Sending: ", sending == CLASSES ? "Classes" : "Plateaus");
 }
 
-function setWindow(window) {
+function setWindow(_cacheLength) {
+  cacheLength = _cacheLength;
   bestCountTH = cacheLength * windowTH; //recalculate the baseline for deciding how much we count as a new class
   select("#window").value(cacheLength);
   select("#window-label").html(cacheLength);
+}
+
+function setConfidence(_confidenceTH) {
+  confidenceTH = _confidenceTH;
+  select("#th").value(confidenceTH);
 }
 
 //------------load KNN classes---------------
@@ -658,12 +690,6 @@ function drawKeypoints() {
     rect(pose.keypoints[0].x - 0.5 * bboxW, pose.keypoints[0].y, bboxW, bboxH);
     stroke(255, 0, 0);
 
-    //------------prepare for normalization based on Nose-------------------
-    poseNorm = {
-      keypoints: [],
-      score: pose.score
-    };
-
     for (let j = 0; j < pose.keypoints.length; j++) {
       // A keypoint is an object describing a body part (like rightArm or leftShoulder)
       let keypoint = pose.keypoints[j];
@@ -672,23 +698,8 @@ function drawKeypoints() {
       // if (keypoint.score > 0.2) {
       fill(255, 0, 0);
       noStroke();
-      // normalizePoints(keypoint.x, keypoint.y);
-
-      let [xNorm, yNorm] = normalizePointByNose(keypoint.x, keypoint.y);
-      poseNorm.keypoints.push({
-        x: xNorm,
-        y: yNorm,
-        score: keypoint.score,
-      });
 
       ellipse(keypoint.x, keypoint.y, 10, 10);
-      // text(" x: " + nx + " y:" + ny, keypoint.x, keypoint.y);
-      text(
-        " x: " + poseNorm.keypoints[j].x + " y:" + poseNorm.keypoints[j].y,
-        keypoint.x,
-        keypoint.y
-      );
-      // }
     }
   }
 }
@@ -718,14 +729,12 @@ function setupSocket() {
 
   socket.on("updateWindow", function(msg) {
     console.log("updating window to: " + msg);
-    cacheLength = msg;
-    setWindow(cacheLength);
+    setWindow(msg);
   });
 
   socket.on("updateConfidence", function(msg) {
     console.log("updating confidence to: " + msg);
-    confidenceTH = msg;
-    select("#th").value(msg);
+    setConfidence(msg);
   });
 
   //-------------In Progress: used for video mode-------------
