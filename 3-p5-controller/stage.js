@@ -49,11 +49,11 @@ let stage = {
   },
   playSound: function(play, secs = 0) {
     if (!play) {
-      emit("playsound", 0); 
+      emit("playsound", {isPlay: false, secs:0}); 
       return
     } else {
-      emit("cuesound", secs);
-      emit("playsound", 1);
+      // emit("cuesound", secs);
+      emit("playsound", {isPlay: true, secs:secs});
     }
   },
   playVideo: function () {

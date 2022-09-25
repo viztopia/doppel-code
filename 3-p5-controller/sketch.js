@@ -48,7 +48,7 @@ function setup() {
   });
 
   select('#jump').mouseClicked(() => {
-    startPerformance();
+    startPerformance(true);
     let secs = (int(select('#minute').value()) * 60) + int(select('#second').value());
     jumpToThisAction(secs);
   });
@@ -101,7 +101,7 @@ function setTopOfShow() {
   stage.reset();
 }
 
-function startPerformance() {
+function startPerformance(fromJump = false) {
   // Set top of show
   setTopOfShow();
 
@@ -112,7 +112,7 @@ function startPerformance() {
   socket.emit("record", 1);
 
   //play sound
-  if (select('#playSound').elt.checked) stage.playSound(true);
+  if ((select('#playSound').elt.checked)&&!fromJump) stage.playSound(true);
 
   //start show
   started = true;

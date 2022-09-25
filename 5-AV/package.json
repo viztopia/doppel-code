@@ -1,0 +1,15 @@
+{
+  "name": "5-av",
+  "version": "1.0.0",
+  "description": "",
+  "main": "sound.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "node-cmd": "^5.0.0",
+    "socket.io-client": "^2.5.0"
+  }
+}
