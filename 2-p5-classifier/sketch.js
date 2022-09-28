@@ -10,7 +10,7 @@
 let socket;
 // let ip = "192.168.1.160"; //the IP of the machine that runs bridge.js
 
-let ip = "10.23.11.152"; //the IP of the machine that runs bridge.js
+let ip = "192.168.1.2"; //the IP of the machine that runs bridge.js
 // let ip = "127.0.0.1"; //or local host
 let port = 8081; //the port of the machine that runs bridge.js
 //--------simple UI--------------------

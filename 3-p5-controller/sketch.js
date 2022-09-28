@@ -6,9 +6,12 @@ let socket;
 let socketPaused = false;
 
 //-------------show settings--------------
-let btnStart, btnStop, btnSaveShow, btnRecoverShow, btnRecoverOhCrap, btnRecoverJSON, btnClearLocalStorage;
 let started = false;
 let startTime = 0;
+
+//-------------cueing sound--------------
+const SOUNDCUEDELAY = 500;
+let isCueSound;
 
 // Recorder
 let recordedSeconds;
@@ -26,17 +29,11 @@ function setup() {
   createCanvas(W, H);
   connect(); //ports for OBS In / Out, TD In / Out
 
-  btnStart = createButton("START"); //master control: start performance
-  btnStart.position(0, 0);
-  btnStart.mousePressed(startPerformance);
-  btnStop = createButton("STOP"); //master control: stop performance
-  btnStop.position(80, 0);
-  btnStop.mousePressed(stopPerformance);
-  btnStop = createButton("CLEAR LOCAL"); //master control: stop performance
-  btnStop.position(160, 0);
-  btnStop.mousePressed(() => {
-    localStorage.clear()
-  });
+  select("#set").mousePressed(setTopOfShow); //set the stage
+  select("#start").mousePressed(startPerformance); //master control: start performance
+  select("#stop").mousePressed(stopPerformance); //master control: stop performance
+  select("#clear").mousePressed(localStorage.clear); //master control: stop performance
+
 
   textAlign(LEFT, CENTER);
 
@@ -46,11 +43,20 @@ function setup() {
   loadJSON("autopilot.json", (data) => {
     autopilotData = data;
   });
+  
+  isCueSound = select('#cueSound').checked();
+  select('#cueSound').input(function() {
+    isCueSound = this.checked();
+  });
 
   select('#jump').mouseClicked(() => {
-    startPerformance(true);
+    // Pause gated socket emissions
+    socketPaused = true;
+    setTopOfShow();
     let secs = (int(select('#minute').value()) * 60) + int(select('#second').value());
     jumpToThisAction(secs);
+    // Start the sound
+    startPerformance(null, secs);
   });
 }
 
@@ -99,23 +105,18 @@ function setTopOfShow() {
   cue.reset();
   for (let mode of modes) mode.reset();
   stage.reset();
+
+  console.log("Stage is set!");
 }
 
-function startPerformance(fromJump = false) {
-  // Set top of show
-  setTopOfShow();
-
-  //---record start time---
-  startTime = Date.now();
-
+function startClock(offset) {
+  // Update startTime
+  startTime = Date.now() - offset * 1000;
   //start recording
   socket.emit("record", 1);
-
-  //play sound
-  if ((select('#playSound').elt.checked)&&!fromJump) stage.playSound(true);
-
   //start show
   started = true;
+
   console.log("Show and recording started at: " + startTime);
 
   //start auto save plateaus
@@ -125,6 +126,21 @@ function startPerformance(fromJump = false) {
     }, 500);
   }
 }
+
+function startPerformance(evt, cuepoint) {
+
+  // Is there a cuepoint?
+  cuepoint = cuepoint ? cuepoint : 0;
+
+  // play sound
+  if(isCueSound) stage.playSound(true, cuepoint);
+
+  // Wait for sound to start
+  setTimeout(()=>{
+    startClock(cuepoint);
+  }, isCueSound ? SOUNDCUEDELAY : 0);
+}
+
 
 function stopPerformance() {
   //stop show
@@ -191,14 +207,8 @@ function findNextActionIdx(currentShowTime) {
 // FF/REW to new show time
 function jumpToThisAction(newShowTimeInSeconds) {
 
-  // Reset everything
-  setTopOfShow();
-
   // Recover plateaus
   recoverPlateaus();
-
-  // Pause gated socket emissions
-  socketPaused = true;
 
   // FF through all the cues up to new start time
   for (let a in autopilotData.actions) {
@@ -207,9 +217,8 @@ function jumpToThisAction(newShowTimeInSeconds) {
     if (action.time <= newShowTimeInSeconds) executeNextAction(idx, true);
   }
 
-  // Update startTime
+  // Set the start time
   startTime = Date.now() - (newShowTimeInSeconds * 1000);
-
 
   // Resume gated socket emissions
   socketPaused = false;
@@ -221,12 +230,11 @@ function jumpToThisAction(newShowTimeInSeconds) {
   } catch (e) {
     console.log("Nothing to emit in mode.");
   }
+
   setTimeout(() => {
-    stage.emit()
+    stage.emit();
   }, 20);
 
-  console.log(select('#playSound').elt.checked);
-  if (select('#playSound').elt.checked) stage.playSound(true, newShowTimeInSeconds);
 }
 
 function executeNextAction(idx, jumping) {
