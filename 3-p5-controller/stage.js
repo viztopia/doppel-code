@@ -48,7 +48,7 @@ let stage = {
     }
   },
   playSound: function(play, secs = 0) {
-    emit("playsound", { play: play, secs: secs }
+    emit("playsound", { play: play, secs: secs });
   },
   playVideo: function () {
     emit("source", VIDEO);
