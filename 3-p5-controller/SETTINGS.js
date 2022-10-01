@@ -73,3 +73,7 @@ const DMXPRESETS = {
     "solo": { a: { channel: 4, level: 0, duration: 0.1 }, b: { channel: 10, level: 96, duration: 10 }, c: { channel: 16, level: 96, duration: 10 } },
 
 }
+
+
+//-------------cueing sound--------------
+const SOUNDCUEDELAY = 2500;

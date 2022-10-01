@@ -10,7 +10,6 @@ let started = false;
 let startTime = 0;
 
 //-------------cueing sound--------------
-const SOUNDCUEDELAY = 500;
 let isCueSound;
 
 // Recorder
@@ -117,7 +116,7 @@ function startClock(offset) {
   //start show
   started = true;
 
-  console.log("Show and recording started at: " + startTime);
+  console.log("Show and recording started at: " + offset + " seconds, timestampe is:" + startTime);
 
   //start auto save plateaus
   if (isAutoSave) {
@@ -214,11 +213,15 @@ function jumpToThisAction(newShowTimeInSeconds) {
   for (let a in autopilotData.actions) {
     let idx = int(a);
     let action = autopilotData.actions[idx];
-    if (action.time <= newShowTimeInSeconds) executeNextAction(idx, true);
+    if (action.time <= newShowTimeInSeconds) {
+      //executeNextAction(idx, true);
+      //both executeNextAction and update nextActionIdx! YG 10/01/22
+      nextActionIdx = executeNextAction(idx, true);
+    }
   }
 
   // Set the start time
-  startTime = Date.now() - (newShowTimeInSeconds * 1000);
+  //startTime = Date.now() - (newShowTimeInSeconds * 1000); //dont' set start time here. set it inside setClock instead. YG:10/01/22
 
   // Resume gated socket emissions
   socketPaused = false;
