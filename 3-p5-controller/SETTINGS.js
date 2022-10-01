@@ -49,28 +49,30 @@ const CACHEFRAMES = CAMFPS * CACHELENGTH; //this should match the size of the Ca
 const FFREW_INTERVAL = 50;
 
 // DMX
+const DMX = { 1: 4, 2: 10, 3: 16 };
 const DMXSendInterval = 50; // how fast to send DMX commands, in milli secs (to prevent flooding)
+const DMX_X = 0.5;
 const DMXPRESETS = {
     //using a, b, c as light IDs to not confused with their actual channel number
 
-    "setup": { a: { channel: 4, level: 255, duration: 0.1 }, b: { channel: 10, level: 255, duration: 0.1 }, c: { channel: 16, level: 255, duration: 0.1 } },
+    "setup": { a: { channel: DMX.1, level: DMX_X*255, duration: 0.1 }, b: { channel: DMX.2, level: DMX_X*255, duration: 0.1 }, c: { channel: DMX.3, level: DMX_X*255, duration: 0.1 } },
 
     //joke should turn off back stage light. TBD
-    "jokecut": { a: { channel: 4, level: 255, duration: 0.1 }, b: { channel: 10, level: 255, duration: 0.1 }, c: { channel: 16, level: 255, duration: 0.1 } },
+    "jokecut": { a: { channel: DMX.1, level: DMX_X*255, duration: 0.1 }, b: { channel: DMX.2, level: DMX_X*255, duration: 0.1 }, c: { channel: DMX.3, level: DMX_X*255, duration: 0.1 } },
 
-    "normalcut": { a: { channel: 4, level: 128, duration: 0.1 }, b: { channel: 10, level: 128, duration: 0.1 }, c: { channel: 16, level: 128, duration: 0.1 } },
+    "normalcut": { a: { channel: DMX.1, level: DMX_X*128, duration: 0.1 }, b: { channel: DMX.2, level: DMX_X*128, duration: 0.1 }, c: { channel: DMX.3, level: DMX_X*128, duration: 0.1 } },
 
-    "normalfade": { a: { channel: 4, level: 128, duration: 5 }, b: { channel: 10, level: 128, duration: 5 }, c: { channel: 16, level: 128, duration: 5 } },
+    "normalfade": { a: { channel: DMX.1, level: DMX_X*128, duration: 5 }, b: { channel: DMX.2, level: DMX_X*128, duration: 5 }, c: { channel: DMX.3, level: DMX_X*128, duration: 5 } },
 
-    "stripe" : { a: { channel: 4, level: 0, duration: 0.1 }, b: { channel: 10, level: 0, duration: 0.1 }, c: { channel: 16, level: 64, duration: 0.1 } },
+    "stripe" : { a: { channel: DMX.1, level: DMX_X*0, duration: 0.1 }, b: { channel: DMX.2, level: DMX_X*0, duration: 0.1 }, c: { channel: DMX.3, level: DMX_X*64, duration: 0.1 } },
 
-    "cut" : { a: { channel: 4, level: 0, duration: 0.1 }, b: { channel: 10, level: 0, duration: 0.1 }, c: { channel: 16, level: 0, duration: 0.1 } },
+    "cut" : { a: { channel: DMX.1, level: DMX_X*0, duration: 0.1 }, b: { channel: DMX.2, level: DMX_X*0, duration: 0.1 }, c: { channel: DMX.3, level: DMX_X*0, duration: 0.1 } },
 
-    "fadeout" : { a: { channel: 4, level: 0, duration: 5 }, b: { channel: 10, level: 0, duration: 5 }, c: { channel: 16, level: 0, duration: 5 } },
+    "fadeout" : { a: { channel: DMX.1, level: DMX_X*0, duration: 5 }, b: { channel: DMX.2, level: DMX_X*0, duration: 5 }, c: { channel: DMX.3, level: DMX_X*0, duration: 5 } },
 
-    "jokefade": { a: { channel: 4, level: 255, duration: 5 }, b: { channel: 10, level: 255, duration: 5 }, c: { channel: 16, level: 255, duration: 5 } },
+    "jokefade": { a: { channel: DMX.1, level: DMX_X*255, duration: 5 }, b: { channel: DMX.2, level: DMX_X*255, duration: 5 }, c: { channel: DMX.3, level: DMX_X*255, duration: 5 } },
 
-    "solo": { a: { channel: 4, level: 0, duration: 0.1 }, b: { channel: 10, level: 96, duration: 10 }, c: { channel: 16, level: 96, duration: 10 } },
+    "solo": { a: { channel: DMX.1, level: DMX_X*0, duration: 0.1 }, b: { channel: DMX.2, level: DMX_X*96, duration: 10 }, c: { channel: DMX.3, level: DMX_X*96, duration: 10 } },
 
 }
 

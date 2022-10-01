@@ -7,8 +7,9 @@ const nrc = require('node-run-cmd');
 
 //------------------socket--------------------
 let socket;
+let ip = "10.18.244.193"
 //let ip = "192.168.1.2"; //the IP of the machine that runs server.js
-let ip = "127.0.0.1"; //or local host
+//let ip = "127.0.0.1"; //or local host
 let port = 8081; //the port of the machine that runs server.js
 
 
@@ -44,7 +45,7 @@ function setupSocket() {
     let command1 = "killall -9 VLC";
     nrc.run(command1).then(function(exitCodes) {
       if(!PLAY) return;
-      let command2 = "/Applications/VLC.app/Contents/MacOS/VLC /Users/mimi/Desktop/boston_9_15.wav --start-time " + SECS;
+      let command2 = "/Applications/VLC.app/Contents/MacOS/VLC /Users/mimi/Desktop/boston_9_25.wav --start-time " + SECS;
       nrc.run(command2);
     }, function(err) {
       console.log('Command failed to run with error: ', err);
