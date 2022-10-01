@@ -4,7 +4,7 @@ let stage = {
     this.blackoutLeft = true;
     this.blackoutRight = true;
     this.fadeints = undefined;
-    this.dmx = {};
+    this.dmx = DMXPRESETS["setup"];
     this.emit();
   },
   emit: function () {
