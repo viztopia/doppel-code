@@ -78,4 +78,4 @@ const DMXPRESETS = {
 
 
 //-------------cueing sound--------------
-const SOUNDCUEDELAY = 2500;
+const SOUNDCUEDELAY = 500;
