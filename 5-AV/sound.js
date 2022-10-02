@@ -45,7 +45,7 @@ function setupSocket() {
     let command1 = "killall -9 VLC";
     nrc.run(command1).then(function(exitCodes) {
       if(!PLAY) return;
-      let command2 = "/Applications/VLC.app/Contents/MacOS/VLC /Users/mimi/Desktop/boston_9_25.wav --start-time " + SECS;
+      let command2 = "/Applications/VLC.app/Contents/MacOS/VLC boston_9_25.wav --start-time " + SECS;
       nrc.run(command2);
     }, function(err) {
       console.log('Command failed to run with error: ', err);
