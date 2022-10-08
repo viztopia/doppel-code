@@ -180,6 +180,7 @@ let plateau = { //-------------plateau-based----------------
   },
 
   setWindow: function(window) {
+    if (!window) window = 60;
     this.window = window;
     emit("updateWindow", this.window);
   },

@@ -1,6 +1,6 @@
 {
     "version": 1,
-    "actions": [
+    "actions":[
         {
             "time": 0,
             "key": "1",
@@ -23,7 +23,7 @@
             "note": "[PLATEAU RECORDING: true] waiting room 1: Front, BodyLeft"
         },
         {
-            "time": 45,
+            "time": 46,
             "key": "E",
             "note": "bookmark doppel looking at nini"
         },
@@ -149,7 +149,7 @@
             "note": "switch to preset 4 sec (voice: when ppl leave)"
         },
         {
-            "time": 724,
+            "time": 726,
             "key": "0",
             "setting": 3,
             "note": "switch to preset 6 sec"
@@ -225,12 +225,12 @@
             "note": "go to preset 4 sec"
         },
         {
-            "time": 822,
+            "time": 823,
             "key": "Q",
             "note": "mark real nini about to stands up"
         },
         {
-            "time": 822,
+            "time": 823,
             "key": "0",
             "setting": 0,
             "note": "go to preset 0 sec"
@@ -334,19 +334,19 @@
             "note": "unblackout right"
         },
         {
-            "time": 1480,
+            "time": 1470,
             "key": "0",
             "setting": 0,
             "note": "switch to preset 0"
         },
         {
-            "time": 1503,
+            "time": 1493,
             "key": "0",
             "setting": 5,
             "note": "switch to preset 20"
         },
         {
-            "time": 1533,
+            "time": 1535,
             "key": "0",
             "setting": 4,
             "note": "switch to preset 10 (humming)"
@@ -409,7 +409,13 @@
             "note": "switch to speed"
         },
         {
-            "time": 1697,
+            "time": 1693,
+            "key": "0",
+            "setting": 0,
+            "note": "switch to preset 0"
+        },
+        {
+            "time": 1704,
             "key": "0",
             "setting": 1,
             "note": "switch to preset 4"
