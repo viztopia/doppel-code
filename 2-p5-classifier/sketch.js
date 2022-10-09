@@ -8,8 +8,8 @@
 
 //------------------socket--------------------
 let socket;
-let ip = "10.18.244.193"; //the IP of the machine that runs bridge.js
-//let ip = "192.168.1.2"; //the IP of the machine that runs bridge.js
+//let ip = "10.18.244.193"; //the IP of the machine that runs bridge.js
+let ip = "192.168.1.2"; //the IP of the machine that runs bridge.js
 // let ip = "127.0.0.1"; //or local host
 let port = 8081; //the port of the machine that runs bridge.js
 //--------simple UI--------------------
@@ -48,7 +48,7 @@ let sending = PLATEAUS;
 let video;
 let msk;
 const MSK_MARGIN = 100;
-const SCL = 1; //0.5;
+const SCL = 0.5;
 
 // let poseNet;
 let moveNet;
@@ -144,7 +144,7 @@ function setup() {
 
     // Scale the video down
     // video.width *= SCL;
-    // video.height *= SCL;
+    //video.height *= 2;
 
     cnv = createCanvas(video.width * SCL, video.height * SCL);
     // cnv = createCanvas(1440, 1080);
