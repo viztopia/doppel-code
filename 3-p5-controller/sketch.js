@@ -310,10 +310,10 @@ function keyPressed(e) {
       if (mode == MANUAL || mode == SPEED) modes[mode].adjust(-1);
       break;
     case LEFT_ARROW: //arrow left
-      if (mode == PRESET || mode == SPEED) modes[mode].update(-1);
+      if (mode == PRESET) modes[mode].update(-1);
       break;
     case RIGHT_ARROW: //arrow right
-      if (mode == PRESET || mode == SPEED) modes[mode].update(1);
+      if (mode == PRESET) modes[mode].update(1);
       break;
     case 81: //-----------Q: save bookmark 1
       modes[BOOKMARK].save(0, Date.now() - startTime);

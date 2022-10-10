@@ -45,6 +45,10 @@ let stage = {
     for (const lightID in this.dmx) {
       let target = this.dmx[lightID];
       emit("DMX", { channel: target.channel, value: target.level, duration: target.duration });
+      // let channels = target.channel;
+      // channels.forEach((c)=>{
+      //   emit("DMX", { channel: c, value: target.level, duration: target.duration });
+      // })
     }
   },
   playSound: function(play, secs = 0) {
