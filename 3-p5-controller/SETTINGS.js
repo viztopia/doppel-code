@@ -140,7 +140,7 @@ const DMXPRESETS = {
         a: { channel: DMX.a, level: DMX_X * 0, duration: 5 }, //3, 4 cat1_center
         b: { channel: DMX.b, level: DMX_X * 0, duration: 5 }, //9 cat1_stage_right
         c: { channel: DMX.c, level: DMX_X * 255, duration: 5 }, //13 down
-        d: { channel: DMX.d, level: DMX_X * 255, duration: 5 }, //17 down
+        d: { channel: DMX.d, level: DMX_X * 204, duration: 5 }, //17 down
         e: { channel: DMX.e, level: DMX_X * 0, duration: 5 }, //73, 74 sidehouse
         f: { channel: DMX.f, level: DMX_X * 0, duration: 5 }, //91-94 house
         h: { channel: DMX.h, level: DMX_X * 0, duration: 5 } //22 mids
@@ -150,7 +150,7 @@ const DMXPRESETS = {
         a: { channel: DMX.a, level: DMX_X * 0, duration: 10 }, //3, 4 cat1_center
         b: { channel: DMX.b, level: DMX_X * 0, duration: 10 }, //9 cat1_stage_right
         c: { channel: DMX.c, level: DMX_X * 255, duration: 10 }, //13 down
-        d: { channel: DMX.d, level: DMX_X * 255, duration: 10 }, //17 down
+        d: { channel: DMX.d, level: DMX_X * 204, duration: 10 }, //17 down
         e: { channel: DMX.e, level: DMX_X * 0, duration: 10 }, //73, 74 sidehouse
         f: { channel: DMX.f, level: DMX_X * 0, duration: 10 }, //91-94 house
         h: { channel: DMX.h, level: DMX_X * 0, duration: 10 } //22 mids
