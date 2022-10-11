@@ -49,92 +49,111 @@ const CACHEFRAMES = CAMFPS * CACHELENGTH; //this should match the size of the Ca
 const FFREW_INTERVAL = 50;
 
 // DMX
-const DMX = { a:"a", b:"b", c:"c", d:"d", e:"e", f:"f"};
+const DMX = { a:"a", b:"b", c:"c", d:"d", e:"e", f:"f", h:"h"};
 const DMXSendInterval = 50; // how fast to send DMX commands, in milli secs (to prevent flooding)
 const DMX_X = 1;
 const DMXPRESETS = {
     //using a, b, c as light IDs to not confused with their actual channel number
 
-    "setup": { 
-        a: { channel: DMX.a, level: DMX_X * 255, duration: 0.1 }, 
-        b: { channel: DMX.b, level: DMX_X * 255, duration: 0.1 }, 
-        c: { channel: DMX.c, level: DMX_X * 255, duration: 0.1 },
-        d: { channel: DMX.a, level: DMX_X * 255, duration: 0.1 }, 
-        e: { channel: DMX.b, level: DMX_X * 10, duration: 0.1 }, 
-        f: { channel: DMX.c, level: DMX_X * 10, duration: 0.1 }
-    },
-
-    "normalcut": { 
-        a: { channel: DMX.a, level: DMX_X * 255, duration: 0.1 }, 
-        b: { channel: DMX.b, level: DMX_X * 255, duration: 0.1 }, 
-        c: { channel: DMX.c, level: DMX_X * 255, duration: 0.1 },
-        d: { channel: DMX.a, level: DMX_X * 255, duration: 0.1 }, 
-        e: { channel: DMX.b, level: DMX_X * 255, duration: 0.1 }, 
-        f: { channel: DMX.c, level: DMX_X * 255, duration: 0.1 }
-    },
-
-    "normalfade": {
-        a: { channel: DMX.a, level: DMX_X * 255, duration: 0.1 }, 
-        b: { channel: DMX.b, level: DMX_X * 255, duration: 0.1 }, 
-        c: { channel: DMX.c, level: DMX_X * 255, duration: 0.1 },
-        d: { channel: DMX.a, level: DMX_X * 255, duration: 0.1 }, 
-        e: { channel: DMX.b, level: DMX_X * 255, duration: 0.1 }, 
-        f: { channel: DMX.c, level: DMX_X * 255, duration: 0.1 }
-     },
-
-    "stripe": {
-        a: { channel: DMX.a, level: DMX_X * 255, duration: 0.1 }, 
-        b: { channel: DMX.b, level: DMX_X * 255, duration: 0.1 }, 
-        c: { channel: DMX.c, level: DMX_X * 255, duration: 0.1 },
-        d: { channel: DMX.a, level: DMX_X * 255, duration: 0.1 }, 
-        e: { channel: DMX.b, level: DMX_X * 255, duration: 0.1 }, 
-        f: { channel: DMX.c, level: DMX_X * 255, duration: 0.1 }
-    },
-
     "cut": {
-        a: { channel: DMX.a, level: DMX_X * 0, duration: 0.1 }, 
-        b: { channel: DMX.b, level: DMX_X * 0, duration: 0.1 }, 
-        c: { channel: DMX.c, level: DMX_X * 0, duration: 0.1 },
-        d: { channel: DMX.a, level: DMX_X * 0, duration: 0.1 }, 
-        e: { channel: DMX.b, level: DMX_X * 10, duration: 0.1 }, 
-        f: { channel: DMX.c, level: DMX_X * 10, duration: 0.1 }
+        a: { channel: DMX.a, level: DMX_X * 0, duration: 0.1 }, //3, 4 cat1_center
+        b: { channel: DMX.b, level: DMX_X * 0, duration: 0.1 }, //9 cat1_stage_right
+        c: { channel: DMX.c, level: DMX_X * 0, duration: 0.1 }, //13 down
+        d: { channel: DMX.d, level: DMX_X * 0, duration: 0.1 }, //17 down
+        e: { channel: DMX.e, level: DMX_X * 0, duration: 0.1 }, //73, 74 sidehouse
+        f: { channel: DMX.f, level: DMX_X * 0, duration: 0.1 }, //91-94 house
+        h: { channel: DMX.h, level: DMX_X * 0, duration: 0.1 } //22 mids
     },
 
-    "fadeout": {
-        a: { channel: DMX.a, level: DMX_X * 255, duration: 0.1 }, 
-        b: { channel: DMX.b, level: DMX_X * 255, duration: 0.1 }, 
-        c: { channel: DMX.c, level: DMX_X * 255, duration: 0.1 },
-        d: { channel: DMX.a, level: DMX_X * 255, duration: 0.1 }, 
-        e: { channel: DMX.b, level: DMX_X * 255, duration: 0.1 }, 
-        f: { channel: DMX.c, level: DMX_X * 255, duration: 0.1 }
+    "setup": { 
+        a: { channel: DMX.a, level: DMX_X * 153, duration: 0.1 }, //3, 4 cat1_center
+        b: { channel: DMX.b, level: DMX_X * 153, duration: 0.1 }, //9 cat1_stage_right
+        c: { channel: DMX.c, level: DMX_X * 153, duration: 0.1 }, //13 down
+        d: { channel: DMX.d, level: DMX_X * 153, duration: 0.1 }, //17 down
+        e: { channel: DMX.e, level: DMX_X * 255, duration: 0.1 }, //73, 74 sidehouse
+        f: { channel: DMX.f, level: DMX_X * 255, duration: 0.1 }, //91-94 house
+        h: { channel: DMX.h, level: DMX_X * 153, duration: 0.1 } //22 mids
     },
 
     "jokefade": {
-        a: { channel: DMX.a, level: DMX_X * 255, duration: 0.1 }, 
-        b: { channel: DMX.b, level: DMX_X * 255, duration: 0.1 }, 
-        c: { channel: DMX.c, level: DMX_X * 255, duration: 0.1 },
-        d: { channel: DMX.a, level: DMX_X * 255, duration: 0.1 }, 
-        e: { channel: DMX.b, level: DMX_X * 255, duration: 0.1 }, 
-        f: { channel: DMX.c, level: DMX_X * 255, duration: 0.1 }
+        a: { channel: DMX.a, level: DMX_X * 255, duration: 5 }, //3, 4 cat1_center
+        b: { channel: DMX.b, level: DMX_X * 255, duration: 5 }, //9 cat1_stage_right
+        c: { channel: DMX.c, level: DMX_X * 255, duration: 5 }, //13 down
+        d: { channel: DMX.d, level: DMX_X * 255, duration: 5 }, //17 down
+        e: { channel: DMX.e, level: DMX_X * 0, duration: 5 }, //73, 74 sidehouse
+        f: { channel: DMX.f, level: DMX_X * 0, duration: 5 }, //91-94 house
+        h: { channel: DMX.h, level: DMX_X * 0, duration: 5 } //22 mids
     },
 
         //joke should turn off back stage light. TBD
     "jokecut": {
-        a: { channel: DMX.a, level: DMX_X * 255, duration: 0.1 }, 
-        b: { channel: DMX.b, level: DMX_X * 255, duration: 0.1 }, 
-        c: { channel: DMX.c, level: DMX_X * 255, duration: 0.1 },
-        d: { channel: DMX.a, level: DMX_X * 255, duration: 0.1 }, 
-        e: { channel: DMX.b, level: DMX_X * 255, duration: 0.1 }, 
-        f: { channel: DMX.c, level: DMX_X * 255, duration: 0.1 }
+        a: { channel: DMX.a, level: DMX_X * 0, duration: 0.1 }, //3, 4 cat1_center
+        b: { channel: DMX.b, level: DMX_X * 0, duration: 0.1 }, //9 cat1_stage_right
+        c: { channel: DMX.c, level: DMX_X * 0, duration: 0.1 }, //13 down
+        d: { channel: DMX.d, level: DMX_X * 0, duration: 0.1 }, //17 down
+        e: { channel: DMX.e, level: DMX_X * 0, duration: 0.1 }, //73, 74 sidehouse
+        f: { channel: DMX.f, level: DMX_X * 0, duration: 0.1 }, //91-94 house
+        h: { channel: DMX.h, level: DMX_X * 0, duration: 0.1 } //22 mids
+    },
+
+    "normalfade": {
+        a: { channel: DMX.a, level: DMX_X * 230, duration: 5 }, //3, 4 cat1_center
+        b: { channel: DMX.b, level: DMX_X * 255, duration: 5 }, //9 cat1_stage_right
+        c: { channel: DMX.c, level: DMX_X * 0, duration: 5 }, //13 down
+        d: { channel: DMX.d, level: DMX_X * 0, duration: 5 }, //17 down
+        e: { channel: DMX.e, level: DMX_X * 0, duration: 5 }, //73, 74 sidehouse
+        f: { channel: DMX.f, level: DMX_X * 0, duration: 5 }, //91-94 house
+        h: { channel: DMX.h, level: DMX_X * 0, duration: 5 } //22 mids
+     },
+
+     "normalcut": { 
+        a: { channel: DMX.a, level: DMX_X * 230, duration: 0.1 }, //3, 4 cat1_center
+        b: { channel: DMX.b, level: DMX_X * 255, duration: 0.1 }, //9 cat1_stage_right
+        c: { channel: DMX.c, level: DMX_X * 0, duration: 0.1 }, //13 down
+        d: { channel: DMX.d, level: DMX_X * 0, duration: 0.1 }, //17 down
+        e: { channel: DMX.e, level: DMX_X * 0, duration: 0.1 }, //73, 74 sidehouse
+        f: { channel: DMX.f, level: DMX_X * 0, duration: 0.1 }, //91-94 house
+        h: { channel: DMX.h, level: DMX_X * 0, duration: 0.1 } //22 mids
+    },
+
+    "stripe": {
+        a: { channel: DMX.a, level: DMX_X * 0, duration: 0.1 }, //3, 4 cat1_center
+        b: { channel: DMX.b, level: DMX_X * 255, duration: 0.1 }, //9 cat1_stage_right
+        c: { channel: DMX.c, level: DMX_X * 0, duration: 0.1 }, //13 down
+        d: { channel: DMX.d, level: DMX_X * 0, duration: 0.1 }, //17 down
+        e: { channel: DMX.e, level: DMX_X * 0, duration: 0.1 }, //73, 74 sidehouse
+        f: { channel: DMX.f, level: DMX_X * 0, duration: 0.1 }, //91-94 house
+        h: { channel: DMX.h, level: DMX_X * 0, duration: 0.1 } //22 mids
+    },
+
+    "fadeout": {
+        a: { channel: DMX.a, level: DMX_X * 0, duration: 5 }, //3, 4 cat1_center
+        b: { channel: DMX.b, level: DMX_X * 0, duration: 5 }, //9 cat1_stage_right
+        c: { channel: DMX.c, level: DMX_X * 0, duration: 5 }, //13 down
+        d: { channel: DMX.d, level: DMX_X * 0, duration: 5 }, //17 down
+        e: { channel: DMX.e, level: DMX_X * 0, duration: 5 }, //73, 74 sidehouse
+        f: { channel: DMX.f, level: DMX_X * 0, duration: 5 }, //91-94 house
+        h: { channel: DMX.h, level: DMX_X * 0, duration: 5 } //22 mids
     },
 
     "solo": {
-        a: { channel: DMX.a, level: DMX_X * 255, duration: 0.1 }, 
-        b: { channel: DMX.b, level: DMX_X * 255, duration: 0.1 }, 
-        c: { channel: DMX.c, level: DMX_X * 255, duration: 0.1 },
-        d: { channel: DMX.a, level: DMX_X * 255, duration: 0.1 }, 
-        e: { channel: DMX.b, level: DMX_X * 255, duration: 0.1 }, 
-        f: { channel: DMX.c, level: DMX_X * 255, duration: 0.1 }
+        a: { channel: DMX.a, level: DMX_X * 0, duration: 5 }, //3, 4 cat1_center
+        b: { channel: DMX.b, level: DMX_X * 0, duration: 5 }, //9 cat1_stage_right
+        c: { channel: DMX.c, level: DMX_X * 255, duration: 5 }, //13 down
+        d: { channel: DMX.d, level: DMX_X * 255, duration: 5 }, //17 down
+        e: { channel: DMX.e, level: DMX_X * 0, duration: 5 }, //73, 74 sidehouse
+        f: { channel: DMX.f, level: DMX_X * 0, duration: 5 }, //91-94 house
+        h: { channel: DMX.h, level: DMX_X * 0, duration: 5 } //22 mids
+    },
+
+    "run": {
+        a: { channel: DMX.a, level: DMX_X * 0, duration: 10 }, //3, 4 cat1_center
+        b: { channel: DMX.b, level: DMX_X * 0, duration: 10 }, //9 cat1_stage_right
+        c: { channel: DMX.c, level: DMX_X * 255, duration: 10 }, //13 down
+        d: { channel: DMX.d, level: DMX_X * 255, duration: 10 }, //17 down
+        e: { channel: DMX.e, level: DMX_X * 0, duration: 10 }, //73, 74 sidehouse
+        f: { channel: DMX.f, level: DMX_X * 0, duration: 10 }, //91-94 house
+        h: { channel: DMX.h, level: DMX_X * 0, duration: 10 } //22 mids
     },
 
 }

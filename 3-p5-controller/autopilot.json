@@ -7,6 +7,12 @@
             "note": "start in manual mode"
         },
         {
+            "time": 5,
+            "key": "L",
+            "setting": "cut",
+            "note": "lights off"
+        },
+        {
             "time": 27,
             "key": "H",
             "note": "fade in left"
@@ -291,14 +297,14 @@
         },
         {
             "time": 1098,
+            "key": "P",
+            "note": "play flashing video"
+        },
+        {
+            "time": 1100,
             "key": "L",
             "setting": "cut",
             "note": "lights off"
-        },
-        {
-            "time": 1098,
-            "key": "P",
-            "note": "play flashing video"
         },
         {
             "time": 1246,
@@ -344,6 +350,12 @@
             "key": "0",
             "setting": 5,
             "note": "switch to preset 20"
+        },
+        {
+            "time": 1500,
+            "key": "L",
+            "setting": "run",
+            "note": "long fade"
         },
         {
             "time": 1535,
@@ -471,7 +483,7 @@
             "note": "switch to bookmark mode"
         },
         {
-            "time": 2223,
+            "time": 2224,
             "key": "Y",
             "note": "jump back to bookmark E (doppel looking at nini)"
         },
