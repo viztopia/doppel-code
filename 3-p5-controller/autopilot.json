@@ -24,11 +24,6 @@
             "note": "lights on"
         },
         {
-            "time": 38,
-            "key": "K",
-            "note": "[PLATEAU RECORDING: true] waiting room 1: Front, BodyLeft"
-        },
-        {
             "time": 45,
             "key": "E",
             "note": "bookmark doppel looking at nini"
@@ -43,11 +38,6 @@
             "time": 147,
             "key": "D",
             "note": "unblackout right"
-        },
-        {
-            "time": 251,
-            "key": "K",
-            "note": "[PLATEAU RECORDING: false] "
         },
         {
             "time": 256,
@@ -89,11 +79,6 @@
             "note": "set window frame to 60"
         },
         {
-            "time": 274,
-            "key": "K",
-            "note": "[PLATEAU RECORDING: true]  face wipe and prayer: HandFace, RightFoward"
-        },
-        {
             "time": 323,
             "key": "0",
             "setting": 2,
@@ -106,397 +91,31 @@
             "note": "go to preset 6 sec"
         },
         {
-            "time": 389,
-            "key": "K",
-            "note": "[PLATEAU RECORDING: false] "
-        },
-        {
-            "time": 394,
-            "key": "F",
-            "note": "blackout all "
-        },
-        {
-            "time": 394,
-            "key": "L",
-            "setting": "cut",
-            "note": "lights off"
-        },
-        {
-            "time": 398,
-            "key": "2",
-            "setting": 1,
-            "note": "switch to speed"
-        },
-        {
-            "time": 398,
-            "key": "S",
-            "note": "unblackout left - collapsy down"
-        },
-        {
-            "time": 398,
-            "key": "L",
-            "setting": "normalcut",
-            "note": "lights on"
-        },
-        {
-            "time": 403,
-            "key": "D",
-            "note": " "
-        },
-        {
-            "time": 405,
-            "key": "K",
-            "note": "[PLATEAU RECORDING: true]  Collapse, Airplane, Michael Jackson: LeanForward, HandSides, BodyLeft"
-        },
-        {
-            "time": 490,
+            "time": 342,
             "key": "0",
             "setting": 1,
             "note": "switch to preset 4 sec (voice: when ppl leave)"
         },
         {
-            "time": 726,
+            "time": 510,
             "key": "0",
             "setting": 3,
             "note": "switch to preset 6 sec"
         },
         {
-            "time": 726,
-            "key": "K",
-            "note": "[PLATEAU RECORDING: false] "
-        },
-        {
-            "time": 732,
+            "time": 545,
             "key": "S",
             "note": "blackout left"
         },
         {
-            "time": 732,
-            "key": "L",
-            "setting": "cut",
-            "note": "lights off"
-        },
-        {
-            "time": 737,
+            "time": 545,
             "key": "D",
             "note": "blackout right"
         },
         {
-            "time": 741,
-            "key": "2",
-            "setting": 1,
-            "note": "switch to speed"
-        },
-        {
-            "time": 741,
-            "key": "S",
-            "note": "unblackout left"
-        },
-        {
-            "time": 741,
-            "key": "L",
-            "setting": "normalcut",
-            "note": "lights on"
-        },
-        {
-            "time": 746,
-            "key": "K",
-            "note": "[PLATEAU RECORDING: true] pulling bus and hair on face"
-        },
-        {
-            "time": 746,
-            "key": "D",
-            "note": "unblackout right"
-        },
-        {
-            "time": 785,
-            "key": "2",
-            "setting": 0.5,
-            "note": "switch to speed"
-        },
-        {
-            "time": 816,
-            "key": "K",
-            "note": "[PLATEAU RECORDING: false]"
-        },
-        {
-            "time": 817,
-            "key": "O",
-            "note": "stop recording in TD to boost hard drive IO"
-        },
-        {
-            "time": 821,
-            "key": "0",
-            "setting": 1,
-            "note": "go to preset 4 sec"
-        },
-        {
-            "time": 823,
-            "key": "Q",
-            "note": "mark real nini about to stands up"
-        },
-        {
-            "time": 823,
-            "key": "0",
-            "setting": 0,
-            "note": "go to preset 0 sec"
-        },
-        {
-            "time": 827,
-            "key": "0",
-            "setting": 1,
-            "note": "go to preset 4 sec"
-        },
-        {
-            "time": 860,
-            "key": "F",
-            "note": "blackout all"
-        },
-        {
-            "time": 860,
-            "key": "L",
-            "setting": "cut",
-            "note": "lights off"
-        },
-        {
-            "time": 865,
-            "key": "2",
-            "setting": 0.85,
-            "note": "switch to speed"
-        },
-        {
-            "time": 870,
-            "key": "S",
-            "note": "unblackout left"
-        },
-        {
-            "time": 870,
-            "key": "L",
-            "setting": "normalcut",
-            "note": "lights on"
-        },
-        {
-            "time": 880,
-            "key": "D",
-            "note": "unblackout right"
-        },
-        {
-            "time": 1060,
-            "key": "D",
-            "note": "blackout right"
-        },
-        {
-            "time": 1098,
-            "key": "5",
-            "note": "switch to other mode to get ready to play video"
-        },
-        {
-            "time": 1098,
-            "key": "G",
-            "note": "unblackout all"
-        },
-        {
-            "time": 1098,
-            "key": "P",
-            "note": "play flashing video"
-        },
-        {
-            "time": 1100,
-            "key": "L",
-            "setting": "cut",
-            "note": "lights off"
-        },
-        {
-            "time": 1246,
-            "key": "L",
-            "setting": "solo",
-            "note": "lights on: long fade in"
-        },
-        {
-            "time": 1296,
-            "key": "D",
-            "note": "blackout right"
-        },
-        {
-            "time": 1360,
-            "key": "S",
-            "note": "unblackout left"
-        },
-        {
-            "time": 1360,
-            "key": "L",
-            "setting": "normalfade",
-            "note": "lights to normal fade"
-        },
-        {
-            "time": 1360,
-            "key": "0",
-            "setting": 3,
-            "note": "switch to preset 6 (echo circling)"
-        },
-        {
-            "time": 1370,
-            "key": "D",
-            "note": "unblackout right"
-        },
-        {
-            "time": 1472,
-            "key": "0",
-            "setting": 0,
-            "note": "switch to preset 0"
-        },
-        {
-            "time": 1494,
-            "key": "0",
-            "setting": 5,
-            "note": "switch to preset 20"
-        },
-        {
-            "time": 1500,
-            "key": "L",
-            "setting": "run",
-            "note": "long fade"
-        },
-        {
-            "time": 1535,
-            "key": "0",
-            "setting": 4,
-            "note": "switch to preset 10 (humming)"
-        },
-        {
-            "time": 1578,
-            "key": "L",
-            "setting": "cut",
-            "note": "lights off"
-        },
-        {
-            "time": 1587,
-            "key": "F",
-            "note": "blackout all"
-        },
-        {
-            "time": 1599,
-            "key": "0",
-            "setting": 1,
-            "note": "go to preset 4 to get ready"
-        },
-        {
-            "time": 1599,
-            "key": "S",
-            "note": "unblackout left"
-        },
-        {
-            "time": 1599,
-            "key": "L",
-            "setting": "stripe",
-            "note": "lights on"
-        },
-        {
-            "time": 1618,
-            "key": "L",
-            "setting": "normalfade",
-            "note": "lights on"
-        },
-        {
-            "time": 1632,
-            "key": "D",
-            "note": "unblackout right (need to investigate why need 8 sec)"
-        },
-        {
-            "time": 1640,
-            "key": "2",
-            "setting": 0.75,
-            "note": "switch to speed"
-        },
-        {
-            "time": 1679,
-            "key": "0",
-            "setting": 0,
-            "note": "switch to preset 0"
-        },
-        {
-            "time": 1684,
-            "key": "2",
-            "setting": 0.75,
-            "note": "switch to speed"
-        },
-        {
-            "time": 1693,
-            "key": "0",
-            "setting": 0,
-            "note": "switch to preset 0"
-        },
-        {
-            "time": 1704,
-            "key": "0",
-            "setting": 1,
-            "note": "switch to preset 4"
-        },
-        {
-            "time": 1913,
-            "key": "N",
-            "setting": 20,
-            "note": "set window frame to 20"
-        },
-        {
-            "time": 1914,
-            "key": "B",
-            "setting": 10,
-            "note": "change confidence to 10"
-        },
-        {
-            "time": 1915,
-            "key": "0",
-            "setting": 0,
-            "note": "switch to preset 0"
-        },
-        {
-            "time": 1943,
-            "key": "F",
-            "note": "blackout all "
-        },
-        {
-            "time": 1949,
-            "key": "L",
-            "setting": "fadeout",
-            "note": "lights fade out very slowly"
-        },
-        {
-            "time": 2020,
-            "key": "3",
-            "note": "switch to plateau"
-        },
-        {
-            "time": 2020,
-            "key": "G",
-            "note": "unblackout all"
-        },
-        {
-            "time": 2020,
-            "key": "L",
-            "setting": "normalfade",
-            "note": "lights on"
-        },
-        {
-            "time": 2223,
-            "key": "4",
-            "note": "switch to bookmark mode"
-        },
-        {
-            "time": 2224,
-            "key": "Y",
-            "note": "jump back to bookmark E (doppel looking at nini)"
-        },
-        {
-            "time": 2228,
-            "key": "F",
-            "note": "blackout all (end of show)"
-        },
-        {
-            "time": 2228,
-            "key": "L",
-            "setting": "cut",
-            "note": "lights off"
+            "time": 548,
+            "key": ".",
+            "note": "DMX jokefade"
         }
     ]
 }

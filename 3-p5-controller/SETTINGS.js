@@ -49,7 +49,7 @@ const CACHEFRAMES = CAMFPS * CACHELENGTH; //this should match the size of the Ca
 const FFREW_INTERVAL = 50;
 
 // DMX
-const DMX = { a:"a", b:"b", c:"c", d:"d", e:"e", f:"f", h:"h"};
+const DMX = { a:213, b:311, c:115, d:214, e:0, f:0, h:0};
 const DMXSendInterval = 50; // how fast to send DMX commands, in milli secs (to prevent flooding)
 const DMX_X = 1;
 const DMXPRESETS = {
