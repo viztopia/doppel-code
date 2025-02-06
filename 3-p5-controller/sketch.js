@@ -24,6 +24,10 @@ let nextActionIdx = undefined;
 let isAutoSave = true;
 let autoSaveIntervalID;
 
+function preload() {
+  // Load the sound file before setup runs
+}
+
 function setup() {
   createCanvas(W, H);
   connect(); //ports for OBS In / Out, TD In / Out

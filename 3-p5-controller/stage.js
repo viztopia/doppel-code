@@ -1,4 +1,14 @@
 let stage = {
+  // Initialize sound
+  localSound: new Howl({
+    src: ['./media/sound.mp3'],
+    html5: true, // Enable streaming for large files
+    preload: true,
+    onload: function() {
+      console.log('Sound loaded! Duration:', this.duration());
+    }
+  }),
+
   reset: function () {
     this.showDoppel = true;
     this.blackoutLeft = true;
@@ -52,7 +62,25 @@ let stage = {
     }
   },
   playSound: function(play, secs = 0) {
+    // Emit to remote server
     emit("playsound", { play: play, secs: secs });
+    
+    // Handle local playback
+    if (this.localSound) {
+      if (play) {
+        if (secs > 0) {
+          console.log("Jumping to " + secs);
+          this.localSound.seek(secs);
+          if (!this.localSound.playing()) {
+            this.localSound.play();
+          }
+        } else {
+          this.localSound.play();
+        }
+      } else {
+        this.localSound.stop();
+      }
+    }
   },
   playVideo: function () {
     emit("source", VIDEO);
