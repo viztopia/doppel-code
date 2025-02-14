@@ -7,26 +7,10 @@
             "note": "start in manual mode"
         },
         {
-            "time": 5,
-            "key": "L",
-            "setting": "cut",
-            "note": "lights off"
-        },
-        {
-            "time": 27,
-            "key": "H",
-            "note": "fade in left"
-        },
-        {
-            "time": 27,
+            "time": "1",
             "key": "L",
             "setting": "normalfade",
             "note": "lights on"
-        },
-        {
-            "time": 45,
-            "key": "E",
-            "note": "bookmark doppel looking at nini"
         },
         {
             "time": 56,
@@ -35,87 +19,70 @@
             "note": "go to preset 55 sec (updated presets as: 0, 4, 4.5, 6, 10, 55)"
         },
         {
-            "time": 147,
+            "time": 120,
             "key": "D",
             "note": "unblackout right"
         },
         {
-            "time": 256,
+            "time": 229,
             "key": "F",
             "note": "blackout all "
         },
         {
-            "time": 256,
+            "time": 229,
             "key": "L",
             "setting": "cut",
             "note": "lights off"
         },
         {
-            "time": 257,
-            "key": "0",
+            "time": 234,
+            "key": "1",
             "setting": 1,
-            "note": "go to preset 4 sec"
+            "note": "switch to manual"
         },
         {
-            "time": 267,
+            "time": 234,
             "key": "S",
             "note": "unblackout left "
         },
         {
-            "time": 267,
+            "time": 234,
             "key": "L",
             "setting": "normalcut",
             "note": "lights on"
         },
         {
-            "time": 267,
+            "time": 234,
             "key": "D",
             "note": "unblackout right"
         },
         {
-            "time": 273,
-            "key": "N",
-            "setting": 60,
-            "note": "set window frame to 60"
-        },
-        {
-            "time": 323,
-            "key": "0",
-            "setting": 2,
-            "note": "go to preset 4.5 sec"
-        },
-        {
-            "time": 332,
-            "key": "0",
-            "setting": 3,
-            "note": "go to preset 6 sec"
-        },
-        {
-            "time": 342,
+            "time": 280,
             "key": "0",
             "setting": 1,
             "note": "switch to preset 4 sec (voice: when ppl leave)"
         },
         {
-            "time": 510,
+            "time": 462,
             "key": "0",
             "setting": 3,
             "note": "switch to preset 6 sec"
         },
         {
-            "time": 545,
+            "time": 502,
             "key": "S",
             "note": "blackout left"
         },
         {
-            "time": 545,
+            "time": 502,
             "key": "D",
             "note": "blackout right"
         },
         {
-            "time": 548,
-            "key": ".",
-            "note": "DMX jokefade"
+            "time": 502,
+            "key": "L",
+            "setting": "cut",
+            "note": "lights off"
         }
     ]
 }

@@ -1,7 +1,7 @@
 let stage = {
   // Initialize sound
   localSound: new Howl({
-    src: ['./media/sound.mp3'],
+    src: ['./media/sound2.mp3'],
     html5: true, // Enable streaming for large files
     preload: true,
     onload: function() {
@@ -72,9 +72,12 @@ let stage = {
           console.log("Jumping to " + secs);
           this.localSound.seek(secs);
           if (!this.localSound.playing()) {
+            // set vloume to 0.5
+            this.localSound.volume(5);
             this.localSound.play();
           }
         } else {
+          this.localSound.volume(5);
           this.localSound.play();
         }
       } else {
