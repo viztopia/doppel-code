@@ -1,7 +1,7 @@
 let stage = {
   // Initialize sound
   localSound: new Howl({
-    src: ['./media/sound2.mp3'],
+    src: ['./media/sound.mp3'],
     html5: true, // Enable streaming for large files
     preload: true,
     onload: function() {
@@ -93,7 +93,7 @@ let stage = {
     text("Delayed frame: " + floor(cue.delayFrameIdx) + "      File: " + cue.fileIdx + " cuePoint: " + nfs(cue.cuePoint, 0, 2), INFOX, INFOY + 125);
     text("Doppel (A): " + (this.showDoppel ? "On" : "Off"), INFOX, INFOY + 150);
     let timeElapsed = this.fadeints ? constrain(floor(this.fadeints - Date.now() / 1000), 0, 30) : 0;
-    text("Blackout (S,D,F,G): " + (this.blackoutLeft ? " Left" : "") + (this.blackoutRight ? " Right" : "" + "\t\Fade: " + timeElapsed) + "\t\tSetup(,) JokeFade(.) JokeCut(/) Cut(;)", INFOX, INFOY + 175);
+    text("Blackout (S,D,F,G): " + (this.blackoutLeft ? " Left" : "") + (this.blackoutRight ? " Right" : "" + "\t\Fade: " + timeElapsed) + "\t\tSetup(,) JokeFade(.) JokeCut(/) Fade(L) Cut(;)", INFOX, INFOY + 175);
     text("Bookmarks (4): " + modes[BOOKMARK].str, INFOX, INFOY + 200);
     text("Classify (J): " + (modes[PLATEAU].classify ? "On" : "Off") + "\t\tSend (K): " + (modes[PLATEAU].sending == modes[PLATEAU].CLASSES ? "Plateaus" : "Classes" + "\t\tWindow (N): " + modes[PLATEAU].window + "\t\tConfidence (B): " + modes[PLATEAU].confidence), INFOX, INFOY + 225);
   }

@@ -389,6 +389,7 @@ function keyPressed(e) {
       break;
     case 76: //-----------L: send DMX light commands
       if (setting != null) stage.setDMX(DMXPRESETS[setting], DMXSendInterval);
+      else stage.setDMX(DMXPRESETS["normalfade"], DMXSendInterval);
       break;
     case 188: //---------- ,: set DMX to setup present
       stage.setDMX(DMXPRESETS["setup"], DMXSendInterval);
