@@ -115,12 +115,12 @@ function setTopOfShow() {
 function startClock(offset) {
   // Update startTime
   startTime = Date.now() - offset * 1000;
-  //start recording
+  // Start recording
   socket.emit("record", 1);
-  //start show
+  // Start counting
   started = true;
 
-  console.log("Show and recording started at: " + offset + " seconds, timestampe is:" + startTime);
+  console.log("Show and recording started at: " + offset + " seconds, timestamp is:" + startTime);
 
   //start auto save plateaus
   if (isAutoSave) {
@@ -128,20 +128,23 @@ function startClock(offset) {
       autoSaveIntervalID = setInterval(savePlateaus, CACHELENGTH * 1000);
     }, 500);
   }
+
 }
 
 function startPerformance(evt, cuepoint) {
+  console.log("Start performance!");
 
   // Is there a cuepoint?
   cuepoint = cuepoint ? cuepoint : 0;
+  startClock(cuepoint);
 
   // play sound
   if(isCueSound) stage.playSound(true, cuepoint);
 
   // Wait for sound to start
-  setTimeout(()=>{
-    startClock(cuepoint);
-  }, isCueSound ? SOUNDCUEDELAY : 0);
+  // setTimeout(()=>{
+  //   startClock(cuepoint);
+  // }, isCueSound ? SOUNDCUEDELAY : 0);
 }
 
 
