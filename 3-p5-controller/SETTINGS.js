@@ -19,7 +19,7 @@ const OTHER = 5;
 
 // Mode names
 const MODENAMES = ['PRESET', 'MANUAL', 'SPEED', 'PLATEAU', 'BOOKMARK', 'OTHER'];
-const MODEBGS = [[140, 226, 238], [147, 186, 225], [137, 132, 214], [114, 81, 178], [164, 188, 188], [200, 200, 200]];
+const MODEBGS = [[60, 146, 158], [107, 146, 185], [97, 92, 174], [75, 41, 138], [124, 148, 148], [160, 160, 160]];
 
 // Delay presets
 const PRESETS = [0, 4, 4.5, 6, 10, 20, 55];
@@ -56,31 +56,31 @@ const DMXPRESETS = {
     //using a, b, c as light IDs to not confused with their actual channel number, change them to actual channel number for shows
 
     "cut": {
-        a: { channel: DMX.a, level: DMX_X * 130, duration: 0.1 }, //NYU ballroom middle big light
-        b: { channel: DMX.b, level: DMX_X * 56, duration: 0.1 }, //NYU ballroom middle big light
-        c: { channel: DMX.c, level: DMX_X * 224, duration: 0.1 }, //NYU ballroom middle big light
-        d: { channel: DMX.d, level: DMX_X * 255, duration: 0.1 }, //NYU ballroom middle big light
-        // e: { channel: DMX.e, level: DMX_X * 51, duration: 5 }, //NYU ballroom middle big light
-        f: { channel: DMX.f, level: DMX_X * 0, duration: 0.1 }, //NYU ballroom middle big light intensity
-        g: { channel: DMX.g, level: DMX_X * 255, duration: 0.1 }, //NYU ballroom middle big light
-        h: { channel: DMX.h, level: DMX_X * 255, duration: 0.1 }, //NYU ballroom top light
-        i: { channel: DMX.i, level: DMX_X * 0, duration: 0.1 }, //NYU ballroom top light intensity
-        j: { channel: DMX.j, level: DMX_X * 255, duration: 0.1 }, //NYU ballroom top right light
-        k: { channel: DMX.k, level: DMX_X * 0, duration: 0.1 } //NYU ballroom top right light intensity
+        a: { channel: DMX.a, level: DMX_X * 0, duration: 0.1 }, //NYU ballroom middle big light
+        // b: { channel: DMX.b, level: DMX_X * 56, duration: 0.1 }, //NYU ballroom middle big light
+        // c: { channel: DMX.c, level: DMX_X * 224, duration: 0.1 }, //NYU ballroom middle big light
+        // d: { channel: DMX.d, level: DMX_X * 255, duration: 0.1 }, //NYU ballroom middle big light
+        // // e: { channel: DMX.e, level: DMX_X * 51, duration: 5 }, //NYU ballroom middle big light
+        // f: { channel: DMX.f, level: DMX_X * 0, duration: 0.1 }, //NYU ballroom middle big light intensity
+        // g: { channel: DMX.g, level: DMX_X * 255, duration: 0.1 }, //NYU ballroom middle big light
+        // h: { channel: DMX.h, level: DMX_X * 255, duration: 0.1 }, //NYU ballroom top light
+        // i: { channel: DMX.i, level: DMX_X * 0, duration: 0.1 }, //NYU ballroom top light intensity
+        // j: { channel: DMX.j, level: DMX_X * 255, duration: 0.1 }, //NYU ballroom top right light
+        // k: { channel: DMX.k, level: DMX_X * 0, duration: 0.1 } //NYU ballroom top right light intensity
     },
 
     "setup": { 
-        a: { channel: DMX.a, level: DMX_X * 130, duration: 0.1 }, //NYU ballroom middle big light
-        b: { channel: DMX.b, level: DMX_X * 56, duration: 0.1 }, //NYU ballroom middle big light
-        c: { channel: DMX.c, level: DMX_X * 224, duration: 0.1 }, //NYU ballroom middle big light
-        d: { channel: DMX.d, level: DMX_X * 255, duration: 0.1 }, //NYU ballroom middle big light
-        // e: { channel: DMX.e, level: DMX_X * 51, duration: 5 }, //NYU ballroom middle big light
-        f: { channel: DMX.f, level: DMX_X * 0, duration: 0.1 }, //NYU ballroom middle big light intensity
-        g: { channel: DMX.g, level: DMX_X * 255, duration: 0.1 }, //NYU ballroom middle big light
-        h: { channel: DMX.h, level: DMX_X * 255, duration: 0.1 }, //NYU ballroom top light
-        i: { channel: DMX.i, level: DMX_X * 0, duration: 0.1 }, //NYU ballroom top light intensity
-        j: { channel: DMX.j, level: DMX_X * 255, duration: 0.1 }, //NYU ballroom top right light
-        k: { channel: DMX.k, level: DMX_X * 0, duration: 0.1 } //NYU ballroom top right light intensity
+        a: { channel: DMX.a, level: DMX_X * 0, duration: 0.1 }, //NYU ballroom middle big light
+        // b: { channel: DMX.b, level: DMX_X * 56, duration: 0.1 }, //NYU ballroom middle big light
+        // c: { channel: DMX.c, level: DMX_X * 224, duration: 0.1 }, //NYU ballroom middle big light
+        // d: { channel: DMX.d, level: DMX_X * 255, duration: 0.1 }, //NYU ballroom middle big light
+        // // e: { channel: DMX.e, level: DMX_X * 51, duration: 5 }, //NYU ballroom middle big light
+        // f: { channel: DMX.f, level: DMX_X * 0, duration: 0.1 }, //NYU ballroom middle big light intensity
+        // g: { channel: DMX.g, level: DMX_X * 255, duration: 0.1 }, //NYU ballroom middle big light
+        // h: { channel: DMX.h, level: DMX_X * 255, duration: 0.1 }, //NYU ballroom top light
+        // i: { channel: DMX.i, level: DMX_X * 0, duration: 0.1 }, //NYU ballroom top light intensity
+        // j: { channel: DMX.j, level: DMX_X * 255, duration: 0.1 }, //NYU ballroom top right light
+        // k: { channel: DMX.k, level: DMX_X * 0, duration: 0.1 } //NYU ballroom top right light intensity
     },
 
     "jokefade": {
@@ -105,31 +105,31 @@ const DMXPRESETS = {
     },
 
     "normalfade": {
-        a: { channel: DMX.a, level: DMX_X * 130, duration: 5 }, //NYU ballroom middle big light
-        b: { channel: DMX.b, level: DMX_X * 56, duration: 5 }, //NYU ballroom middle big light
-        c: { channel: DMX.c, level: DMX_X * 224, duration: 5 }, //NYU ballroom middle big light
-        d: { channel: DMX.d, level: DMX_X * 255, duration: 5 }, //NYU ballroom middle big light
-        // e: { channel: DMX.e, level: DMX_X * 51, duration: 5 }, //NYU ballroom middle big light
-        f: { channel: DMX.f, level: DMX_X * 51, duration: 5 }, //NYU ballroom middle big light intensity
-        g: { channel: DMX.g, level: DMX_X * 255, duration: 5 }, //NYU ballroom middle big light
-        h: { channel: DMX.h, level: DMX_X * 255, duration: 5 }, //NYU ballroom top light
-        i: { channel: DMX.i, level: DMX_X * 153, duration: 5 }, //NYU ballroom top light intensity
-        j: { channel: DMX.j, level: DMX_X * 255, duration: 5 }, //NYU ballroom top right light
-        k: { channel: DMX.k, level: DMX_X * 76, duration: 5 } //NYU ballroom top right light intensity
+        a: { channel: DMX.a, level: DMX_X * 100, duration: 5 }, //NYU ballroom middle big light
+        // b: { channel: DMX.b, level: DMX_X * 56, duration: 5 }, //NYU ballroom middle big light
+        // c: { channel: DMX.c, level: DMX_X * 224, duration: 5 }, //NYU ballroom middle big light
+        // d: { channel: DMX.d, level: DMX_X * 255, duration: 5 }, //NYU ballroom middle big light
+        // // e: { channel: DMX.e, level: DMX_X * 51, duration: 5 }, //NYU ballroom middle big light
+        // f: { channel: DMX.f, level: DMX_X * 51, duration: 5 }, //NYU ballroom middle big light intensity
+        // g: { channel: DMX.g, level: DMX_X * 255, duration: 5 }, //NYU ballroom middle big light
+        // h: { channel: DMX.h, level: DMX_X * 255, duration: 5 }, //NYU ballroom top light
+        // i: { channel: DMX.i, level: DMX_X * 153, duration: 5 }, //NYU ballroom top light intensity
+        // j: { channel: DMX.j, level: DMX_X * 255, duration: 5 }, //NYU ballroom top right light
+        // k: { channel: DMX.k, level: DMX_X * 76, duration: 5 } //NYU ballroom top right light intensity
      },
 
      "normalcut": { 
-        a: { channel: DMX.a, level: DMX_X * 130, duration: 0.1 }, //NYU ballroom middle big light
-        b: { channel: DMX.b, level: DMX_X * 56, duration: 0.1 }, //NYU ballroom middle big light
-        c: { channel: DMX.c, level: DMX_X * 224, duration: 0.1 }, //NYU ballroom middle big light
-        d: { channel: DMX.d, level: DMX_X * 255, duration: 0.1 }, //NYU ballroom middle big light
-        // e: { channel: DMX.e, level: DMX_X * 51, duration: 5 }, //NYU ballroom middle big light
-        f: { channel: DMX.f, level: DMX_X * 51, duration: 0.1 }, //NYU ballroom middle big light intensity
-        g: { channel: DMX.g, level: DMX_X * 255, duration: 0.1 }, //NYU ballroom middle big light
-        h: { channel: DMX.h, level: DMX_X * 255, duration: 0.1 }, //NYU ballroom top light
-        i: { channel: DMX.i, level: DMX_X * 153, duration: 0.1 }, //NYU ballroom top light intensity
-        j: { channel: DMX.j, level: DMX_X * 255, duration: 0.1 }, //NYU ballroom top right light
-        k: { channel: DMX.k, level: DMX_X * 76, duration: 0.1 } //NYU ballroom top right light intensity
+        a: { channel: DMX.a, level: DMX_X * 100, duration: 0.1 }, //NYU ballroom middle big light
+        // b: { channel: DMX.b, level: DMX_X * 56, duration: 0.1 }, //NYU ballroom middle big light
+        // c: { channel: DMX.c, level: DMX_X * 224, duration: 0.1 }, //NYU ballroom middle big light
+        // d: { channel: DMX.d, level: DMX_X * 255, duration: 0.1 }, //NYU ballroom middle big light
+        // // e: { channel: DMX.e, level: DMX_X * 51, duration: 5 }, //NYU ballroom middle big light
+        // f: { channel: DMX.f, level: DMX_X * 51, duration: 0.1 }, //NYU ballroom middle big light intensity
+        // g: { channel: DMX.g, level: DMX_X * 255, duration: 0.1 }, //NYU ballroom middle big light
+        // h: { channel: DMX.h, level: DMX_X * 255, duration: 0.1 }, //NYU ballroom top light
+        // i: { channel: DMX.i, level: DMX_X * 153, duration: 0.1 }, //NYU ballroom top light intensity
+        // j: { channel: DMX.j, level: DMX_X * 255, duration: 0.1 }, //NYU ballroom top right light
+        // k: { channel: DMX.k, level: DMX_X * 76, duration: 0.1 } //NYU ballroom top right light intensity
     },
 
     "stripe": {

@@ -35,9 +35,14 @@
             "note": "lights off"
         },
         {
-            "time": 234,
+            "time": 229,
+            "key": "0",
+            "setting": 0,
+            "note": "switch to prest 0"
+        },
+        {
+            "time": 230,
             "key": "1",
-            "setting": 1,
             "note": "switch to manual"
         },
         {
