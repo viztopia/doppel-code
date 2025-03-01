@@ -68,12 +68,6 @@
             "note": "switch to preset 4 sec (voice: when ppl leave)"
         },
         {
-            "time": 462,
-            "key": "0",
-            "setting": 3,
-            "note": "switch to preset 6 sec"
-        },
-        {
             "time": 502,
             "key": "S",
             "note": "blackout left"
